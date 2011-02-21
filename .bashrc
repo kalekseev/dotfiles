@@ -9,3 +9,10 @@ alias gx='gitx --all'
 
 alias got='git '
 alias get='git '
+
+alias sd='sudo'
+alias ag='apt-get'
+alias agu='apt-get update'
+alias agd='apt-get dist-upgrade'
+alias ac='apt-cache'
+alias acs='apt-cache search'
