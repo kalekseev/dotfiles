@@ -1,6 +1,8 @@
 [user]
   name = Konstantin Alekseev
   email = kv.alekseev@gmail.com
+[core]
+  excludesfile = ~/.gitignore
 [alias]
   co = checkout
   ci = commit
