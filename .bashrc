@@ -1,3 +1,8 @@
+translate() {
+wget -qO- "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=$1&langpair=${2:-en}|${3:-ru}" | sed -E -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p';
+echo ''
+return 0;
+}
 alias gs='git status '
 alias ga='git add '
 alias gb='git branch '
