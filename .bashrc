@@ -21,3 +21,9 @@ alias agu='apt-get update'
 alias agd='apt-get dist-upgrade'
 alias ac='apt-cache'
 alias acs='apt-cache search'
+
+alias rd='rdesktop -k en-us -g 1200x900 -u Administrator $@ > /dev/null 2>&1'
+alias gw_rd='ssh -f gw.loc -L 3389:192.168.22.101:3389 -N'
+alias gw_sql='ssh -f gw.loc -L 1433:192.168.22.101:1433 -N'
+alias gw_tr='ssh -f gw.loc -L 9091:localhost:9091 -N'
+
