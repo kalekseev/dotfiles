@@ -3,6 +3,13 @@ wget -qO- "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=$
 echo ''
 return 0;
 }
+
+export HISTCONTROL=erasedups
+export HISTSIZE=10000
+export HISTTIMEFORMAT="%d-%m-%y %T "
+shopt -s histappend
+
+#aliases
 alias gs='git status '
 alias ga='git add '
 alias gb='git branch '
@@ -16,9 +23,6 @@ alias got='git '
 alias get='git '
 
 alias sd='sudo'
-alias ag='apt-get'
-alias agu='apt-get update'
-alias agd='apt-get dist-upgrade'
 alias ac='apt-cache'
 alias acs='apt-cache search'
 
