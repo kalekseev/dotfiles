@@ -4,6 +4,8 @@ echo ''
 return 0;
 }
 
+export PATH=$PATH:$HOME/dotfiles/bin
+
 export HISTCONTROL=erasedups
 export HISTSIZE=10000
 export HISTTIMEFORMAT="%d-%m-%y %T "
