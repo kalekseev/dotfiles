@@ -35,3 +35,5 @@ alias gw_tr='ssh -f gw.loc -L 9091:localhost:9091 -N'
 
 alias rsqlplus='rlwrap sqlplus'
 alias rrman='rlwrap rman'
+
+complete -F _root_command $filenames sudo fakeroot really gksudo gksu kdesudo sd
