@@ -21,4 +21,4 @@ tags-ja
 CVS
 .svn
 .git
-.pyc
+*.pyc
