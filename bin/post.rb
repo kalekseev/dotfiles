@@ -18,9 +18,7 @@ unless File.readable?(file_with_tracking_numbers)
   exit
 end
 
-array = []
-array << IO.readlines(file_with_tracking_numbers)
-array.flatten!
+array = IO.readlines(file_with_tracking_numbers)
 
 array.each do |id|
   id.chomp!
