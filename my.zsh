@@ -6,9 +6,9 @@ return 0;
 
 export PATH=$PATH:$HOME/dotfiles/bin
 
-#export HISTCONTROL=erasedups
+export HISTCONTROL=erasedups
 #export HISTSIZE=10000
-#export HISTTIMEFORMAT="%d-%m-%y %T "
+export HISTTIMEFORMAT="%d-%m-%y %T "
 
 #aliases
 alias gs='git status '
@@ -36,3 +36,6 @@ alias rsqlplus='rlwrap sqlplus'
 alias rrman='rlwrap rman'
 
 alias sap='~/git/oradmin/sap.rb'
+
+bindkey '5D' backward-word
+bindkey '5C' forward-word
