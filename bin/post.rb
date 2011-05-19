@@ -88,4 +88,6 @@ if Gem.available?('nokogiri')
     end
     puts
   end
+else
+  puts "Nokogiri gem not available, install it for russia post traking"
 end
