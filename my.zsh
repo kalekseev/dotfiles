@@ -39,3 +39,8 @@ alias sap='~/git/oradmin/sap.rb'
 
 bindkey '5D' backward-word
 bindkey '5C' forward-word
+
+
+
+[[ -s "/home/wtf/.rvm/scripts/rvm" ]] && source "/home/wtf/.rvm/scripts/rvm"
+
