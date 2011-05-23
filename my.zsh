@@ -42,7 +42,7 @@ bindkey '5C' forward-word
 
 
 # specific settings for my laptop
-if [ $HOST == thin ]; then
+if [ $HOST = thin ]; then
   alias rds='rdesktop -k en-us -g 1100x700 -u Administrator $@ > /dev/null 2>&1'
 fi
 
