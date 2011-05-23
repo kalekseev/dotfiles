@@ -42,5 +42,6 @@ bindkey '5C' forward-word
 
 
 
-[[ -s "/home/wtf/.rvm/scripts/rvm" ]] && source "/home/wtf/.rvm/scripts/rvm"
+#[[ -s "/home/wtf/.rvm/scripts/rvm" ]] && source "/home/wtf/.rvm/scripts/rvm"
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
