@@ -63,7 +63,7 @@ class Workmod < Thor
     end
 
     def copy_hosts_to_tmp
-      system("sudo cp /etc/hosts #{HOSTS}")
+      system("cp /etc/hosts #{HOSTS}")
     end
   end
 
