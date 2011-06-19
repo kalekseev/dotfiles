@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 #encoding: utf-8
+
 require 'thor'
 
 HOSTS = '/tmp/hosts'
@@ -14,13 +15,14 @@ championat.ru
 market.yandex.ru
 ebay.com
 dirty.com
+habrahabr.ru
 }
 
-class Linux < Thor
+class Workmod < Thor
 
-  desc "hardmod", "enable hardmod"
+  desc "hardmod", "enable hard mod"
   def hardmod
-    system("cp /etc/hosts #{HOSTS}")
+    copy_hosts_to_tmp
     hosts = File.open(HOSTS,'r+')
     if hosts.grep(/Hard Mod/).empty?
       hosts << "#### Hard Mod ####\n"
@@ -30,13 +32,13 @@ class Linux < Thor
       exit 0
     end
     hosts.close
-    copy_to_hosts
+    copy_tmp_to_hosts
     puts "Good luck with hard mod!"
   end
 
-  desc "funmod", "enable funmod"
+  desc "funmod", "enable fun mod"
   def funmod
-    system("cp /etc/hosts #{HOSTS}")
+    copy_hosts_to_tmp
     original_hosts = ""
     hosts = File.open(HOSTS,'r')
     line = hosts.readline
@@ -50,19 +52,21 @@ class Linux < Thor
       line = hosts.readline
     end
     hosts.close
-    hosts = File.open(HOSTS,'w')
-    hosts << original_hosts
-    hosts.close
-    copy_to_hosts
+    File.open(HOSTS,'w') { |hosts| hosts << original_hosts }
+    copy_tmp_to_hosts
     puts "You in fun mod!"
   end
 
   no_tasks do
-    def copy_to_hosts
+    def copy_tmp_to_hosts
       system("sudo cp #{HOSTS} /etc/hosts")
+    end
+
+    def copy_hosts_to_tmp
+      system("sudo cp /etc/hosts #{HOSTS}")
     end
   end
 
 end
 
-Linux.start
+Workmod.start
