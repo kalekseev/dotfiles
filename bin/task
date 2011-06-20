@@ -26,7 +26,10 @@ class Workmod < Thor
     hosts = File.open(HOSTS,'r+')
     if hosts.grep(/Hard Mod/).empty?
       hosts << "#### Hard Mod ####\n"
-      @@fun_domains.split.each {|v| hosts << "127.0.0.1       #{v}\n"}
+      @@fun_domains.split.each do |v|
+        hosts << "127.0.0.1       #{v}\n"
+        hosts << "127.0.0.1       www.#{v}\n"
+      end
     else
       puts "Too hard man, you already in hard mod!"
       exit 0
@@ -60,6 +63,7 @@ class Workmod < Thor
   no_tasks do
     def copy_tmp_to_hosts
       system("sudo cp #{HOSTS} /etc/hosts")
+      system("sudo /etc/init.d/nscd restart > /dev/null")
     end
 
     def copy_hosts_to_tmp
