@@ -24,6 +24,7 @@ alias got='git '
 alias get='git '
 
 alias sd='sudo'
+alias vi='vim'
 alias ac='apt-cache'
 alias acs='apt-cache search'
 
