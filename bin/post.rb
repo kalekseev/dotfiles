@@ -2,7 +2,7 @@
 #encoding: utf-8
 require "uri"
 require "net/http"
-require "nokogiri" if Gem.available?('nokogiri')
+require "nokogiri" if Gem::Specification::find_by_name('nokogiri')
 
 url_open_retry_times = 3
 
@@ -47,7 +47,7 @@ array.each do |id|
 end
 
 #russian post
-if Gem.available?('nokogiri')
+if Gem::Specification::find_by_name('nokogiri')
 
   ruurl = 'http://www.russianpost.ru/rp/servise/ru/home/postuslug/trackingpo'
   ruparams = {'BarCode' => 'XXXXXXXXXXXXX', 'searchsign' => '1'}
