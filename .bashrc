@@ -4,6 +4,10 @@ echo ''
 return 0;
 }
 
+gdcp() {
+  git diff $1 | iconv -f cp1251 -t utf8 | more
+}
+
 export PATH=$PATH:$HOME/dotfiles/bin
 
 export HISTCONTROL=erasedups
