@@ -37,7 +37,7 @@ array.each do |id|
   end
   found = false
   html.body.each_line do |line|
-    if (line =~ /^\s+(.*)  Information, if available, is updated periodically throughout the day. Please check again later./)
+    if (line =~ /^\s+(.*) Information, if available, is updated periodically throughout the day. Please check again later./)
       puts "\033[32m#{$1}\033[0m\n\n"
       found = true
       break
