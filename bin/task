@@ -60,6 +60,32 @@ class Workmod < Thor
     puts "You in fun mod!"
   end
 
+  desc "wwdown", "poweroff 3g module"
+  def wwdown
+    system <<-EOF
+echo -n '0' | \
+sudo tee /sys/bus/usb/devices/2-1.4/power/autosuspend_delay_ms > /dev/null
+echo -n "auto" | \
+sudo tee /sys/bus/usb/devices/2-1.4/power/control > /dev/null
+sudo rmmod qcserial
+sudo rmmod usb_wwan
+sudo rmmod usbserial
+EOF
+  end
+
+  desc "wwup", "poweron 3g module"
+  def wwup
+system <<-EOF
+echo -n '2000' | \
+sudo tee /sys/bus/usb/devices/2-1.4/power/autosuspend_delay_ms > /dev/null
+echo -n "on" | \
+sudo tee /sys/bus/usb/devices/2-1.4/power/control > /dev/null
+sudo modprobe qcserial
+sudo modprobe usb_wwan
+sudo modprobe usbserial
+EOF
+  end
+
   no_tasks do
     def copy_tmp_to_hosts
       system("sudo cp #{HOSTS} /etc/hosts")
