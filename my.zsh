@@ -13,6 +13,7 @@ export PATH=$PATH:$HOME/dotfiles/bin
 export HISTCONTROL=erasedups
 #export HISTSIZE=10000
 export HISTTIMEFORMAT="%d-%m-%y %T "
+export LC_CTYPE=ru_RU.UTF-8
 
 #aliases
 source $HOME/dotfiles/aliases
