@@ -5,5 +5,8 @@ rm -rf .gitconfig
 ln -s dotfiles/gitconfig .gitconfig
 rm -rf .gemrc
 ln -s dotfiles/gemrc .gemrc
+rm -rf .zshrc
+ln -s dotfiles/zsh/zshrc .zshrc
 echo 'source ~/dotfiles/bashrc' >> .bashrc
-ln -s ~/dotfiles/my.zsh ~/.oh-my-zsh/custom/my.zsh
+ln -s ~/dotfiles/zsh/my.zsh ~/.oh-my-zsh/custom/my.zsh
+ln -s ~/dotfiles/zsh/plugins ~/.oh-my-zsh/custom/plugins
