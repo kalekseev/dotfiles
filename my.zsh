@@ -19,6 +19,7 @@ source $HOME/dotfiles/aliases
 
 bindkey '5D' backward-word
 bindkey '5C' forward-word
+bindkey '\e.' insert-last-word
 
 
 # specific settings for my laptop

@@ -20,8 +20,8 @@ habrahabr.ru
 
 class Workmod < Thor
 
-  desc "hardmod", "enable hard mod"
-  def hardmod
+  desc "hard", "enable hard mod"
+  def hard
     copy_hosts_to_tmp
     hosts = File.open(HOSTS,'r+')
     if hosts.grep(/Hard Mod/).empty?
@@ -39,8 +39,8 @@ class Workmod < Thor
     puts "Good luck with hard mod!"
   end
 
-  desc "funmod", "enable fun mod"
-  def funmod
+  desc "fun", "enable fun mod"
+  def fun
     copy_hosts_to_tmp
     original_hosts = ""
     hosts = File.open(HOSTS,'r')
@@ -60,31 +60,6 @@ class Workmod < Thor
     puts "You in fun mod!"
   end
 
-  desc "wwdown", "poweroff 3g module"
-  def wwdown
-    system <<-EOF
-echo -n '0' | \
-sudo tee /sys/bus/usb/devices/2-1.4/power/autosuspend_delay_ms > /dev/null
-echo -n "auto" | \
-sudo tee /sys/bus/usb/devices/2-1.4/power/control > /dev/null
-sudo rmmod qcserial
-sudo rmmod usb_wwan
-sudo rmmod usbserial
-EOF
-  end
-
-  desc "wwup", "poweron 3g module"
-  def wwup
-system <<-EOF
-echo -n '2000' | \
-sudo tee /sys/bus/usb/devices/2-1.4/power/autosuspend_delay_ms > /dev/null
-echo -n "on" | \
-sudo tee /sys/bus/usb/devices/2-1.4/power/control > /dev/null
-sudo modprobe qcserial
-sudo modprobe usb_wwan
-sudo modprobe usbserial
-EOF
-  end
 
   no_tasks do
     def copy_tmp_to_hosts
@@ -99,4 +74,30 @@ EOF
 
 end
 
-Workmod.start
+class Thinkpad < Thor
+  desc "wwdown", "poweroff 3g module"
+  def wwdown
+    system <<-EOF
+    echo -n '0' | \
+    sudo tee /sys/bus/usb/devices/2-1.4/power/autosuspend_delay_ms > /dev/null
+    echo -n "auto" | \
+    sudo tee /sys/bus/usb/devices/2-1.4/power/control > /dev/null
+    sudo rmmod qcserial
+    sudo rmmod usb_wwan
+    sudo rmmod usbserial
+    EOF
+  end
+
+  desc "wwup", "poweron 3g module"
+  def wwup
+    system <<-EOF
+    echo -n '2000' | \
+    sudo tee /sys/bus/usb/devices/2-1.4/power/autosuspend_delay_ms > /dev/null
+    echo -n "on" | \
+    sudo tee /sys/bus/usb/devices/2-1.4/power/control > /dev/null
+    sudo modprobe qcserial
+    sudo modprobe usb_wwan
+    sudo modprobe usbserial
+    EOF
+  end
+end
