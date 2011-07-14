@@ -22,6 +22,7 @@ array = IO.readlines(file_with_tracking_numbers)
 
 array.each do |id|
   id.chomp!
+  break if id !~ /.*US/
   usparams['origTrackNum']=id
   begin
     html = Net::HTTP.post_form(URI.parse(usurl), usparams)
