@@ -26,3 +26,4 @@ plugins=(git cap thor deb)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
+[[ -s "/home/wtf/.rvm/scripts/rvm" ]] && source "/home/wtf/.rvm/scripts/rvm"
