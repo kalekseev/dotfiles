@@ -50,3 +50,14 @@ alias ggpush='git push origin $(current_branch)'
 compdef ggpush=git
 alias ggpnp='git pull origin $(current_branch) && git push origin $(current_branch)'
 compdef ggpnp=git
+
+# Usage: new-github topfunky tidy_table
+function new-github() {
+  git remote add origin git@github.com:rambominator/$1.git
+  git push origin master
+  git config branch.master.remote origin
+  git config branch.master.merge refs/heads/master
+  git config push.default current
+}
+
+

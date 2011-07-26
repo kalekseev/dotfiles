@@ -1,17 +1,9 @@
-translate() {
-wget -qO- "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=$1&langpair=${2:-en}|${3:-ru}" | sed -E -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p';
-echo ''
-return 0;
-}
-
 gdcp() {
   git diff $1 | iconv -f cp1251 -t utf8 | more
 }
 
 export PATH=$PATH:$HOME/dotfiles/bin
-
 export HISTCONTROL=erasedups
-#export HISTSIZE=10000
 export HISTTIMEFORMAT="%d-%m-%y %T "
 export LC_CTYPE=ru_RU.UTF-8
 
@@ -29,4 +21,3 @@ if [ $HOST = thin ]; then
 fi
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
