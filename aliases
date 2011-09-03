@@ -25,3 +25,4 @@ alias rsqlplus='rlwrap sqlplus'
 alias rrman='rlwrap rman'
 
 alias sap='~/git/oradmin/sap.rb'
+alias py='python'
