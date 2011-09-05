@@ -6,6 +6,7 @@ export PATH=$PATH:$HOME/dotfiles/bin
 export HISTCONTROL=erasedups
 export HISTTIMEFORMAT="%d-%m-%y %T "
 export LC_CTYPE=ru_RU.UTF-8
+export GPG_TTY='tty'
 
 #aliases
 source $HOME/dotfiles/aliases
