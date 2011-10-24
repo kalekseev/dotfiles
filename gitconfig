@@ -1,6 +1,6 @@
 [user]
-  name = Konstantin Alekseev
-  email = kv.alekseev@gmail.com
+	name = rambominator
+	email = rambominator@yandex.ru
 [core]
   excludesfile = ~/.gitignore
 [alias]
