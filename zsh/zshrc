@@ -1,28 +1,76 @@
-# Path to your oh-my-zsh configuration.
-export ZSH=$HOME/.oh-my-zsh
+############################################################
+#options
+############################################################
+#changing directories
+setopt autocd
+setopt autopushd
+setopt cdablevars
+setopt pushdignoredups
+#comletition
+setopt completeinword
+#expansion and globbing
+setopt extendedglob
+setopt no_nomatch
+#history
+setopt extended_history
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt hist_verify
+#initialization
+#input/output
+#job control
+setopt notify
+setopt no_hup
+#prompting
+setopt prompt_subst
+#scripting and functions
+#shell emulation
+#shell state
+#zle
+setopt no_beep
+setopt emacs
+############################################################
+#end options
+############################################################
+# history
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/wtf/.zshrc'
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-export ZSH_THEME="robbyrussell"
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+#
 
-# Set to this to use case-sensitive completion
-# export CASE_SENSITIVE="true"
 
-# Comment this out to disable weekly auto-update checks
-# export DISABLE_AUTO_UPDATE="true"
+#bindings
+#ctr+[left|right] arrow
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+#bindkey "^[[1;5C" emacs-forward-word
+#bindkey "^[[1;5D" emacs-backward-word
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
 
-# Uncomment following line if you want to disable colors in ls
-# export DISABLE_LS_COLORS="true"
 
-# Uncomment following line if you want to disable autosetting terminal title.
-# export DISABLE_AUTO_TITLE="true"
+for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
+source ~/dotfiles/aliases
+source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git cap thor deb)
+function new-github() {
+  git remote add origin git@github.com:rambominator/$1.git
+  git push origin master
+  git config branch.master.remote origin
+  git config branch.master.merge refs/heads/master
+  git config push.default current
+}
 
-source $ZSH/oh-my-zsh.sh
+# specific settings for my laptop
+if [ $HOST = thin ]; then
+  alias rds='rdesktop -k en-us -g 1000x700 -u Administrator $@ > /dev/null 2>&1'
+fi
 
-# Customize to your needs...
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"

@@ -7,22 +7,34 @@ alias gd='git diff --color'
 alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all'
+alias gl='git pull'
+alias gp='git push'
 
 alias got='git '
 alias get='git '
+alias fit='git '
 
 alias sd='sudo'
 alias vi='vim'
 alias ac='apt-cache'
 alias acs='apt-cache search'
+alias ai='sudo apt-get install'
+alias au='sudo apt-get update && sudo apt-get dist-upgrade'
 
-alias rds='rdesktop -k en-us -g 1200x900 -u Administrator $@ > /dev/null 2>&1'
 #alias gw_rd='ssh -f gw.loc -L 3389:192.168.22.101:3389 -N'
 #alias gw_sql='ssh -f gw.loc -L 1433:192.168.22.101:1433 -N'
 #alias gw_tr='ssh -f gw.loc -L 9091:localhost:9091 -N'
 
-alias rsqlplus='rlwrap sqlplus'
-alias rrman='rlwrap rman'
+# specific settings for my laptop
+if [ $HOST = thin ]; then GEOM='1000x700'; else GEOM='1200x900'; fi
+alias rds="rdesktop -k en-us -g $GEOM -u Administrator $@ > /dev/null 2>&1"
+
+alias sqlplus='rlwrap -m /usr/lib/oracle/xe/app/oracle/product/10.2.0/client/bin/sqlplus'
 
 alias sap='~/git/oradmin/sap.rb'
 alias py='python'
+
+gdcp() {
+  git diff $1 | iconv -f cp1251 -t utf8 | more
+}
+
