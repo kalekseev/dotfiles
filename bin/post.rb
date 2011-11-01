@@ -6,7 +6,7 @@ require "net/http"
 require "nokogiri"
 
 URL_OPEN_RETRY_TIMES = 3
-file_with_tracking_numbers = File.expand_path(File.join(File.dirname(__FILE__), '../usps.log'))
+file_with_tracking_numbers = File.join(ENV['HOME'],'Dropbox/usps.log')
 
 def get_html_body(url,params)
   i = URL_OPEN_RETRY_TIMES 

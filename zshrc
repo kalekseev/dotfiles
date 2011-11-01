@@ -38,7 +38,6 @@ HISTSIZE=10000
 SAVEHIST=10000
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/wtf/.zshrc'
 
 autoload -Uz compinit
 compinit
@@ -57,8 +56,10 @@ bindkey '^[[B' down-line-or-search
 
 
 for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
-source ~/dotfiles/aliases
+source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
+
+export PATH=~/dotfiles/bin:$PATH
 
 function new-github() {
   git remote add origin git@github.com:rambominator/$1.git
