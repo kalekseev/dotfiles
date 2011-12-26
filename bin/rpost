@@ -4,9 +4,14 @@
 require "uri"
 require "net/http"
 require "nokogiri"
+require "yaml"
+require "optparse"
+require_relative "../lib/mail.rb"
 
 URL_OPEN_RETRY_TIMES = 3
-file_with_tracking_numbers = File.join(ENV['HOME'],'Dropbox/post_track')
+STORE_FILE = File.join(ENV['HOME'],'Dropbox/configs/post_track_state')
+file_with_tracking_numbers = File.join(ENV['HOME'],'Dropbox/configs/post_track')
+@data = {}
 
 def get_html_body(url,params)
   i = URL_OPEN_RETRY_TIMES 
@@ -47,7 +52,7 @@ def usps(array)
     end
     (1...td.count).each {|t| puts "\033[4;33m*\033[0m #{td[t].inner_text.strip}"}
     puts
-
+    store_state(id,td)
   end
 end
 
@@ -92,15 +97,52 @@ def rupost(array)
       puts
     end
     puts
+    store_state("RU-#{id}",td)
   end
 end
+
+def store_state(id,td)
+  @data[id] = []
+  td.each {|t| @data[id] << t.inner_text.strip }
+end
+
+def cmp_stats(mail)
+  unless File.readable?(STORE_FILE)
+    send_write(mail)
+    return
+  end
+  @old_data = YAML.load_file(STORE_FILE)
+  if @old_data != @data
+    send_write(mail)
+  end
+end
+
+def send_write(mail)
+    Mail.send_gmail("Post tracking update", @data) if mail
+    File.open(STORE_FILE, 'w') {|f| YAML.dump(@data, f)}
+end
+
+options = {}
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: rpost [-m|--mail]"
+  options[:mail] = false
+  opts.on('-m', '--mail', 'Send mail') do
+    options[:mail] = true
+  end
+  opts.on( '-h', '--help', "Display this screen" ) do
+    puts opts
+    exit
+  end
+end
+
+optparse.parse!
 
 unless File.readable?(file_with_tracking_numbers)
   puts "File with tracking numbers \"#{file_with_tracking_numbers}\" not exist or not readable"
   exit
 end
-
 array = IO.readlines(file_with_tracking_numbers)
 
 usps(array)
 rupost(array)
+cmp_stats(options[:mail])
