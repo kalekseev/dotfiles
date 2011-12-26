@@ -118,8 +118,10 @@ def cmp_stats(mail)
 end
 
 def send_write(mail)
-    Mail.send_gmail("Post tracking update", @data) if mail
-    File.open(STORE_FILE, 'w') {|f| YAML.dump(@data, f)}
+  msg = ''
+  @data.each {|k,v| msg << "#{k}\n    #{v.join(' ')}\n\n"}
+  Mail.send_gmail("Post tracking update", msg) if mail
+  File.open(STORE_FILE, 'w') {|f| YAML.dump(@data, f)}
 end
 
 options = {}
@@ -145,4 +147,5 @@ array = IO.readlines(file_with_tracking_numbers)
 
 usps(array)
 rupost(array)
+a = ''
 cmp_stats(options[:mail])

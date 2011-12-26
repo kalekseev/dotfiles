@@ -23,7 +23,7 @@ Subject: #{subject}
 #{data}
 EMAIL_MESSAGE
 
-      smtp.start(GMAIL_SMTP,from, pass, :plain ) do |smpt|
+      smtp.start('smtp.gmail.com',from, pass, :plain ) do |smpt|
           smtp.send_message message, from, to
       end
     rescue
