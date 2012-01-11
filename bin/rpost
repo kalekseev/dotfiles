@@ -31,79 +31,108 @@ def get_html_body(url,params)
   [0, html.body]
 end
 
-def usps(array)
+def usps(id)
 
   usurl = 'http://trkcnfrm1.smi.usps.com/PTSInternetWeb/InterLabelInquiry.do'
   usparams = {'origTrackNum' => 'XXXXXXXXXXXXX', 'Go to Label/Receipt Number page' => 'Go'}
 
-  array.each do |id|
-    id.chomp!
-    break if id !~ /.*US/
-    usparams['origTrackNum']=id
-    puts "\033[31mUSPS: #{id}\n--------------------\033[0m"
+  usparams['origTrackNum']=id
+  puts "\033[31mUSPS: #{id}\n--------------------\033[0m"
 
-    (exit_code, body) = get_html_body(usurl,usparams)
-    next unless exit_code == 0
-    doc = Nokogiri.HTML(body, nil, 'UTF-8')
-    td = doc.xpath("/html/body/table[4]/tr/td[2]/table/tr[3]/td/table/tr/td[2]/table/tr[4]/td[2]/table/tr")
-    if td.empty?
-      puts "Item not found\n\n"
-      next
-    end
-    (1...td.count).each {|t| puts "\033[4;33m*\033[0m #{td[t].inner_text.strip}"}
-    puts
-    store_state(id,td)
+  (exit_code, body) = get_html_body(usurl,usparams)
+  if exit_code != 0
+    return
   end
+  doc = Nokogiri.HTML(body, nil, 'UTF-8')
+  td = doc.xpath("/html/body/table[4]/tr/td[2]/table/tr[3]/td/table/tr/td[2]/table/tr[4]/td[2]/table/tr")
+  if td.empty?
+    puts "Item not found\n\n"
+    return
+  end
+  (1...td.count).each {|t| puts "\033[4;33m*\033[0m #{td[t].inner_text.strip}"}
+  puts
+  store_state_td(id,td)
 end
 
-def rupost(array)
-
+def rupost(id)
   ruurl = 'http://www.russianpost.ru/rp/servise/ru/home/postuslug/trackingpo'
   ruparams = {'BarCode' => 'XXXXXXXXXXXXX', 'searchsign' => '1'}
 
-  array.each do |id|
-    id.chomp!
-    ruparams['BarCode'] = id
-    puts "\033[31mRUPOST: #{id}\n----------------------\033[0m"
+  ruparams['BarCode'] = id
+  puts "\033[31mRUPOST: #{id}\n----------------------\033[0m"
 
-    (exit_code, body) = get_html_body(ruurl,ruparams)
-    next unless exit_code == 0
+  (exit_code, body) = get_html_body(ruurl,ruparams)
+  if exit_code != 0
+    return
+  end
 
-    doc = Nokogiri.HTML(body, nil, 'UTF-8')
-    td = doc.xpath("/html/body/form/table/tr/td[2]/div/div/table[4]/tbody/tr/td")
-    if td.empty?
-      puts "Item not found\n\n"
-      next
-    end
+  doc = Nokogiri.HTML(body, nil, 'UTF-8')
+  td = doc.xpath("/html/body/form/table/tr/td[2]/div/div/table[4]/tbody/tr/td")
+  if td.empty?
+    puts "Item not found\n\n"
+    return
+  end
 
-    lines = []
-    cell_lens = Array.new(10,0)
-    temp = ["status", "date", "index", "name", "attribute", 
-             "weight","price","pay","index","address"]
-    td.each {|t| temp << t.inner_text.strip }
-    points = td.count/10 + 1
-    points.times {|p| lines << temp[(p*10)...(p*10+10)]}
-    10.times do |cell|
-      points.times do |point|
-        if lines[point][cell].length > cell_lens[cell]
-          cell_lens[cell] = lines[point][cell].length
-        end
+  lines = []
+  cell_lens = Array.new(10,0)
+  temp = ["status", "date", "index", "name", "attribute", 
+           "weight","price","pay","index","address"]
+  td.each {|t| temp << t.inner_text.strip }
+  points = td.count/10 + 1
+  points.times {|p| lines << temp[(p*10)...(p*10+10)]}
+  10.times do |cell|
+    points.times do |point|
+      if lines[point][cell].length > cell_lens[cell]
+        cell_lens[cell] = lines[point][cell].length
       end
     end
-    lines[0].each_with_index {|t,i| print "\033[30;47m #{t.center(cell_lens[i])} \033[0m "}
-    puts "\n\n"
-    lines[1..-1].each do |l|
-      l.each_with_index { |t,i| print "\033[30;47m #{t.center(cell_lens[i])} \033[0m " }
-      puts
-    end
+  end
+  lines[0].each_with_index {|t,i| print "\033[30;47m #{t.center(cell_lens[i])} \033[0m "}
+  puts "\n\n"
+  lines[1..-1].each do |l|
+    l.each_with_index { |t,i| print "\033[30;47m #{t.center(cell_lens[i])} \033[0m " }
     puts
-    store_state("RU-#{id}",td)
+  end
+  puts
+  store_state_td("RU-#{id}",td)
+end
+
+def royalmail(id)
+  puts "\033[31mRoyalMail: #{id}\n--------------------\033[0m"
+  time = Time.now.getgm
+  http = Net::HTTP.new('track2.royalmail.com', 80)
+  resp = http.get('/portal/rm/track', {})
+  cookie = resp.response['set-cookie'].split(';')[0]
+  headers = {
+    'Cookie' => cookie,
+    'Referer' => 'http://track2.royalmail.com/portal/rm/track?keyname=track_home&catId=22700601',
+    'Content-Type' => 'application/x-www-form-urlencoded'
+  }
+  path = '/portal/rm?_DARGS=/portal/rmgroup/apps/templates/html/rm/rmTrackResultPage.jsp'
+  params = "_dyncharset=ISO-8859-1&trackConsigniaPage=track&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.searchCompleteUrl=%2Fportal%2Frm%2Ftrackresults%3FpageId%3Dtrt_rmresultspage&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.searchCompleteUrl=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.invalidInputUrl=%2Fportal%2Frm%2Ftrackresults%3FpageId%3Dtrt_rmresultspage%26keyname%3Dtrack_blank&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.invalidInputUrl=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.searchBusyUrl=%2Fportal%2Frm%2Ftrackresults%3FpageId%3Dtrt_busypage%26keyname%3D3H_track&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.searchBusyUrl=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.searchWaitUrl=%2Fportal%2Frm%2Ftrackresults%3Ftimeout%3Dtrue%26pageId%3Dtrt_timeoutpage%26keyname%3D3H_track&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.searchWaitUrl=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.keyname=3H_track&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.keyname=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.previousTrackingNumber=&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.previousTrackingNumber=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.trackingNumber=#{id}&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.trackingNumber=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.track.x=88&%2Frmg%2Ftrack%2FRMTrackFormHandler.track.y=4&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.track=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.day=#{time.day}&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.day=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.month=#{time.month}&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.month=+&%2Frmg%2Ftrack%2FRMTrackFormHandler.value.year=#{time.year}&_D%3A%2Frmg%2Ftrack%2FRMTrackFormHandler.value.year=+&_DARGS=%2Fportal%2Frmgroup%2Fapps%2Ftemplates%2Fhtml%2Frm%2FrmTrackResultPage.jsp"
+  http.post(path, params, headers)
+  path = '/portal/rm/trackresults?pageId=trt_rmresultspage&keyname=3H_track&_requestid=1'
+  resp = http.get(path, headers)
+  doc = Nokogiri.HTML(resp.body, nil, 'UTF-8')
+  p = doc.xpath('/html/body/div/div/table/tr/td[3]/div/div[2]/div/div/div[2]/p')
+  str = p.inner_text.gsub(/\\n\s+/,'').gsub(/\s+/,' ').strip
+  if str =~ /There is no data currently available/
+      puts "No data\n\n"
+  elsif str.empty?
+      puts "Invalid tracking number\n\n"
+  else
+      puts "\033[4;33m*\033[0m #{str}\n"
+      store_state_str(id,str)
   end
 end
 
-def store_state(id,td)
+def store_state_td(id,td)
   @data[id] = []
   td.each {|t| @data[id] << t.inner_text.strip }
+end
+
+def store_state_str(id,str)
+  @data[id] = [str]
 end
 
 def cmp_stats(mail)
@@ -145,7 +174,13 @@ unless File.readable?(file_with_tracking_numbers)
 end
 array = IO.readlines(file_with_tracking_numbers)
 
-usps(array)
-rupost(array)
-a = ''
+array.each do |id|
+  id.chomp!
+  if id =~ /.*US/
+    usps(id)
+  elsif id =~ /.*GB/
+    royalmail(id)
+  end
+  rupost(id)
+end
 cmp_stats(options[:mail])
