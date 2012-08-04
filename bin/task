@@ -7,15 +7,15 @@ HOSTS = '/tmp/hosts'
 
 FUN_DOMAINS = %q{
 youtube.com 
-lenta.ru 
 twitter.com
-news2.ru
 reader.google.com
-championat.ru
+championat.com
 market.yandex.ru
 ebay.com
 dirty.ru
 habrahabr.ru
+dirty.ru
+dirtypics.ru
 }
 
 class Mod < Thor
