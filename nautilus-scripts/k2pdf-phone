@@ -1,0 +1,18 @@
+#!/bin/bash
+set -x
+
+file=$@
+K2PDF="/opt/k2pdfopt/k2pdfopt"
+if [ ! -e $K2PDF ]
+then
+  notify-send --notification --text "k2pdfopt not installed"
+  exit 1
+fi
+
+if [[ $file == *.pdf || $file == *.djvu ]]
+then
+  $K2PDF -h 1150 -w 700 -odpi 220 "$PWD/$file" <<EOF
+
+EOF
+notify-send --notification --text "PDF files converted."
+fi

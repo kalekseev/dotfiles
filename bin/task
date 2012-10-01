@@ -12,10 +12,15 @@ reader.google.com
 championat.com
 market.yandex.ru
 ebay.com
-dirty.ru
 habrahabr.ru
 dirty.ru
 dirtypics.ru
+vk.com
+reddit.com
+lenta.ru
+newsru.com
+news2.ru
+livejournal.com
 }
 
 class Mod < Thor
