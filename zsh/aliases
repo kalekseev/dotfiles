@@ -23,7 +23,7 @@ alias acs='apt-cache search'
 alias ai='sudo apt-get install'
 alias au='sudo apt-get update && sudo apt-get dist-upgrade'
 alias tmux='TERM=screen-256color tmux'
-alias m='./manage.py'
+alias m='python manage.py'
 
 # specific settings for my laptop
 if [ $HOST = thin ]; then GEOM='1000x700'; else GEOM='1200x900'; fi

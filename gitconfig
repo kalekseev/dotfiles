@@ -1,6 +1,6 @@
 [user]
-	name = rambominator
-	email = rambominator@yandex.ru
+  name = rambominator
+  email = rambominator@yandex.ru
 [core]
   excludesfile = ~/.gitignore
 [alias]
@@ -12,4 +12,6 @@
   type = cat-file -t
   dump = cat-file -p
 [github]
-	user = rambominator
+  user = rambominator
+[color]
+  ui = true
