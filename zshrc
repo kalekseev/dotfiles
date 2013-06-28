@@ -59,7 +59,7 @@ for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
 source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
-export PATH=~/dotfiles/bin:/usr/local/heroku/bin:$PATH
+export PATH=~/dotfiles/bin:/usr/local/heroku/bin:/usr/local/cuda/bin:$PATH:~/.local/bin
 
 function new-github() {
   git remote add origin git@github.com:rambominator/$1.git
