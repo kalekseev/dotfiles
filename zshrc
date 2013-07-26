@@ -60,6 +60,7 @@ source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
 export PATH=~/dotfiles/bin:/usr/local/heroku/bin:/usr/local/cuda/bin:$PATH:~/.local/bin
+export ZSH=~/.cache/zsh
 
 function new-github() {
   git remote add origin git@github.com:rambominator/$1.git
