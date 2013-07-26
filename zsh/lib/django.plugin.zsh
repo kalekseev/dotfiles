@@ -1,3 +1,32 @@
+#django functions
+
+django_manage() {
+    if [ ! -n "$DJANGO_SETTINGS_PATH" ];
+    then
+        echo "run djsettings <env> first!"
+        return 1
+    fi
+    if test x$1 = "xtest";
+    then
+        python manage.py $@ --settings="$DJANGO_SETTINGS_PATH.test"
+    else
+        python manage.py $@
+    fi
+}
+
+set_django_settings_module() {
+    local sdir=`find . -maxdepth 2 -mindepth 2 -type d -name settings -printf '%P'`
+    if [ -e "$sdir/$1.py" ];
+    then
+        echo "using $sdir/$1.py as default settings"
+    else
+        echo "file $sdir/$1 doesn't exist"
+    fi
+    DJANGO_SETTINGS_PATH="`echo $sdir | tr '/' '.'`"
+    export DJANGO_SETTINGS_MODULE="$DJANGO_SETTINGS_PATH.$1"
+}
+
+
 #compdef manage.py
 
 typeset -ga nul_args
@@ -243,3 +272,4 @@ _managepy() {
 compdef _managepy manage.py
 compdef _managepy django
 compdef _managepy django-manage
+compdef _managepy django_manage

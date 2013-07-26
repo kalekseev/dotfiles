@@ -23,7 +23,7 @@ alias acs='apt-cache search'
 alias ai='sudo apt-get install'
 alias au='sudo apt-get update && sudo apt-get dist-upgrade'
 alias tmux='TERM=screen-256color tmux'
-alias m='python manage.py'
+alias m=django_manage
 
 # specific settings for my laptop
 if [ $HOST = thin ]; then GEOM='1000x700'; else GEOM='1200x900'; fi
@@ -37,3 +37,4 @@ alias py='python'
 gdcp() {
   git diff $1 | iconv -f cp1251 -t utf8 | more
 }
+alias djsettings=set_django_settings_module
