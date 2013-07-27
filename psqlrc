@@ -1,5 +1,5 @@
 \pset null 'NULL'
-\set HISTFILE ~/.psql_history- :HOST - :DBNAME
+\set HISTFILE ~/.history/psql- :HOST - :DBNAME
 \set HISTSIZE 2000
 \timing
 \set PROMPT1 '(%n@%M:%>) [%/] > '

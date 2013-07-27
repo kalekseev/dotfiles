@@ -1,4 +1,7 @@
 #aliases
+#
+#git
+alias g='git '
 alias gs='git status '
 alias ga='git add '
 alias gb='git branch '
@@ -11,11 +14,6 @@ alias gl='git pull'
 alias gp='git push'
 alias gca='git commit -a'
 
-alias g='git '
-alias got='git '
-alias get='git '
-alias fit='git '
-
 alias sd='sudo'
 alias vi='vim'
 alias ac='apt-cache'
@@ -23,18 +21,12 @@ alias acs='apt-cache search'
 alias ai='sudo apt-get install'
 alias au='sudo apt-get update && sudo apt-get dist-upgrade'
 alias tmux='TERM=screen-256color tmux'
+alias py='python'
+
+#functions
 alias m=django_manage
+alias djsettings=set_django_settings_module
 
 # specific settings for my laptop
 if [ $HOST = thin ]; then GEOM='1000x700'; else GEOM='1200x900'; fi
-alias rds="rdesktop -k en-us -g $GEOM -u Administrator $@ > /dev/null 2>&1"
-
-alias sqlplus='rlwrap -m /usr/lib/oracle/xe/app/oracle/product/10.2.0/client/bin/sqlplus'
-
-alias sap='~/git/oradmin/sap.rb'
-alias py='python'
-
-gdcp() {
-  git diff $1 | iconv -f cp1251 -t utf8 | more
-}
-alias djsettings=set_django_settings_module
+alias rds="rdesktop -k en-us -g $GEOM -U administrator $@ > /dev/null 2>&1"

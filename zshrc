@@ -33,7 +33,7 @@ setopt emacs
 #end options
 ############################################################
 # history
-HISTFILE=~/.histfile
+HISTFILE=~/.history/zsh
 HISTSIZE=10000
 SAVEHIST=10000
 # End of lines configured by zsh-newuser-install
@@ -56,6 +56,7 @@ bindkey '^[[B' down-line-or-search
 
 
 for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
+for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
 source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
 

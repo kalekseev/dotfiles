@@ -1,5 +1,6 @@
 from invoke import run, task
 import os
+import sys
 
 home = os.environ['HOME']
 
@@ -9,8 +10,8 @@ def cd(*args):
 @task
 def updatezsh():
     url = "https://raw.github.com/robbyrussell/oh-my-zsh/master/lib/"
-    libs = 'completion git termsupport spectrum theme-and-appearance'
-    for lib in [x + '.zsh' for x in libs.split()]:
-        cd(home, 'dotfiles/zsh/lib')
+    cd(home, 'dotfiles/zsh/lib')
+    for lib in os.listdir('.'):
+        sys.stdout.write('.')
         run("wget -q -O {0} {1}{0}".format(lib, url))
-    print("OK!")
+    print('done!')
