@@ -14,18 +14,6 @@ django_manage() {
     fi
 }
 
-set_django_settings_module() {
-    local sdir=`find . -maxdepth 2 -mindepth 2 -type d -name settings -printf '%P'`
-    if [ -e "$sdir/$1.py" ];
-    then
-        echo "using $sdir/$1.py as default settings"
-    else
-        echo "file $sdir/$1 doesn't exist"
-    fi
-    DJANGO_SETTINGS_PATH="`echo $sdir | tr '/' '.'`"
-    export DJANGO_SETTINGS_MODULE="$DJANGO_SETTINGS_PATH.$1"
-}
-
 
 #compdef manage.py
 

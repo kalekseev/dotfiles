@@ -29,6 +29,7 @@ alias -s pdf=evince
 alias m=django_manage
 alias djsettings=set_django_settings_module
 alias gdh=git_diff_head
+alias gtags=generate_ctags
 
 # specific settings for my laptop
 if [ $HOST = thin ]; then GEOM='1000x700'; else GEOM='1200x900'; fi
