@@ -1,17 +1,23 @@
 [user]
-  name = rambominator
-  email = rambominator@yandex.ru
+    name = rambominator
+    email = rambominator@yandex.ru
 [core]
-  excludesfile = ~/.gitignore
+    excludesfile = ~/.gitignore
 [alias]
-  co = checkout
-  ci = commit
-  st = status
-  br = branch
-  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-  type = cat-file -t
-  dump = cat-file -p
+    co = checkout
+    ci = commit
+    st = status
+    br = branch
+    hist = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+    type = cat-file -t
+    dump = cat-file -p
 [github]
-  user = rambominator
+    user = rambominator
 [color]
-  ui = true
+    ui = true
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = cyan
+[push]
+    default=current
