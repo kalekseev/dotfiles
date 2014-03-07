@@ -8,9 +8,10 @@
     ci = commit
     st = status
     br = branch
-    hist = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+    hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
     type = cat-file -t
     dump = cat-file -p
+    g = grep --break --heading --line-number
 [github]
     user = rambominator
 [color]
@@ -21,3 +22,6 @@
     untracked = cyan
 [push]
     default=current
+[grep]
+    extendRegexp = true
+    lineNumber = true
