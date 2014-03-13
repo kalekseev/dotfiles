@@ -12,6 +12,7 @@
     type = cat-file -t
     dump = cat-file -p
     g = grep --break --heading --line-number
+    up = !git remote update -p; git merge --ff-only @{u}
 [github]
     user = rambominator
 [color]
