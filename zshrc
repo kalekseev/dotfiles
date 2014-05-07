@@ -60,7 +60,7 @@ for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
 source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
-export PATH=~/dotfiles/bin:/usr/local/heroku/bin:/usr/local/cuda/bin:$PATH:~/.local/bin
+export PATH=~/dotfiles/bin:~/scala/sbt/bin:/usr/local/heroku/bin:/usr/local/cuda/bin:$PATH:~/.local/bin
 export ZSH=~/.cache/zsh
 
 function new-github() {
