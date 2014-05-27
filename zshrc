@@ -38,45 +38,33 @@ HISTSIZE=10000
 SAVEHIST=10000
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-
+#
 autoload -Uz compinit
 compinit
-# End of lines added by compinstall
-#
 
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable hg git
+zstyle ':vcs_info:*' get-revision true
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' unstagedstr "✗"
+zstyle ':vcs_info:*' stagedstr "✗"
+zstyle ':vcs_info:hg*:*' get-bookmarks true
+zstyle ':vcs_info:hg*' formats "%s:(%{$fg[red]%}%b%{$fg[blue]%})[%{$fg[red]%}%m%{$fg[blue]%}] %{$fg[yellow]%}%u%c%{$reset_color%}"
+zstyle ':vcs_info:hg*:*' branchformat "%b" # only show branch
+zstyle ':vcs_info:git*' formats "%s:(%{$fg[red]%}%b%{$fg[blue]%}) %{$fg[yellow]%}%u%c%{$reset_color%}"
 
-#bindings
-#ctr+[left|right] arrow
-bindkey "^[[1;5C" forward-word
-bindkey "^[[1;5D" backward-word
-#bindkey "^[[1;5C" emacs-forward-word
-#bindkey "^[[1;5D" emacs-backward-word
-bindkey '^[[A' up-line-or-search
-bindkey '^[[B' down-line-or-search
-
+precmd() {
+  vcs_info
+}
 
 for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
 for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
 source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
+export EDITOR=vim
 export PATH=~/dotfiles/bin:~/scala/sbt/bin:/usr/local/heroku/bin:/usr/local/cuda/bin:$PATH:~/.local/bin
 export ZSH=~/.cache/zsh
 
-function new-github() {
-  git remote add origin git@github.com:rambominator/$1.git
-  git push origin master
-  git config branch.master.remote origin
-  git config branch.master.merge refs/heads/master
-  git config push.default current
-}
-
-# specific settings for my laptop
-if [ $HOST = thin ]; then
-  alias rds='rdesktop -k en-us -g 1000x700 -u Administrator $@ > /dev/null 2>&1'
-fi
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-PATH=$PATH:$HOME/.rvm/bin
-
+[[ -s ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -s "/etc/bash_completion.d/virtualenvwrapper" ]] && source "/etc/bash_completion.d/virtualenvwrapper"

@@ -28,3 +28,6 @@ set_django_settings_module() {
     export DJANGO_SETTINGS_MODULE="$DJANGO_SETTINGS_PATH.$1"
 }
 
+set_hg_prompt() {
+    export PROMPT='%{$fg_bold[red]%}➜ %{$fg_bold[green]%}%p %{$fg[cyan]%}%c %{$fg_bold[blue]%}$(hg_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
+}

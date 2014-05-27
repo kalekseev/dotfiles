@@ -1,0 +1,20 @@
+%include ~/.hgrc.local
+
+[ui]
+ignore = ~/.hgignore
+
+[extensions]
+color =
+pager =
+shelve =
+record =
+graphlog =
+mercurial_keyring =
+
+[color]
+status.added = green
+status.modified = yellow
+status.unknown = cyan
+
+[pager]
+pager = LESS='FRX' less

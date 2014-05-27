@@ -1,8 +1,8 @@
-[user]
-    name = rambominator
-    email = rambominator@yandex.ru
+[include]
+    path=.gitconfig.local
 [core]
     excludesfile = ~/.gitignore
+    editor = /usr/bin/vim
 [alias]
     co = checkout
     ci = commit

@@ -14,6 +14,11 @@ alias gl='git pull'
 alias gp='git push'
 alias gca='git commit -a'
 
+#hg
+alias h='hg '
+alias hs='hg status'
+alias hd='hg diff'
+
 alias sd='sudo'
 alias vi='vim'
 alias ac='apt-cache'
@@ -28,6 +33,7 @@ alias -s pdf=evince
 #functions
 alias m=django_manage
 alias djsettings=set_django_settings_module
+alias hgp=set_hg_prompt
 alias gdh=git_diff_head
 alias gtags=generate_ctags
 
