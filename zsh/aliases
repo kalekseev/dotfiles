@@ -18,6 +18,8 @@ alias gca='git commit -a'
 alias h='hg '
 alias hs='hg status'
 alias hd='hg diff'
+alias hl='hg pull'
+alias hp='hg push -r .'
 
 alias sd='sudo'
 alias vi='vim'

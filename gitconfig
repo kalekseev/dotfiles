@@ -1,7 +1,7 @@
 [include]
     path=.gitconfig.local
 [core]
-    excludesfile = ~/.gitignore
+    excludesfile = ~/dotfiles/git/gitignore
     editor = /usr/bin/vim
 [alias]
     co = checkout

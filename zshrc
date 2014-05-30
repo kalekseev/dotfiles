@@ -42,6 +42,11 @@ SAVEHIST=10000
 autoload -Uz compinit
 compinit
 
+for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
+for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
+source ~/dotfiles/zsh/aliases
+source ~/dotfiles/zsh/robbyrussell.zsh-theme
+
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable hg git
 zstyle ':vcs_info:*' get-revision true
@@ -56,11 +61,6 @@ zstyle ':vcs_info:git*' formats "%s:(%{$fg[red]%}%b%{$fg[blue]%}) %{$fg[yellow]%
 precmd() {
   vcs_info
 }
-
-for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
-for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
-source ~/dotfiles/zsh/aliases
-source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
 export EDITOR=vim
 export PATH=~/dotfiles/bin:~/scala/sbt/bin:/usr/local/heroku/bin:/usr/local/cuda/bin:$PATH:~/.local/bin

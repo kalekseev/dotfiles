@@ -1,15 +1,18 @@
 %include ~/.hgrc.local
 
 [ui]
-ignore = ~/.hgignore
+ignore = ~/dotfiles/hg/hgignore
 
 [extensions]
 color =
 pager =
+purge =
+rebase =
 shelve =
 record =
 graphlog =
 mercurial_keyring =
+remotebranches = $HOME/dotfiles/hg/hg_remotebranches.py
 
 [color]
 status.added = green
@@ -18,3 +21,7 @@ status.unknown = cyan
 
 [pager]
 pager = LESS='FRX' less
+attend = cat, diff, glog, log, incoming, outgoing, show, hist
+
+[alias]
+hist = glog --style=$HOME/dotfiles/hg/log.style
