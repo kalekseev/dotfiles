@@ -63,7 +63,7 @@ precmd() {
 }
 
 export EDITOR=vim
-export PATH=~/dotfiles/bin:~/scala/sbt/bin:/usr/local/heroku/bin:/usr/local/cuda/bin:$PATH:~/.local/bin
+export PATH=~/Applications/bin:$PATH
 export ZSH=~/.cache/zsh
 
 [[ -s ~/.zshrc.local ]] && source ~/.zshrc.local

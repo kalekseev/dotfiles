@@ -27,7 +27,9 @@ attend = cat, diff, glog, log, incoming, outgoing, show, hist
 hist = glog --style=$HOME/dotfiles/hg/log.style
 
 [merge-tools]
-splice.executable = vim
-splice.args = -f $base $local $other $output -c 'SpliceInit'
-splice.premerge = keep
-splice.priority = 1
+p4.priority = 60
+p4.premerge = True
+p4.executable = ~/Applications/bin/p4merge
+p4.gui = True
+p4.args = $base $local $other $output
+p4.binary = False
