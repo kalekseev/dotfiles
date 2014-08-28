@@ -2,11 +2,11 @@
 ! Xft settings
 !--------------------------------------------------------------------------
 
-!Xft.dpi:                    96
-!Xft.antialias:              false
-!Xft.rgba:                   rgb
-!Xft.hinting:                true
-!Xft.hintstyle:              hintslight
+Xft.antialias:              1
+Xft.dpi:                    96
+Xft.hinting:                1
+Xft.hintstyle:              hintslight
+Xft.rgba:                   rgb
 
 !--------------------------------------------------------------------------
 ! URxvt settings
@@ -30,10 +30,10 @@ URxvt.intensityStyles:      false
 ! Fonts
 !URxvt.allow_bold:           false
 /* URxvt.font:                 -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso8859-1 */
-URxvt*font: xft:Consolas:pixelsize=15:antialias=true:autohinting=true
-URxvt*boldFont: xft:Consolas:bold:pixelsize=15:antialias=true:autohinting=true
-URxvt*italicFont: xft:Consolas:italic:pixelsize=15:antialias=true:autohinting=true
-URxvt*underlineFont: xft:Consolas:underline:pixelsize=15:antialias=true:autohinting=true
+URxvt*font: xft:Consolas:pixelsize=15
+URxvt*boldFont: xft:Consolas:bold:pixelsize=15
+URxvt*italicFont: xft:Consolas:italic:pixelsize=15
+URxvt*underlineFont: xft:Consolas:underline:pixelsize=15
 
 ! Fix font space
 URxvt*letterSpace: -1
