@@ -46,6 +46,7 @@ for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
 for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
 source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
+source ~/dotfiles/zsh/base16-default.dark.sh
 
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable hg git
@@ -68,7 +69,3 @@ export ZSH=~/.cache/zsh
 
 [[ -s ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -s "/etc/bash_completion.d/virtualenvwrapper" ]] && source "/etc/bash_completion.d/virtualenvwrapper"
-# Base16 Shell
-BASE16_SCHEME="default"
-BASE16_SHELL="$HOME/.config/base16-shell/base16-$BASE16_SCHEME.dark.sh"
-[[ -s $BASE16_SHELL ]] && . $BASE16_SHELL

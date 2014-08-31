@@ -47,6 +47,10 @@ URxvt.scrollBar:            false
 URxvt.matcher.button:       1
 URxvt.urlLauncher:          firefox
 
+! fullscreen switch
+URxvt.perl-ext-common:  fullscreen
+URxvt.keysym.F11:       perl:fullscreen:switch
+
 ! Cursor
 URxvt.cursorBlink:          true
 URxvt.cursorColor:          #657b83
