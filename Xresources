@@ -10,26 +10,19 @@ Xft.rgba:                   rgb
 
 !--------------------------------------------------------------------------
 ! URxvt settings
-! Colours lifted from Solarized (http://ethanschoonover.com/solarized)
-! More info at:
-! http://pod.tst.eu/http://cvs.schmorp.de/rxvt-unicode/doc/rxvt.1.pod
 !--------------------------------------------------------------------------
 
 URxvt.depth:                32
 URxvt.geometry:             90x30
 URxvt.transparent:          false
 URxvt.fading:               0
-! URxvt.urgentOnBell:         true
-! URxvt.visualBell:           true
+
 URxvt.loginShell:           true
-URxvt.saveLines:            50
 URxvt.internalBorder:       3
 URxvt.lineSpace:            2
-URxvt.intensityStyles:      false
+URxvt.intensityStyles:      true
 
 ! Fonts
-!URxvt.allow_bold:           false
-/* URxvt.font:                 -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso8859-1 */
 URxvt*font: xft:Consolas:pixelsize=16
 URxvt*boldFont: xft:Consolas:bold:pixelsize=16
 URxvt*italicFont: xft:Consolas:italic:pixelsize=16
@@ -39,17 +32,15 @@ URxvt*underlineFont: xft:Consolas:underline:pixelsize=16
 URxvt*letterSpace: -1
 
 ! Scrollbar
-URxvt.scrollStyle:          rxvt
 URxvt.scrollBar:            false
+URxvt*secondaryScroll:      true
+URxvt*saveLines:            65535
 
 ! Perl extensions
-*URxvt.perl-ext-common:      default,matcher,osc-xterm-clipboard
+URxvt.perl-ext-common:      default,matcher,fullscreen,searchable-scrollback
 URxvt.matcher.button:       1
 URxvt.urlLauncher:          firefox
-
-! fullscreen switch
-URxvt.perl-ext-common:  fullscreen
-URxvt.keysym.F11:       perl:fullscreen:switch
+URxvt.keysym.F11:           perl:fullscreen:switch
 
 ! Cursor
 URxvt.cursorBlink:          true

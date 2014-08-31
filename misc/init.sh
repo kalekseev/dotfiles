@@ -16,3 +16,4 @@ do
 done
 
 sudo apt-get install --yes wmctrl tmux xclip rxvt-unicode
+xrdb .Xresources
