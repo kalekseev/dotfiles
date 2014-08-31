@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -e
+
+START_MARK='! -#- COLORS START -#-'
+END_MARK='! -#- COLORS END -#-'
+CURRENT_SHELL_THEME_FILE=~/.config/current-shell-theme.sh
+
+
+set_theme () {
+    background="$1"
+    theme="$2"
+    shell_theme_file=~/.config/base16-shell/base16-"$theme"."$background".sh
+    xresources_theme_file=~/.config/base16-xresources/base16-"$theme"."$background".xresources
+
+    if [ ! -e "$shell_theme_file" ]; then
+        echo "$shell_theme_file doesn't exists"
+        exit 1
+    fi
+
+    if [ ! -e "$xresources_theme_file" ]; then
+        echo "$xresources_theme_file doesn't exists"
+        exit 1
+    fi
+
+    if [ -e "$CURRENT_SHELL_THEME_FILE" ]; then
+        rm "$CURRENT_SHELL_THEME_FILE"
+    fi
+
+    ln -sf "$shell_theme_file" "$CURRENT_SHELL_THEME_FILE"
+
+    cp ~/dotfiles/Xresources ~/.Xresources
+
+    sed -i "/$START_MARK/, /$END_MARK/ {//!d}; /$START_MARK/r $xresources_theme_file" ~/.Xresources
+
+
+    xrdb ~/.Xresources
+}
+
+
+while test $# -gt 0; do
+    case "$1" in
+        -d|--dark)
+            shift
+            if test $# -gt 0; then
+                set_theme "dark" $1
+            else
+                echo "no theme specified"
+                exit 1
+            fi
+            shift
+            ;;
+        -l|--light)
+            shift
+            if test $# -gt 0; then
+                set_theme "light" $1
+            else
+                echo "no theme specified"
+                exit 1
+            fi
+            shift
+            ;;
+        *)
+            set_theme "light" $1
+            exit 0
+            ;;
+    esac
+done

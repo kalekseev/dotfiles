@@ -1,4 +1,0 @@
-PS1('>>')
-edit author "Konstantin Alekseev"
-edit mode async
-edit editor "gvim %s &"

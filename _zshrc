@@ -46,7 +46,7 @@ for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
 for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
 source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
-source ~/dotfiles/zsh/base16-default.dark.sh
+[[ -s ~/.config/current-shell-theme.sh ]] && source ~/.config/current-shell-theme.sh
 
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable hg git
@@ -64,7 +64,7 @@ precmd() {
 }
 
 export EDITOR=vim
-export PATH=~/Applications/bin:$PATH
+export PATH=~/Applications/bin:~/dotfiles/bin:$PATH
 export ZSH=~/.cache/zsh
 
 [[ -s ~/.zshrc.local ]] && source ~/.zshrc.local

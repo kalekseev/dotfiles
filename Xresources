@@ -50,6 +50,7 @@ URxvt.cursorUnderline:      false
 ! Pointer
 URxvt.pointerBlank:         true
 
+! -#- COLORS START -#-
 ! Base16 Default
 ! Scheme: Chris Kempson (http://chriskempson.com)
 
@@ -100,3 +101,5 @@ URxvt.pointerBlank:         true
 *.color19:      base02
 *.color20:      base04
 *.color21:      base06
+
+! -#- COLORS END -#-
