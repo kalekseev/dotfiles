@@ -33,6 +33,10 @@ set_theme () {
 
     sed -i "/$START_MARK/, /$END_MARK/ {//!d}; /$START_MARK/r $xresources_theme_file" ~/.Xresources
 
+    cat <<EOF > ~/.vimrc.local
+colorscheme base16-$theme
+set background=$background
+EOF
 
     xrdb ~/.Xresources
 }

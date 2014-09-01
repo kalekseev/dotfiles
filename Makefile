@@ -1,7 +1,7 @@
-PHONY: all link theme packages font
+PHONY: all link theme package font
 
-packages:
-	~/dotfiles/install/packages.sh
+package:
+	~/dotfiles/install/package.sh
 
 theme:
 	~/dotfiles/install/theme.sh
@@ -12,4 +12,4 @@ link:
 font:
 	~/dotfiles/install/font.sh
 
-all: packages link font theme
+all: package link font theme
