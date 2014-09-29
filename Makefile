@@ -12,4 +12,7 @@ link:
 font:
 	~/dotfiles/install/font.sh
 
-all: package link font theme
+update:
+	~/dotfiles/install/update.sh
+
+all: package link font theme update
