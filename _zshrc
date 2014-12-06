@@ -64,7 +64,7 @@ precmd() {
 }
 
 export EDITOR=vim
-export PATH=~/Applications/bin:~/dotfiles/bin:$PATH:~/.cabal/bin
+export PATH=~/.local/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:~/.cabal/bin
 export ZSH=~/.cache/zsh
 
 [[ -s ~/.zshrc.local ]] && source ~/.zshrc.local

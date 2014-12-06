@@ -26,3 +26,14 @@
 [grep]
     extendRegexp = true
     lineNumber = true
+[merge]
+    tool = p4merge
+[mergetool]
+    prompt = false
+    keepBackup = false
+[mergetool "p4merge"]
+    path = ~/.local/bin/p4merge
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
