@@ -1,0 +1,32 @@
+%include ~/.hgrc.local
+
+[ui]
+ignore = $HOME/dotfiles/hg/hgignore
+editor = vim
+
+[extensions]
+color =
+pager =
+purge =
+rebase =
+shelve =
+record =
+graphlog =
+
+[color]
+mode = ansi
+
+[pager]
+attend = cat, diff, glog, log, incoming, show, hist
+pager = more /E
+
+[alias]
+hist = glog --style=$HOME/dotfiles/hg/log.style
+
+[merge-tools]
+p4.priority = 60
+p4.premerge = True
+p4.executable = C:\Program Files\Perforce\p4merge.EXE
+p4.gui = True
+p4.args = $base $local $other $output
+p4.binary = False
