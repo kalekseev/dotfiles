@@ -12,6 +12,8 @@ rebase =
 shelve =
 record =
 graphlog =
+extdiff =
+strip =
 
 [color]
 mode = ansi
@@ -30,3 +32,6 @@ p4.executable = C:\Program Files\Perforce\p4merge.EXE
 p4.gui = True
 p4.args = $base $local $other $output
 p4.binary = False
+
+[extdiff]
+p4diff = p4merge
