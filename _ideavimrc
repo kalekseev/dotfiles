@@ -1,0 +1,10 @@
+set visualbell t_vb=
+nmap < <<
+nmap > >>
+xmap < <gV
+xmap > >gV
+nmap <Space>v V`]
+nmap <Space>b :action RecentFiles<CR>
+nmap <Space>p :action GotoFile<CR>
+nmap <Space><Space> :action RecentFiles<CR>
+set number
