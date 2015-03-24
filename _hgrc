@@ -11,6 +11,8 @@ rebase =
 shelve =
 record =
 graphlog =
+strip =
+histedit =
 mercurial_keyring =
 remotebranches = $HOME/dotfiles/hg/hg_remotebranches.py
 
