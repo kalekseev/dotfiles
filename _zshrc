@@ -69,3 +69,4 @@ export ZSH=~/.cache/zsh
 
 [[ -s ~/.zshrc.local ]] && source ~/.zshrc.local
 [[ -s "/etc/bash_completion.d/virtualenvwrapper" ]] && source "/etc/bash_completion.d/virtualenvwrapper"
+[[ -s "/home/wtf/.gvm/scripts/gvm" ]] && source "/home/wtf/.gvm/scripts/gvm"
