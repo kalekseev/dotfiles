@@ -19,6 +19,7 @@ alias hs='hg status'
 alias hd='hg diff'
 alias hl='hg pull'
 alias hp='hg push -r .'
+alias hgl='hg hist'
 
 alias sd='sudo'
 alias vi='vim'
