@@ -1,3 +1,5 @@
 .ackrc
 node_modules
-tags
+^tags$
+/tags$
+.lvimrc
