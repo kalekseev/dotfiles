@@ -163,6 +163,17 @@ _managepy-schemamigration(){
     $nul_args && ret=0
 }
 
+_managepy-makemigrations(){
+  _arguments -s : \
+    "--dry-run[Just show what migrations would be made; don't actually write them.]" \
+    '--merge[Enable fixing of migration conflicts.]' \
+    '--empty[Create an empty migration.]' \
+    '--noinput[Tells Django to NOT prompt the user for input of any kind.]' \
+    '--name[Use this name for migration file(s).]' \
+    '--exit[Exit with error code 1 if no changes needing migrations are found.]' \
+    $nul_args && ret=0
+}
+
 _managepy-sql(){}
 _managepy-sqlall(){}
 _managepy-sqlclear(){}
@@ -221,6 +232,7 @@ _managepy-commands() {
     'runserver:Starts a lightweight Web server for development.'
     'shell:Runs a Python interactive interpreter.'
     'schemamigration:helps write new migrations'
+    'makemigrations:create new migration'
     'sql:Prints the CREATE TABLE SQL statements for the given app name(s).'
     'sqlall:Prints the CREATE TABLE, custom SQL and CREATE INDEX SQL statements for the given model module name(s).'
     'sqlclear:Prints the DROP TABLE SQL statements for the given app name(s).'
