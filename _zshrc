@@ -48,6 +48,9 @@ source ~/dotfiles/zsh/aliases
 source ~/dotfiles/zsh/robbyrussell.zsh-theme
 [[ -s ~/.config/current-shell-theme.sh ]] && source ~/.config/current-shell-theme.sh
 
+bindkey 'Oc' emacs-forward-word
+bindkey 'Od' emacs-backward-word
+
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable hg git
 zstyle ':vcs_info:*' get-revision true
