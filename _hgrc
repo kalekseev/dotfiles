@@ -13,8 +13,8 @@ record =
 graphlog =
 strip =
 histedit =
-mercurial_keyring =
-remotebranches = $HOME/dotfiles/hg/hg_remotebranches.py
+#mercurial_keyring =
+#remotebranches = $HOME/dotfiles/hg/hg_remotebranches.py
 
 [color]
 status.added = green

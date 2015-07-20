@@ -50,6 +50,8 @@ source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
 bindkey 'Oc' emacs-forward-word
 bindkey 'Od' emacs-backward-word
+bindkey '[C' emacs-forward-word
+bindkey '[D' emacs-backward-word
 
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable hg git
@@ -67,7 +69,7 @@ precmd() {
 }
 
 export EDITOR=vim
-export PATH=~/.local/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:~/.cabal/bin
+export PATH=~/.local/bin:/usr/local/opt/coreutils/libexec/gnubin:/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH:~/.cabal/bin
 export ZSH=~/.cache/zsh
 
 [[ -s ~/.zshrc.local ]] && source ~/.zshrc.local
