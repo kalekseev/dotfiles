@@ -52,6 +52,8 @@ bindkey 'Oc' emacs-forward-word
 bindkey 'Od' emacs-backward-word
 bindkey '[C' emacs-forward-word
 bindkey '[D' emacs-backward-word
+bindkey '[1;5C' emacs-forward-word
+bindkey '[1;5D' emacs-backward-word
 
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable hg git
