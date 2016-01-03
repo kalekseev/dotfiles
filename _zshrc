@@ -39,7 +39,8 @@ SAVEHIST=10000
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
 #
-autoload -Uz compinit
+fpath=(~/dotfiles/zsh/plugins $fpath)
+autoload -U compinit
 compinit
 
 for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
