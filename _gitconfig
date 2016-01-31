@@ -31,8 +31,6 @@
 [mergetool]
     prompt = false
     keepBackup = false
-[mergetool "p4merge"]
-    path = ~/.local/bin/p4merge
 [filter "media"]
 	required = true
 	clean = git media clean %f
