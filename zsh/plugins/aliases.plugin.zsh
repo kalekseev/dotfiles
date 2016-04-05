@@ -50,3 +50,20 @@ explain () {
     echo "explain 'cmd -o | ...'   one quoted command to explain it."
   fi
 }
+
+pip_req() {
+    if (( $# == 2 )); then
+        pip install "$1" | pip freeze | egrep -i "^`echo $1 | sed -e 's/==.*$//'`==" >> "$2"
+    else
+        echo 'usage: pip_req <library name> <requirements file>'
+    fi
+}
+
+pip_req_sort() {
+    if (( $# == 2 )); then
+        pip_req $1 $2
+        sort -f -u -o $2 $2
+    else
+        echo 'usage: pip_req <library name> <requirements file>'
+    fi
+}
