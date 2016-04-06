@@ -53,7 +53,7 @@ explain () {
 
 pip_req() {
     if (( $# == 2 )); then
-        pip install "$1" | pip freeze | egrep -i "^`echo $1 | sed -e 's/==.*$//'`==" >> "$2"
+        pip install "$1" && pip freeze | egrep -i "^`echo $1 | sed -e 's/==.*$//'`==" >> "$2"
     else
         echo 'usage: pip_req <library name> <requirements file>'
     fi
