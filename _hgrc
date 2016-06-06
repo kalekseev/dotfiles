@@ -27,6 +27,7 @@ attend = cat, diff, glog, log, incoming, outgoing, show, hist
 
 [alias]
 hist = glog --style=$HOME/dotfiles/hg/log.style
+burl =! bash -c 'hg paths | tail -1 | sed "s/^.*@\(.*\)/https:\/\/\1\/src\/`hg id -i`\//"'
 
 [merge-tools]
 p4.priority = 60
