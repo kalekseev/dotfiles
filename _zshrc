@@ -91,6 +91,6 @@ case `uname` in
 esac
 
 # pew - virtualenv wrapper
-if type pew &> /dev/null; then
-    source $(pew shell_config)
-fi
+# if type pew &> /dev/null; then
+#     source $(pew shell_config)
+# fi
