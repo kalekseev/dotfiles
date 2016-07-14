@@ -51,6 +51,8 @@ source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
 bindkey 'Oc' emacs-forward-word
 bindkey 'Od' emacs-backward-word
+bindkey 'OC' emacs-forward-word
+bindkey 'OD' emacs-backward-word
 bindkey '[C' emacs-forward-word
 bindkey '[D' emacs-backward-word
 bindkey '[1;5C' emacs-forward-word
