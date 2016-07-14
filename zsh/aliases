@@ -43,3 +43,11 @@ alias gtags=generate_ctags
 # specific settings for my laptop
 if [ $HOST = thin ]; then GEOM='1000x700'; else GEOM='1200x900'; fi
 alias rds="rdesktop -k en-us -g $GEOM -U administrator $@ > /dev/null 2>&1"
+
+case `uname` in
+  Darwin)
+    alias nvim='NVIM_TUI_ENABLE_TRUE_COLOR=1 nvim'
+    ;;
+  Linux)
+    ;;
+esac
