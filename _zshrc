@@ -51,8 +51,6 @@ source ~/dotfiles/zsh/robbyrussell.zsh-theme
 
 bindkey 'Oc' emacs-forward-word
 bindkey 'Od' emacs-backward-word
-bindkey 'OC' emacs-forward-word
-bindkey 'OD' emacs-backward-word
 bindkey '[C' emacs-forward-word
 bindkey '[D' emacs-backward-word
 bindkey '[1;5C' emacs-forward-word
@@ -87,6 +85,8 @@ case `uname` in
     export WORKON_HOME=$HOME/.virtualenvs
     export VIRTUALENVWRAPPER_SCRIPT=/usr/local/bin/virtualenvwrapper.sh
     source /usr/local/bin/virtualenvwrapper_lazy.sh
+    bindkey 'OC' emacs-forward-word
+    bindkey 'OD' emacs-backward-word
     ;;
   Linux)
     ;;
