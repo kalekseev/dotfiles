@@ -46,7 +46,7 @@ compinit
 for config_file (~/dotfiles/zsh/lib/*.zsh) source $config_file
 for plugin_file (~/dotfiles/zsh/plugins/*.zsh) source $plugin_file
 source ~/dotfiles/zsh/aliases
-source ~/dotfiles/zsh/mitsuhiko.zsh-theme
+source ~/dotfiles/zsh/robbyrussell.zsh-theme
 [[ -s ~/.config/current-shell-theme.sh ]] && source ~/.config/current-shell-theme.sh
 
 bindkey 'Oc' emacs-forward-word
