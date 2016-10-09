@@ -1,7 +1,7 @@
 [include]
     path=.gitconfig.local
 [core]
-    editor = /usr/bin/vim
+    editor = /usr/bin/nvim
 [alias]
     co = checkout
     ci = commit
