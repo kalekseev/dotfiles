@@ -2,6 +2,7 @@
 
 [ui]
 ignore = ~/dotfiles/hg/hgignore
+editor = nvim
 
 [extensions]
 color =

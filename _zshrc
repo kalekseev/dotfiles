@@ -1,5 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=~/.local/bin:/usr/local/sbin:/usr/local/opt/coreutils/libexec/gnubin:/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH
 
 . ~/.profile
 
@@ -55,7 +56,6 @@ ZSH_CUSTOM=~/dotfiles/zsh/custom
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git-prompt mercurial virtualenv osx)
 
-source ~/dotfiles/zsh/aliases
 [[ -s "/etc/bash_completion.d/virtualenvwrapper" ]] && source "/etc/bash_completion.d/virtualenvwrapper"
 
 case `uname` in
@@ -63,11 +63,12 @@ case `uname` in
     export WORKON_HOME=$HOME/.virtualenvs
     export VIRTUALENVWRAPPER_SCRIPT=/usr/local/bin/virtualenvwrapper.sh
     source /usr/local/bin/virtualenvwrapper_lazy.sh
-    bindkey 'OC' emacs-forward-word
-    bindkey 'OD' emacs-backward-word
+    bindkey '[C' emacs-forward-word
+    bindkey '[D' emacs-backward-word
     ;;
   Linux)
     ;;
 esac
 
 source $ZSH/oh-my-zsh.sh
+source ~/dotfiles/zsh/aliases
