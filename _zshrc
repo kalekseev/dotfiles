@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH=~/.local/bin:/usr/local/sbin:/usr/local/opt/coreutils/libexec/gnubin:/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH
+export PATH=~/.local/bin:~/.yarn-config/global/node_modules/.bin:/usr/local/sbin:/usr/local/opt/coreutils/libexec/gnubin:/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH
 
 . ~/.profile
 
@@ -54,7 +54,7 @@ ZSH_CUSTOM=~/dotfiles/zsh/custom
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git-prompt mercurial virtualenv osx django)
+plugins=(git-prompt mercurial virtualenv osx django pip)
 
 [[ -s "/etc/bash_completion.d/virtualenvwrapper" ]] && source "/etc/bash_completion.d/virtualenvwrapper"
 
