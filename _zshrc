@@ -65,6 +65,7 @@ case `uname` in
     source /usr/local/bin/virtualenvwrapper_lazy.sh
     bindkey '[C' emacs-forward-word
     bindkey '[D' emacs-backward-word
+    alias pip="env LDFLAGS=\"-L/usr/local/opt/openssl/lib\" CFLAGS=\"-I/usr/local/opt/openssl/include\" pip"
     ;;
   Linux)
     ;;
