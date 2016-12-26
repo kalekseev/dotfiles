@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH=~/.local/bin:~/.yarn-config/global/node_modules/.bin:/usr/local/sbin:/usr/local/opt/coreutils/libexec/gnubin:/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH
+export PATH=~/.local/bin:~/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/usr/local/opt/coreutils/libexec/gnubin:/Applications/Postgres.app/Contents/Versions/9.4/bin:$PATH
 
 . ~/.profile
 
