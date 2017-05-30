@@ -20,6 +20,8 @@ alias hd='hg diff'
 alias hl='hg pull'
 alias hp='hg push -r .'
 alias hgl='hg hist'
+alias hgunshelve='hg unshelve --config hooks.pretxncommit.precommit='
+alias hgshelve='hg shelve --config hooks.pretxncommit.precommit='
 
 alias vim='nvim'
 alias ac='apt-cache'
