@@ -33,6 +33,7 @@ alias da='django-admin'
 
 alias -s pdf=evince
 alias ssh='TERM=xterm-256color ssh'
+alias djkill='kill -15 $(lsof -ti :8000 -sTCP:LISTEN)'
 
 #functions
 alias m=django_manage
