@@ -10,7 +10,6 @@ pager =
 purge =
 rebase =
 shelve =
-record =
 graphlog =
 strip =
 histedit =
