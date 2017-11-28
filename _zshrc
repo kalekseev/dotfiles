@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH=~/.local/bin:~/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/usr/local/opt/coreutils/libexec/gnubin:/Applications/Postgres.app/Contents/Versions/9.6/bin:$PATH
+export PATH=~/.local/bin:~/.config/yarn/global/node_modules/.bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 . ~/.profile
 
@@ -59,13 +59,8 @@ plugins=(git-prompt mercurial virtualenv osx django pip)
 EDITOR=vim
 eval "$(direnv hook zsh)"
 
-[[ -s "/etc/bash_completion.d/virtualenvwrapper" ]] && source "/etc/bash_completion.d/virtualenvwrapper"
-
 case `uname` in
   Darwin)
-    export WORKON_HOME=$HOME/.virtualenvs
-    export VIRTUALENVWRAPPER_SCRIPT=/usr/local/bin/virtualenvwrapper.sh
-    source /usr/local/bin/virtualenvwrapper_lazy.sh
     bindkey '[C' emacs-forward-word
     bindkey '[D' emacs-backward-word
     alias pip="env LDFLAGS=\"-L/usr/local/opt/openssl/lib\" CFLAGS=\"-I/usr/local/opt/openssl/include\" pip"
