@@ -41,3 +41,17 @@ alias djsettings=set_django_settings_module
 alias hgp=set_hg_prompt
 alias gdh=git_diff_head
 alias gtags=generate_ctags
+
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
+cdsitepackages() {
+    local python=`which python`
+    local venv=${python%/bin/python}
+    local python_v=$(readlink $python)
+    local python_fixedv=${python_v#./}  # readlink returns full path on linux
+    cd "$venv/lib/$python_fixedv/site-packages/"
+}
+
+function anybar { echo -n $1 | nc -4u -w0 localhost ${2:-1738}; }
