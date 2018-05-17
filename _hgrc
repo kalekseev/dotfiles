@@ -30,9 +30,11 @@ hist = glog --style=$HOME/dotfiles/hg/log.style
 burl =! bash -c 'hg paths | tail -1 | sed "s/^.*@\(.*\)/https:\/\/\1\/src\/`hg id -i | sed "s/+//"`\//"'
 
 [merge-tools]
-p4.priority = 60
-p4.premerge = True
-p4.executable = ~/.local/bin/p4merge
-p4.gui = True
-p4.args = $base $local $other $output
-p4.binary = False
+p4merge.priority = 100
+p4merge.premerge = True
+p4merge.gui = True
+p4merge.args = $base $local $other $output
+p4merge.diffargs = $parent $child
+p4merge.diff3args = $child $parent1 $parent2
+p4merge.dirdiff = False
+p4merge.checkchanged = True

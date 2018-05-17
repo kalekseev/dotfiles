@@ -56,7 +56,7 @@ ZSH_CUSTOM=~/dotfiles/zsh/custom
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git-prompt mercurial virtualenv osx django pip)
 
-EDITOR=vim
+EDITOR=nvim
 eval "$(direnv hook zsh)"
 
 case `uname` in
