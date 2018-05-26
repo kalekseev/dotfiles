@@ -50,8 +50,7 @@ cdsitepackages() {
     local python=`which python`
     local venv=${python%/bin/python}
     local python_v=$(readlink $python)
-    local python_fixedv=${python_v#./}  # readlink returns full path on linux
-    cd "$venv/lib/$python_fixedv/site-packages/"
+    cd "$venv/lib/$python_v/site-packages/"
 }
 
 function anybar { echo -n $1 | nc -4u -w0 localhost ${2:-1738}; }
