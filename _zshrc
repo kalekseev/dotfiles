@@ -6,6 +6,8 @@ export PATH=~/.local/bin:~/.config/yarn/global/node_modules/.bin:/usr/local/bin:
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
+export ZPLUG_HOME=/usr/local/opt/zplug
+source $ZPLUG_HOME/init.zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -54,16 +56,29 @@ ZSH_CUSTOM=~/dotfiles/zsh/custom
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git-prompt mercurial virtualenv osx django pip)
+zplug "g-plane/zsh-yarn-autocompletions", hook-build:"./zplug.zsh", defer:2
+zplug "plugins/git-prompt",   from:oh-my-zsh
+zplug "plugins/virtualenv",   from:oh-my-zsh
+zplug "plugins/osx",   from:oh-my-zsh
+zplug "plugins/django",   from:oh-my-zsh
+zplug "plugins/pip",   from:oh-my-zsh
+
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+zplug load  #--verbose
 
 EDITOR=nvim
-eval "$(direnv hook zsh)"
 
 case `uname` in
   Darwin)
     bindkey '[C' emacs-forward-word
     bindkey '[D' emacs-backward-word
-    alias pip="env LDFLAGS=\"-L/usr/local/opt/openssl/lib\" CFLAGS=\"-I/usr/local/opt/openssl/include\" pip"
+    alias pip="env LDFLAGS=\"-L/usr/local/opt/openssl/lib\" CFLAGS=\"-I/usr/local/opt/openssl/include -I/usr/local/Cellar/gmp/6.1.2_2/include/
+\" pip"
     ;;
   Linux)
     ;;
@@ -71,3 +86,4 @@ esac
 
 source $ZSH/oh-my-zsh.sh
 source ~/dotfiles/zsh/aliases
+eval "$(direnv hook zsh)"

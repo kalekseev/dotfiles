@@ -35,12 +35,20 @@ alias -s pdf=evince
 alias ssh='TERM=xterm-256color ssh'
 alias djkill='kill -15 $(lsof -ti :8000 -sTCP:LISTEN)'
 
+alias dda='docker-compose exec django pipenv run django-admin'
+alias dc='docker-compose'
+
 #functions
 alias m=django_manage
 alias djsettings=set_django_settings_module
 alias hgp=set_hg_prompt
 alias gdh=git_diff_head
 alias gtags=generate_ctags
+
+# https://github.com/mitsuhiko/dotfiles/blob/master/sh/myprofile#L129
+export SKIM_DEFAULT_COMMAND="rg --files || find ."
+alias skvi='f(){ x="$(sk --bind "ctrl-p:toggle-preview" --ansi --preview="preview.sh -v {}" --preview-window=up:50%:hidden)"; [[ $? -eq 0 ]] && vim "$x" || true }; f'
+alias rgvi='f(){ x="$(sk --bind "ctrl-p:toggle-preview" --ansi -i -c "rg --color=always --line-number \"{}\"" --preview="preview.sh -v {}" --preview-window=up:50%:hidden)"; [[ $? -eq 0 ]] && vim "$(echo $x|cut -d: -f1)" "+$(echo $x|cut -d: -f2)" || true }; f'
 
 mkcd() {
     mkdir -p "$1" && cd "$1"
