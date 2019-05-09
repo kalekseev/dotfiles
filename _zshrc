@@ -6,8 +6,20 @@ export PATH=~/.local/bin:~/.config/yarn/global/node_modules/.bin:/usr/local/bin:
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
-export ZPLUG_HOME=/usr/local/opt/zplug
-source $ZPLUG_HOME/init.zsh
+
+case `uname` in
+  Darwin)
+    bindkey '[C' emacs-forward-word
+    bindkey '[D' emacs-backward-word
+    alias pip="env LDFLAGS=\"-L/usr/local/opt/openssl/lib\" CFLAGS=\"-I/usr/local/opt/openssl/include -I/usr/local/Cellar/gmp/6.1.2_2/include/
+\" pip"
+    export ZPLUG_HOME=/usr/local/opt/zplug
+    source $ZPLUG_HOME/init.zsh
+    ;;
+  Linux)
+    source /usr/share/zplug/init.zsh
+    ;;
+esac
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -72,17 +84,6 @@ fi
 zplug load  #--verbose
 
 EDITOR=nvim
-
-case `uname` in
-  Darwin)
-    bindkey '[C' emacs-forward-word
-    bindkey '[D' emacs-backward-word
-    alias pip="env LDFLAGS=\"-L/usr/local/opt/openssl/lib\" CFLAGS=\"-I/usr/local/opt/openssl/include -I/usr/local/Cellar/gmp/6.1.2_2/include/
-\" pip"
-    ;;
-  Linux)
-    ;;
-esac
 
 source $ZSH/oh-my-zsh.sh
 source ~/dotfiles/zsh/aliases
