@@ -83,7 +83,7 @@ if ! zplug check --verbose; then
 fi
 zplug load  #--verbose
 
-EDITOR=nvim
+export EDITOR=nvim
 
 source $ZSH/oh-my-zsh.sh
 source ~/dotfiles/zsh/aliases
