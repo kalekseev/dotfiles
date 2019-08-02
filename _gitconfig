@@ -1,7 +1,6 @@
-[include]
-    path=.gitconfig.local
 [core]
     editor = nvim
+    excludesfile = ~/.gitignore
 [alias]
     co = checkout
     ci = commit
@@ -23,15 +22,20 @@
 [push]
     default=current
 [pull]
-  ff = only
+    ff = only
 [grep]
     extendRegexp = true
     lineNumber = true
 [merge]
-    tool = p4merge
+    tool = vimdiff
+    conflictstyle = diff3
 [mergetool]
     prompt = false
     keepBackup = false
+[mergetool "vimdiff"]
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[mergetool "p4merge"]
+    cmd = p4merge $BASE $LOCAL $REMOTE $MERGED
 [filter "lfs"]
     required = true
     clean = git-lfs clean -- %f
