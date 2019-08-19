@@ -11,6 +11,8 @@
     dump = cat-file -p
     g = grep --break --heading --line-number
     up = !git remote update -p; git merge --ff-only @{u}
+    # Show branches, verbosely, sorted by last touch, with commit messages.
+    brv = "!f() { git branch --sort=-creatordate --color=always --format='%(color:reset)%(creatordate:short) %(color:bold white)%(align:2,right)%(upstream:trackshort)%(end)%(color:nobold) %(align:40,left)%(color:yellow)%(refname:short)%(end) %(color:reset)%(contents:subject)'; }; f"
 [github]
     user = rambominator
 [color]
