@@ -24,7 +24,7 @@ esac
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="mitsuhiko"
+# ZSH_THEME="mitsuhiko"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -74,6 +74,7 @@ zplug "plugins/virtualenv",   from:oh-my-zsh
 zplug "plugins/osx",   from:oh-my-zsh
 zplug "plugins/django",   from:oh-my-zsh
 zplug "plugins/pip",   from:oh-my-zsh
+zplug romkatv/powerlevel10k, use:powerlevel10k.zsh-theme
 
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
@@ -88,3 +89,6 @@ export EDITOR=nvim
 source $ZSH/oh-my-zsh.sh
 source ~/dotfiles/zsh/aliases
 eval "$(direnv hook zsh)"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
