@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block, everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH=~/.local/bin:~/.config/yarn/global/node_modules/.bin:/usr/local/bin:/usr/local/sbin:$PATH
@@ -13,18 +20,15 @@ case `uname` in
     bindkey '[D' emacs-backward-word
     alias pip="env LDFLAGS=\"-L/usr/local/opt/openssl/lib\" CFLAGS=\"-I/usr/local/opt/openssl/include -I/usr/local/Cellar/gmp/6.1.2_2/include/
 \" pip"
-    export ZPLUG_HOME=/usr/local/opt/zplug
-    source $ZPLUG_HOME/init.zsh
     ;;
   Linux)
-    source /usr/share/zplug/init.zsh
     ;;
 esac
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-# ZSH_THEME="mitsuhiko"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -62,27 +66,19 @@ DISABLE_AUTO_UPDATE="true"
 HIST_STAMPS="yyyy-mm-dd"
 
 # Would you like to use another custom folder than $ZSH/custom?
-ZSH_CUSTOM=~/dotfiles/zsh/custom
+# ZSH_CUSTOM=~/dotfiles/zsh/custom
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-zplug "g-plane/zsh-yarn-autocompletions", hook-build:"./zplug.zsh", defer:2
-zplug "plugins/git-prompt",   from:oh-my-zsh
-zplug "plugins/virtualenv",   from:oh-my-zsh
-zplug "plugins/osx",   from:oh-my-zsh
-zplug "plugins/django",   from:oh-my-zsh
-zplug "plugins/pip",   from:oh-my-zsh
-zplug romkatv/powerlevel10k, use:powerlevel10k.zsh-theme
-
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-zplug load  #--verbose
+plugins=(
+    osx
+    virtualenv
+    django
+    pip
+    yarn
+)
 
 export EDITOR=nvim
 
