@@ -40,8 +40,8 @@ alias dc='docker-compose'
 
 # https://github.com/mitsuhiko/dotfiles/blob/master/sh/myprofile#L129
 export SKIM_DEFAULT_COMMAND="rg --files || find ."
-alias skvi='f(){ x="$(sk --bind "ctrl-p:toggle-preview" --ansi --preview="preview.sh -v {}" --preview-window=up:50%:hidden)"; [[ $? -eq 0 ]] && vim "$x" || true }; f'
-alias rgvi='f(){ x="$(sk --bind "ctrl-p:toggle-preview" --ansi -i -c "rg --color=always --line-number \"{}\"" --preview="preview.sh -v {}" --preview-window=up:50%:hidden)"; [[ $? -eq 0 ]] && vim "$(echo $x|cut -d: -f1)" "+$(echo $x|cut -d: -f2)" || true }; f'
+alias skvi='f(){ x="$(sk --bind "ctrl-p:toggle-preview" --ansi --preview="preview.sh {}" --preview-window=up:50%:hidden)"; [[ $? -eq 0 ]] && vim "$x" || true }; f'
+alias rgvi='f(){ x="$(sk --bind "ctrl-p:toggle-preview" --ansi -i -c "rg --color=always --line-number \"{}\"" --preview="preview.sh {}" --preview-window=up:50%:hidden)"; [[ $? -eq 0 ]] && vim "$(echo $x|cut -d: -f1)" "+$(echo $x|cut -d: -f2)" || true }; f'
 
 mkcd() {
     mkdir -p "$1" && cd "$1"
