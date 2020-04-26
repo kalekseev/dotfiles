@@ -81,6 +81,7 @@ plugins=(
 )
 
 export EDITOR=nvim
+export PIP_REQUIRE_VIRTUALENV=true
 
 source $ZSH/oh-my-zsh.sh
 source ~/dotfiles/zsh/aliases
