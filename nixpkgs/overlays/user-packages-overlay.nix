@@ -2,23 +2,26 @@ self: super:
 
 {
   userPackages = super.userPackages or {} // {
-    # My packages
-    # apps
+    ### apps
     neovim = self.neovim;
     tmux = self.tmux;
-    # shell utils
+    ### shell utils
     delta = self.gitAndTools.delta;
     bat = self.bat;
     fd = self.fd;
     skim = self.skim;
     ripgrep = self.ripgrep;
     direnv = self.direnv;
-    # python tools
+    # global = self.global;
+    # ctags = self.ctags;
+    ### python tools
     black = self.python37Packages.black;
     pipenv = self.pipenv;
     awscli = self.awscli;
-    pre-commit = self.gitAndTools.pre-commit;
-    # system
+    pre-commit = self.pre-commit;
+    ### nix utils
+    niv = self.niv;
+    ### system
     inherit (self) cacert nix;
 
     nix-rebuild = super.writeScriptBin "nix-rebuild" ''
