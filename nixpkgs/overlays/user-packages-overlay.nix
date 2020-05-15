@@ -12,9 +12,13 @@ self: super:
     skim = self.skim;
     ripgrep = self.ripgrep;
     direnv = self.direnv;
+    z-lua = self.z-lua;
     # global = self.global;
     # ctags = self.ctags;
-    ### python tools
+    ### js
+    nodejs-12_x = self.nodejs-12_x;
+    yarn = self.yarn;
+    ### python
     black = self.python37Packages.black;
     pipenv = self.pipenv;
     awscli = self.awscli;
