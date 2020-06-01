@@ -13,6 +13,7 @@ self: super:
     ripgrep = self.ripgrep;
     direnv = self.direnv;
     z-lua = self.z-lua;
+    overmind = self.overmind;
     # global = self.global;
     # ctags = self.ctags;
     ### js
