@@ -21,10 +21,12 @@ self: super:
     yarn = self.yarn;
     ### python
     black = self.python37Packages.black;
+    isort = self.python37Packages.isort;
     pipenv = self.pipenv;
     awscli = self.awscli;
     pre-commit = self.pre-commit;
     ### nix utils
+    vgo2nix = self.vgo2nix;
     niv = self.niv;
     ### system
     inherit (self) cacert nix;
