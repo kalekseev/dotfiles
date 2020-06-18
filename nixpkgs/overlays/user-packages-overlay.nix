@@ -9,6 +9,7 @@ self: super:
     delta = self.gitAndTools.delta;
     bat = self.bat;
     fd = self.fd;
+    jq = self.jq;
     skim = self.skim;
     ripgrep = self.ripgrep;
     direnv = self.direnv;
@@ -22,6 +23,7 @@ self: super:
     ### python
     black = self.python37Packages.black;
     isort = self.python37Packages.isort;
+    flake8 = self.python37Packages.flake8;
     pipenv = self.pipenv;
     awscli = self.awscli;
     pre-commit = self.pre-commit;
