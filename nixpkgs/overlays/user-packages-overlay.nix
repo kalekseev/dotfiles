@@ -15,6 +15,8 @@ self: super:
     direnv = self.direnv;
     z-lua = self.z-lua;
     overmind = self.overmind;
+    aws-vault = self.aws-vault;
+    mailhog = self.mailhog;
     # global = self.global;
     # ctags = self.ctags;
     ### js
