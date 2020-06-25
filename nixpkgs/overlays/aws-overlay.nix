@@ -37,6 +37,7 @@ rec {
     postPatch = ''
       substituteInPlace setup.py --replace ",<0.16" ""
       substituteInPlace setup.py --replace "cryptography>=2.8.0,<=2.9.0" "cryptography>=2.8.0,<2.10"
+      substituteInPlace setup.py --replace "<0.2.0" ""
     '';
 
     # No tests included

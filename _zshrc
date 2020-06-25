@@ -84,6 +84,7 @@ export EDITOR=nvim
 export PIP_REQUIRE_VIRTUALENV=true
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
+export DIRENV_LOG_FORMAT="`tput setaf 11`%s`tput sgr0`"
 
 
 source $ZSH/oh-my-zsh.sh

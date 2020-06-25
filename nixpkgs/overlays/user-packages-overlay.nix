@@ -17,6 +17,8 @@ self: super:
     overmind = self.overmind;
     aws-vault = self.aws-vault;
     mailhog = self.mailhog;
+    shellcheck = self.shellcheck;
+    rsync = self.rsync;
     # global = self.global;
     # ctags = self.ctags;
     ### js
@@ -25,7 +27,7 @@ self: super:
     ### python
     black = self.python37Packages.black;
     isort = self.python37Packages.isort;
-    flake8 = self.python37Packages.flake8;
+    flake8 = self.python38Packages.flake8;
     pipenv = self.pipenv;
     awscli = self.awscli;
     pre-commit = self.pre-commit;
