@@ -19,18 +19,18 @@ self: super:
     mailhog = self.mailhog;
     shellcheck = self.shellcheck;
     rsync = self.rsync;
+    awscli = self.awscli;
+    pre-commit = self.pre-commit;
     # global = self.global;
     # ctags = self.ctags;
     ### js
     nodejs-12_x = self.nodejs-12_x;
     yarn = self.yarn;
     ### python
-    black = self.python37Packages.black;
-    isort = self.python37Packages.isort;
-    flake8 = self.python38Packages.flake8;
+    black = self.pythonPackages.black;
+    isort = self.pythonPackages.isort;
+    flake8 = self.pythonPackages.flake8;
     pipenv = self.pipenv;
-    awscli = self.awscli;
-    pre-commit = self.pre-commit;
     ### nix utils
     vgo2nix = self.vgo2nix;
     niv = self.niv;
