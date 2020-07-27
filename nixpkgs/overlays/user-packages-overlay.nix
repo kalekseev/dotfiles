@@ -19,7 +19,8 @@ self: super:
     mailhog = self.mailhog;
     shellcheck = self.shellcheck;
     rsync = self.rsync;
-    awscli = self.awscli;
+    awscli2 = self.awscli2;
+    watchman = self.watchman;
     pre-commit = self.pre-commit;
     # global = self.global;
     # ctags = self.ctags;
@@ -27,15 +28,15 @@ self: super:
     nodejs-12_x = self.nodejs-12_x;
     yarn = self.yarn;
     ### python
-    black = self.pythonPackages.black;
-    isort = self.pythonPackages.isort;
-    flake8 = self.pythonPackages.flake8;
+    black = self.black;
+    isort = self.python38Packages.isort;
+    flake8 = self.python38Packages.flake8;
     pipenv = self.pipenv;
     ### nix utils
     vgo2nix = self.vgo2nix;
     niv = self.niv;
     ### system
-    inherit (self) cacert nix;
+    inherit (self) cacert nixUnstable;
 
     nix-rebuild = super.writeScriptBin "nix-rebuild" ''
       #!${super.stdenv.shell}
