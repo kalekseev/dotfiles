@@ -3,25 +3,26 @@ self: super:
 {
   userPackages = super.userPackages or {} // {
     ### apps
+    mailhog = self.mailhog;
     neovim = self.neovim;
     tmux = self.tmux;
     ### shell utils
-    delta = self.gitAndTools.delta;
-    bat = self.bat;
-    fd = self.fd;
-    jq = self.jq;
-    skim = self.skim;
-    ripgrep = self.ripgrep;
-    direnv = self.direnv;
-    z-lua = self.z-lua;
-    overmind = self.overmind;
     aws-vault = self.aws-vault;
-    mailhog = self.mailhog;
-    shellcheck = self.shellcheck;
-    rsync = self.rsync;
     awscli2 = self.awscli2;
-    watchman = self.watchman;
+    bat = self.bat;
+    delta = self.gitAndTools.delta;
+    direnv = self.direnv;
+    fd = self.fd;
+    icdiff = self.icdiff;
+    jq = self.jq;
+    overmind = self.overmind;
     pre-commit = self.pre-commit;
+    ripgrep = self.ripgrep;
+    rsync = self.rsync;
+    shellcheck = self.shellcheck;
+    skim = self.skim;
+    watchman = self.watchman;
+    z-lua = self.z-lua;
     # global = self.global;
     # ctags = self.ctags;
     ### js
@@ -29,12 +30,12 @@ self: super:
     yarn = self.yarn;
     ### python
     black = self.black;
-    isort = self.python38Packages.isort;
     flake8 = self.python38Packages.flake8;
+    isort = self.python38Packages.isort;
     pipenv = self.pipenv;
+    tox = self.python38Packages.tox;
     ### nix utils
     vgo2nix = self.vgo2nix;
-    niv = self.niv;
     ### system
     inherit (self) cacert nixUnstable;
 
