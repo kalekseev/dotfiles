@@ -7,8 +7,6 @@ self: super:
     neovim = self.neovim;
     tmux = self.tmux;
     ### shell utils
-    aws-vault = self.aws-vault;
-    awscli2 = self.awscli2;
     bat = self.bat;
     delta = self.gitAndTools.delta;
     direnv = self.direnv;
@@ -25,6 +23,11 @@ self: super:
     z-lua = self.z-lua;
     # global = self.global;
     # ctags = self.ctags;
+    ### cloud
+    aws-vault = self.aws-vault;
+    awscli2 = self.awscli2;
+    chamber = self.chamber;
+    packer = self.packer;
     ### js
     nodejs-12_x = self.nodejs-12_x;
     yarn = self.yarn;
