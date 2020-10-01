@@ -8,7 +8,9 @@ self: super:
     tmux = self.tmux;
     ### shell utils
     bat = self.bat;
+    starship = self.starship;
     delta = self.gitAndTools.delta;
+    gh = self.gitAndTools.gh;
     direnv = self.direnv;
     fd = self.fd;
     icdiff = self.icdiff;
