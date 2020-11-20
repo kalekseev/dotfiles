@@ -30,10 +30,13 @@ self: super:
     awscli2 = self.awscli2;
     chamber = self.chamber;
     packer = self.packer;
+    amazon-ecr-credential-helper = self.amazon-ecr-credential-helper;
     ### js
     nodejs-12_x = self.nodejs-12_x;
+    npm-check-updates = self.nodePackages.npm-check-updates;
     yarn = self.yarn;
     ### python
+    python38Full = self.python38Full;
     black = self.black;
     flake8 = self.python38Packages.flake8;
     isort = self.python38Packages.isort;
