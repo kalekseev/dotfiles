@@ -23,11 +23,13 @@ self: super:
     skim = self.skim;
     watchman = self.watchman;
     z-lua = self.z-lua;
+    entr = self.entr;
     # global = self.global;
     # ctags = self.ctags;
     ### cloud
     aws-vault = self.aws-vault;
     awscli2 = self.awscli2;
+    ssm-session-manager-plugin = self.ssm-session-manager-plugin;
     chamber = self.chamber;
     packer = self.packer;
     amazon-ecr-credential-helper = self.amazon-ecr-credential-helper;
@@ -37,6 +39,7 @@ self: super:
     yarn = self.yarn;
     ### python
     python38Full = self.python38Full;
+    python27Full = (self.python2.withPackages (ps: [ps.virtualenv]));
     black = self.black;
     flake8 = self.python38Packages.flake8;
     isort = self.python38Packages.isort;
