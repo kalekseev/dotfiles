@@ -1,7 +1,7 @@
 self: super:
 
 {
-  userPackages = super.userPackages or {} // {
+  userPackages = super.userPackages or { } // {
     ### apps
     mailhog = self.mailhog;
     neovim = self.neovim;
@@ -9,7 +9,6 @@ self: super:
     ### shell utils
     bat = self.bat;
     starship = self.starship;
-    delta = self.gitAndTools.delta;
     gh = self.gitAndTools.gh;
     direnv = self.direnv;
     fd = self.fd;
@@ -24,11 +23,14 @@ self: super:
     watchman = self.watchman;
     z-lua = self.z-lua;
     entr = self.entr;
+    # delta = self.gitAndTools.delta;
+    # youtube-dl = self.youtube-dl;
     # global = self.global;
     # ctags = self.ctags;
     ### cloud
     aws-vault = self.aws-vault;
     awscli2 = self.awscli2;
+    awslogs = self.awslogs;
     ssm-session-manager-plugin = self.ssm-session-manager-plugin;
     chamber = self.chamber;
     packer = self.packer;
@@ -39,7 +41,7 @@ self: super:
     yarn = self.yarn;
     ### python
     python38Full = self.python38Full;
-    python27Full = (self.python2.withPackages (ps: [ps.virtualenv]));
+    python27Full = (self.python2.withPackages (ps: [ ps.virtualenv ]));
     black = self.black;
     flake8 = self.python38Packages.flake8;
     isort = self.python38Packages.isort;
@@ -47,6 +49,7 @@ self: super:
     tox = self.python38Packages.tox;
     ### nix utils
     vgo2nix = self.vgo2nix;
+    nixpkgs-fmt = self.nixpkgs-fmt;
     ### system
     inherit (self) cacert nixUnstable;
 
@@ -69,7 +72,7 @@ self: super:
     packageVersions =
       let
         versions = super.lib.attrsets.mapAttrsToList (_: pkg: pkg.name) self.userPackages;
-        versionText = super.lib.strings.concatMapStrings (s: s+"\n") versions;
+        versionText = super.lib.strings.concatMapStrings (s: s + "\n") versions;
       in
       super.writeTextDir "package_versions" versionText;
   };
