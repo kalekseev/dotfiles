@@ -2,54 +2,46 @@ self: super:
 
 {
   userPackages = super.userPackages or { } // {
-    ### apps
-    mailhog = self.mailhog;
-    neovim = self.neovim;
-    tmux = self.tmux;
-    ### shell utils
-    bat = self.bat;
-    starship = self.starship;
-    gh = self.gitAndTools.gh;
     direnv = self.direnv;
-    fd = self.fd;
-    icdiff = self.icdiff;
+    docker-compose = self.docker-compose;
+    geckodriver = self.geckodriver;
+    gh = self.gitAndTools.gh;
+    git = self.git;
+    git-lfs = self.git-lfs;
+    htop = self.htop;
     jq = self.jq;
-    overmind = self.overmind;
     pre-commit = self.pre-commit;
     ripgrep = self.ripgrep;
     rsync = self.rsync;
     shellcheck = self.shellcheck;
-    skim = self.skim;
+    sqlite = self.sqlite;
+    tmux = self.tmux;
     watchman = self.watchman;
-    z-lua = self.z-lua;
-    entr = self.entr;
-    # delta = self.gitAndTools.delta;
-    # youtube-dl = self.youtube-dl;
-    # global = self.global;
-    # ctags = self.ctags;
     ### cloud
+    amazon-ecr-credential-helper = self.amazon-ecr-credential-helper;
     aws-vault = self.aws-vault;
     awscli2 = self.awscli2;
     awslogs = self.awslogs;
-    ssm-session-manager-plugin = self.ssm-session-manager-plugin;
     chamber = self.chamber;
     packer = self.packer;
-    amazon-ecr-credential-helper = self.amazon-ecr-credential-helper;
+    ssm-session-manager-plugin = self.ssm-session-manager-plugin;
     ### js
     nodejs-12_x = self.nodejs-12_x;
     npm-check-updates = self.nodePackages.npm-check-updates;
     yarn = self.yarn;
     ### python
-    python38Full = self.python38Full;
-    python27Full = (self.python2.withPackages (ps: [ ps.virtualenv ]));
     black = self.black;
     flake8 = self.python38Packages.flake8;
     isort = self.python38Packages.isort;
     pipenv = self.pipenv;
+    python27Full = (self.python2.withPackages (ps: [ ps.virtualenv ]));
+    python38Full = self.python38Full;
     tox = self.python38Packages.tox;
-    ### nix utils
-    vgo2nix = self.vgo2nix;
-    nixpkgs-fmt = self.nixpkgs-fmt;
+  } // super.lib.optionalAttrs super.stdenv.isDarwin {
+    ### macos only
+    chromedriver = self.chromedriver;
+    reattach-to-user-namespace = self.reattach-to-user-namespace;
+  } // {
     ### system
     inherit (self) cacert nixUnstable;
 
