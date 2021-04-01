@@ -4,6 +4,7 @@ brew cask install \
     dropbox \
     font-hack-nerd-font \
     iina \
+    homebrew/cask/dash \
     jetbrains-toolbox \
     kitty \
     skype \

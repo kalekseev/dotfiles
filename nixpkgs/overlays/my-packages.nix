@@ -4,13 +4,15 @@ self: super:
   userPackages = super.userPackages or { } // {
     ### shell utils
     bat = self.bat;
+    bindfs = self.bindfs;
+    unionfs-fuse = self.unionfs-fuse;
     starship = self.starship;
     fd = self.fd;
     icdiff = self.icdiff;
-    overmind = self.overmind;
     skim = self.skim;
     z-lua = self.z-lua;
     entr = self.entr;
+    nmap = self.nmap;
     ### nix utils
     nixpkgs-fmt = self.nixpkgs-fmt;
     ### custom

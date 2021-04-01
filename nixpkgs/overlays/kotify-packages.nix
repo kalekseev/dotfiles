@@ -10,7 +10,10 @@ self: super:
     git-lfs = self.git-lfs;
     htop = self.htop;
     jq = self.jq;
+    overmind = self.overmind;
+    pgformatter = self.pgformatter;
     pre-commit = self.pre-commit;
+    pspg = self.pspg;
     ripgrep = self.ripgrep;
     rsync = self.rsync;
     shellcheck = self.shellcheck;
