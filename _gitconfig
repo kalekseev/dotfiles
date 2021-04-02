@@ -16,7 +16,7 @@
 [github]
     user = kalekseev
 [color]
-    ui = true
+    ui = auto
 [color "status"]
     added = green
     changed = yellow

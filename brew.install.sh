@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
-brew cask install \
-    docker \
+brew install \
+    homebrew/cask/docker \
     dropbox \
     font-hack-nerd-font \
-    iina \
     homebrew/cask/dash \
+    iina \
     jetbrains-toolbox \
     kitty \
+    qlcolorcode \
+    qlimagesize \
+    qlmarkdown \
+    qlstephen \
+    qlvideo \
+    quicklook-json \
     skype \
     spotify \
     telegram \
