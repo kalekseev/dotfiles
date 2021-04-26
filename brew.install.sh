@@ -16,4 +16,5 @@ brew install \
     skype \
     spotify \
     telegram \
+    homebrew/cask/transmission \
     zoom

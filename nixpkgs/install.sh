@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-mkdir -p ~/.config
-cd ~/.config/
-ln -s ~/dotfiles/nixpkgs .
+SOURCE=$PWD/overlays
+cd "$HOME/.config/nixpkgs/overlays"
+ln -fs "$SOURCE"/my-packages.nix .
 exec nix-env -f '<nixpkgs>' -r -iA userPackages
