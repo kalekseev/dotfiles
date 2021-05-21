@@ -2,6 +2,7 @@ self: super:
 
 {
   userPackages = super.userPackages or { } // {
+    ticker = self.ticker;
     ### shell utils
     bat = self.bat;
     bindfs = self.bindfs;
@@ -13,8 +14,10 @@ self: super:
     z-lua = self.z-lua;
     entr = self.entr;
     nmap = self.nmap;
+    poetry = self.poetry;
     ### nix utils
     nixpkgs-fmt = self.nixpkgs-fmt;
+    nix-update = self.nix-update;
     ### custom
     neovim = super.neovim.override {
       extraPython3Packages = (ps: [ ps.pythonPackages.jedi ]);
