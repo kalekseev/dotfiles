@@ -19,11 +19,7 @@ self: super:
     nixpkgs-fmt = self.nixpkgs-fmt;
     nix-update = self.nix-update;
     ### custom
-    neovim = super.neovim.override {
-      extraPython3Packages = (ps: [ ps.pythonPackages.jedi ]);
-      withNodeJs = true;
-      withRuby = false;
-    };
+    pnpm = self.nodePackages.pnpm;
     preview_sh =
       let
         src = super.fetchurl {
