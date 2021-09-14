@@ -2,10 +2,52 @@
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
-require'which-key'.setup {}
+require('which-key').setup {}
+require'lualine'.setup {
+    options = {
+        theme = onedark,
+    },
+    sections = {
+        lualine_a = {'mode'},
+        lualine_b = {'branch'},
+        lualine_c = {'filename'},
+        lualine_x = {
+            {
+                'diagnostics',
+                sources = { 'nvim_lsp', 'ale' },
+                sections = {'error', 'warn', 'info', 'hint'}
+            },
+            'filetype'
+        },
+        lualine_y = {'progress'},
+        lualine_z = {'location'}
+    },
+}
+require('gitsigns').setup {}
+
+local actions = require('telescope.actions')
+require('telescope').setup {
+    defaults = {
+        mappings = {
+            n = {
+                ["q"] = actions.close,
+            },
+            i = {
+                ["<C-u>"] = function()
+                    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>cc", true, false, true), "t", true)
+                end,
+            },
+        },
+    }
+}
+
+require('orgmode').setup({
+        org_agenda_files = {'~/org/*'},
+        org_default_notes_file = '~/org/notes.org',
+    })
+
 -- luasnip setup
 local luasnip = require 'luasnip'
-
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup {
@@ -56,6 +98,7 @@ cmp.setup {
                 end
             }
         },
+        { name = 'orgmode'},
     },
 }
 

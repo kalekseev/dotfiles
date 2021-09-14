@@ -2,7 +2,17 @@ self: super:
 
 {
   vimPlugins = super.vimPlugins // {
-    asyncrun-vim = super.vimUtils.buildVimPlugin {
+    vim-coverage-py = super.vimUtils.buildVimPluginFrom2Nix {
+      pname = "vim-coverage.py";
+      version = "2021-08-01";
+      src = super.fetchFromGitHub {
+        owner = "kalekseev";
+        repo = "vim-coverage.py";
+        rev = "0cabe076776640988c245a9eb640da2e6f4b2bc4";
+        sha256 = "sha256-9dpw+0UmuE9R8Lr+npJ9vQYwoSexsU/XJbhnOL+HulY=";
+      };
+    };
+    asyncrun-vim = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "asyncrun-vim";
       version = "2021-03-29";
       src = super.fetchFromGitHub {
@@ -12,7 +22,7 @@ self: super:
         sha256 = "sha256-xEmc85GsKB4fTZYzf9z+apxdOAvW5AwUNA8bSjXg7Ic=";
       };
     };
-    vim-argwrap = super.vimUtils.buildVimPlugin {
+    vim-argwrap = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "vim-argwrap";
       version = "2021-06-11";
       src = super.fetchFromGitHub {
@@ -22,7 +32,7 @@ self: super:
         sha256 = "sha256-n5O9qctmhXyMb6eHjbNdRqzvETjtVOj9f1aFpdPatg4=";
       };
     };
-    vim-qfreplace = super.vimUtils.buildVimPlugin {
+    vim-qfreplace = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "vim-qfreplace";
       version = "2014-06-07";
       src = super.fetchFromGitHub {
@@ -32,7 +42,7 @@ self: super:
         sha256 = "sha256-Ttu9QqIRLf1o+DX0Un3quk4TcOgzRhnDidqY7iMvQGE=";
       };
     };
-    vim-jdaddy = super.vimUtils.buildVimPlugin {
+    vim-jdaddy = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "vim-jdaddy";
       version = "2014-06-07";
       src = super.fetchFromGitHub {
@@ -40,6 +50,16 @@ self: super:
         repo = "vim-jdaddy";
         rev = "5cffddb8e644d3a3d0c0ee6a7abf5b713e3c4f97";
         sha256 = "sha256-4Bj7ekoNCG80C4Lb9+l6KFJfeXQ0NbtjOKmOnlzw6u8=";
+      };
+    };
+    orgmode-nvim = super.vimUtils.buildVimPluginFrom2Nix {
+      pname = "orgmode-nvim";
+      version = "2021-09-07";
+      src = super.fetchFromGitHub {
+        owner = "kristijanhusak";
+        repo = "orgmode.nvim";
+        rev = "5a7a4e5ad0b9e194888083c0863092ccf720cc52";
+        sha256 = "sha256-NDSLw2+zgeTumCENos8VL79olZWlzD2ayKmfLijIi7A=";
       };
     };
   };
@@ -58,69 +78,65 @@ self: super:
           source ${../../vim/init.vim}
           source ${../../vim/init.lua}
           set rtp+=${../../vim/after}
-          " autocmd FileType csv :packadd csv-vim
         '';
         packages.myVimPackages = with self.vimPlugins; {
           start = [
-            nvim-lspconfig
-            nvim-cmp
-            cmp-path
+            # -- neovim
             cmp-buffer
             cmp-nvim-lsp
+            cmp-path
             cmp_luasnip
+            gitsigns-nvim
+            lualine-nvim
             luasnip
-            vim-go
+            nvim-cmp
+            nvim-lspconfig
+            nvim-tree-lua
+            nvim-web-devicons
+            # onedark-nvim
+            orgmode-nvim
             plenary-nvim
             telescope-nvim
-            vim-polyglot
-            vim-devicons
-            editorconfig-vim
-            ale
-            vim-airline
-            vim-airline-themes
-            delimitMate
-            indentLine
-            onedark-vim
-            onedark-nvim
-            # vimproc
-            vim-fugitive
-            vim-surround
-            vim-eunuch
-            vim-abolish
-            vim-dadbod
-            vim-jdaddy
-            vim-repeat
             which-key-nvim
-            # vim-rhubarb
-            nerdtree
-            tcomment_vim
-            vim-signify
-            vim-visualstar
-            smartpairs-vim
-            matchit-zip
-            camelcasemotion
-            splitjoin-vim
-            vim-argwrap
-            # echodoc
-            # jedi-vim
-            vim-qfreplace
+            # -- vim
+            vim-coverage-py
             ReplaceWithRegister
-            undotree
-            vim-niceblock
-            # tagbar
-            emmet-vim
-            vim-test
+            ale
             asyncrun-vim
-            vim-snippets
-            vim-tsx
-            targets-vim
-            vim-racer
-            vim-tmux-navigator
+            camelcasemotion
+            delimitMate
+            direnv-vim
+            editorconfig-vim
+            emmet-vim
             goyo-vim
+            indentLine
             limelight-vim
-            # direnv-vim
+            matchit-zip
+            onedark-vim
+            smartpairs-vim
+            splitjoin-vim
+            targets-vim
+            tcomment_vim
+            undotree
+            vim-abolish
+            vim-argwrap
+            vim-dadbod
+            vim-eunuch
+            vim-fugitive
+            vim-rhubarb
+            vim-go
+            vim-jdaddy
+            vim-niceblock
+            vim-polyglot
+            vim-qfreplace
+            vim-racer
+            vim-repeat
             vim-rooter
-            # LeaderF
+            vim-surround
+            vim-test
+            vim-tmux-navigator
+            vim-tsx
+            vim-visualstar
           ];
           opt = [ ];
         };

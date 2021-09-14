@@ -253,11 +253,9 @@ nnoremap <C-s> :w<CR>
 cmap w!! %!sudo tee > /dev/null %
 
 " remove trailing whitespace
-nmap <leader>t :%s/\s\+$<CR>
+nmap <leader>tr :%s/\s\+$<CR>
 
 " indent
-nmap < <<
-nmap > >>
 xmap < <gV
 xmap > >gV
 
@@ -282,17 +280,15 @@ command! -range ApplyQMacros execute '<line1>,<line2>normal! @q'
 "* * * * * * * * * * * * * * * * * PLUGINS * * * * * * * * * * * * * * * * * *
 " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+"nvim-tree-lua
+nmap <silent> <C-f> :NvimTreeFindFile<CR>
+let g:nvim_tree_disable_netrw = 0
+
 "vim-argwrap
 nnoremap <silent>gW :<C-u>:ArgWrap<CR>
 
 "editorconfig-vim
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
-
-
-" vim-signify
-let g:signify_vcs_list = [ 'git', 'hg' ]
-let g:signify_sign_change = '~'
-let g:signify_disable_by_default = 1
 
 
 " CamelCaseMotion
@@ -311,15 +307,6 @@ let g:javascript_enable_domhtmlcss = 1
 let g:javascript_conceal = 1
 
 
-" NERDTree
-"==============================================================================
-silent! nmap <silent> <leader>p :NERDTreeToggle<CR>
-nmap <silent> <C-f> :NERDTreeFind<CR>
-let NERDTreeIgnore = ['\.pyc$', '\.module.scss.d.ts']
-let NERDTreeQuitOnOpen = 1
-
-
-
 " tComment
 "==============================================================================
 map <Space>/ :TComment<CR>
@@ -335,21 +322,6 @@ xmap A <Plug>(niceblock-A)
 "==============================================================================
 let g:tagbar_autoclose = 1
 nmap <silent> <F9> :TagbarToggle<CR>
-
-
-" vim-airline
-"==============================================================================
-let g:airline_detect_paste = 1
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#ale#error_symbol = '✗ '
-let g:airline#extensions#ale#warning_symbol = '⚠ '
-
-let g:airline_powerline_fonts = 1
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.paste = 'Þ'
 
 
 " ale
@@ -394,7 +366,6 @@ map <Leader>2 :diffget BASE<CR>
 map <Leader>3 :diffget REMOTE<CR>
 set diffopt+=internal,algorithm:patience
 
-
 " delimitMate
 "==============================================================================
 "<CR> remaped for neocomplete, don't forget add delimitMateCr
@@ -402,35 +373,11 @@ let g:delimitMate_expand_cr = 1
 let g:delimitMate_expand_space = 1
 
 
-" echodoc
-"==============================================================================
-" let g:echodoc_enable_at_startup = 1
-
-
-" LeaderF
-"
-" let g:Lf_RgConfig = [
-"         \ "--max-columns=150",
-"         \ "--glob=!.git/*",
-"         \ "--hidden"
-"     \ ]
-" let g:Lf_PreviewResult = { 'File': 1, 'Colorscheme': 1 }
-" let g:Lf_PreviewCode = 1
-" let g:Lf_WindowPosition = 'popup'
-" let g:Lf_ShortcutF = "<C-p>"
-" let g:Lf_Gtagslabel = 'ctags'
-" let g:Lf_PreviewInPopup = 1
-" noremap <leader>l :<C-U><C-R>=printf("Leaderf! mru %s", "")<CR><CR>
-" noremap <leader>b :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
-" noremap <leader>a :<C-U><C-R>=printf("Leaderf rg -e %s ", expand("<cword>"))<CR><CR>
-" nmap <leader>f :<C-U>Leaderf rg<CR>
-" noremap <leader>c :<C-U>Leaderf colorscheme<CR>
-
-
 " telescope
-nmap <leader>f :<C-U>Telescope live_grep<CR>
-nmap <leader>l :<C-U>Telescope oldfiles<CR>
-nmap <C-p> :<C-U>Telescope find_files<CR>
+nmap <leader>f :<C-U>Telescope live_grep theme=get_dropdown<CR>
+nmap <leader>a :<C-U>Telescope grep_string theme=get_dropdown<CR>
+nmap <leader>l :<C-U>Telescope oldfiles theme=get_dropdown<CR>
+nmap <C-p> :<C-U>Telescope find_files theme=get_dropdown<CR>
 
 " indentline
 "==============================================================================
@@ -454,6 +401,12 @@ let test#python#runner = 'pytest'
 let test#strategy = "asyncrun_background"
 " let g:test#preserve_screen = 1
 let test#neovim#term_position = "vert"
+
+nmap <silent> <leader>tt :TestNearest<CR>
+nmap <silent> <leader>tf :TestFile<CR>
+nmap <silent> <leader>ta :TestSuite<CR>
+nmap <silent> <leader>tl :TestLast<CR>
+nmap <silent> <leader>tg :TestVisit<CR>
 
 "* * * * * * * * * * * * * * * * * EXTRA * * * * * * * * * * * * * * * * * * *
 " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
