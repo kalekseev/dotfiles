@@ -3,23 +3,23 @@ self: super:
 {
   userPackages = super.userPackages or { } // {
     ticker = self.ticker;
+    dotnet-sdk_6 = self.dotnet-sdk_6;
     ### shell utils
     bat = self.bat;
-    bindfs = self.bindfs;
-    unionfs-fuse = self.unionfs-fuse;
+    pspg = self.pspg;
+    # bindfs = self.bindfs;
+    # unionfs-fuse = self.unionfs-fuse;
     starship = self.starship;
     fd = self.fd;
     icdiff = self.icdiff;
     skim = self.skim;
     z-lua = self.z-lua;
-    entr = self.entr;
     nmap = self.nmap;
     poetry = self.poetry;
     ### nix utils
     nixpkgs-fmt = self.nixpkgs-fmt;
     nix-update = self.nix-update;
     ### custom
-    pnpm = self.nodePackages.pnpm;
     preview_sh =
       let
         src = super.fetchurl {

@@ -54,12 +54,12 @@ self: super:
     };
     orgmode-nvim = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "orgmode-nvim";
-      version = "2021-09-07";
+      version = "2021-09-10";
       src = super.fetchFromGitHub {
         owner = "kristijanhusak";
         repo = "orgmode.nvim";
-        rev = "5a7a4e5ad0b9e194888083c0863092ccf720cc52";
-        sha256 = "sha256-NDSLw2+zgeTumCENos8VL79olZWlzD2ayKmfLijIi7A=";
+        rev = "e7fff702db42ed1d90bc9fa46c3b3a102024041f";
+        sha256 = "sha256-ki1jXviPswQ3muYU15slIlAEh9Ry9IlCJ0YvWY8Evzs=";
       };
     };
   };
@@ -85,10 +85,10 @@ self: super:
             cmp-buffer
             cmp-nvim-lsp
             cmp-path
-            cmp_luasnip
+            cmp-vsnip
+            vim-vsnip
             gitsigns-nvim
             lualine-nvim
-            luasnip
             nvim-cmp
             nvim-lspconfig
             nvim-tree-lua

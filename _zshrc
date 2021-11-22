@@ -80,6 +80,8 @@ source ~/dotfiles/zsh/fab-completion.sh
 complete -C 'aws_completer' aws
 
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
+export PATH="$PATH:$HOME/.dotnet/tools"
+export DOTNET_ROOT=$(dirname $(dirname $(readlink $(which dotnet))))
 eval "$(z --init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"

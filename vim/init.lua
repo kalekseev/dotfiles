@@ -46,15 +46,13 @@ require('orgmode').setup({
         org_default_notes_file = '~/org/notes.org',
     })
 
--- luasnip setup
-local luasnip = require 'luasnip'
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup {
     snippet = {
-        expand = function(args)
-            require('luasnip').lsp_expand(args.body)
-        end,
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body)
+      end,
     },
     mapping = {
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
@@ -67,34 +65,24 @@ cmp.setup {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         },
-        ['<Tab>'] = function(fallback)
-            if vim.fn.pumvisible() == 1 then
-                vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
-            elseif luasnip.expand_or_jumpable() then
-                vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
-            else
-                fallback()
-            end
-        end,
-        ['<S-Tab>'] = function(fallback)
-            if vim.fn.pumvisible() == 1 then
-                vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-p>', true, true, true), 'n')
-            elseif luasnip.jumpable(-1) then
-                vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
-            else
-                fallback()
-            end
-        end,
+        ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+        ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
     },
     sources = {
         { name = 'nvim_lsp' },
-        { name = 'luasnip' },
+        { name = 'vsnip' },
         { name = 'path' },
         {
             name = 'buffer',
             opts = {
                 get_bufnrs = function()
-                    return vim.api.nvim_list_bufs()
+                    local bufs = {}
+                    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                        if vim.api.nvim_buf_is_loaded(buf) then
+                            bufs[buf] = true
+                        end
+                    end
+                    return vim.tbl_keys(bufs)
                 end
             }
         },
@@ -128,7 +116,7 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
     buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-    -- buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+    buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
 local nvim_lsp = require('lspconfig')
@@ -150,6 +138,12 @@ nvim_lsp.pylsp.setup {
     end,
 }
 
+require'lspconfig'.fsautocomplete.setup{
+    on_attach = on_attach,
+    flags = { debounce_text_changes = 150 },
+    capabilities = capabilities,
+}
+
 local servers = { 'tsserver' }
 for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
@@ -160,3 +154,47 @@ for _, lsp in ipairs(servers) do
         cmd = { vim.g.nix_exes[lsp], "--stdio" },
     }
 end
+
+
+require'nvim-tree'.setup {
+    disable_netrw       = false,
+    hijack_netrw        = true,
+    open_on_setup       = false,
+    ignore_ft_on_setup  = {},
+    update_to_buf_dir   = {
+        enable = true,
+        auto_open = true,
+    },
+    auto_close          = true,
+    open_on_tab         = false,
+    hijack_cursor       = false,
+    update_cwd          = false,
+    diagnostics         = {
+        enable = false,
+        icons = {
+            hint = "",
+            info = "",
+            warning = "",
+            error = "",
+        }
+    },
+    update_focused_file = {
+        enable      = false,
+        update_cwd  = false,
+        ignore_list = {}
+    },
+    system_open = {
+        cmd  = nil,
+        args = {}
+    },
+    view = {
+        width = 30,
+        height = 30,
+        side = 'left',
+        auto_resize = false,
+        mappings = {
+            custom_only = false,
+            list = {}
+        }
+    }
+}

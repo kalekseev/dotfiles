@@ -282,7 +282,6 @@ command! -range ApplyQMacros execute '<line1>,<line2>normal! @q'
 
 "nvim-tree-lua
 nmap <silent> <C-f> :NvimTreeFindFile<CR>
-let g:nvim_tree_disable_netrw = 0
 
 "vim-argwrap
 nnoremap <silent>gW :<C-u>:ArgWrap<CR>
@@ -330,7 +329,7 @@ let g:ale_linters = {
             \   'javascript': ['eslint'],
             \   'python': ['flake8'],
             \   'scss': ['stylelint'],
-            \   'typescript': ['eslint', 'tsserver'],
+            \   'typescript': ['eslint'],
             \}
 let g:ale_sign_error = '✗'
 let g:ale_sign_warning = '⚠'
@@ -404,9 +403,12 @@ let test#neovim#term_position = "vert"
 
 nmap <silent> <leader>tt :TestNearest<CR>
 nmap <silent> <leader>tf :TestFile<CR>
-nmap <silent> <leader>ta :TestSuite<CR>
+nmap <silent> <leader>ts :TestSuite<CR>
 nmap <silent> <leader>tl :TestLast<CR>
 nmap <silent> <leader>tg :TestVisit<CR>
+nmap <silent> <leader>tT :autocmd BufWritePost * TestNearest<CR>
+nmap <silent> <leader>tF :autocmd BufWritePost * TestFile<CR>
+nmap <silent> <leader>tq :autocmd! BufWritePost *<CR>
 
 "* * * * * * * * * * * * * * * * * EXTRA * * * * * * * * * * * * * * * * * * *
 " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -489,4 +491,4 @@ let g:vue_disable_pre_processors=1
 
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
-au FileType sql setl formatprg=g:nix_exes["pg_format"]\ -
+au FileType sql let &l:formatprg=g:nix_exes['pg_format'] . ' -'
