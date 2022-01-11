@@ -63,6 +63,25 @@ self: super:
       };
     };
   };
+  python39 = super.python39.override {
+    packageOverrides = python-self: python-super: {
+      python-lsp-server = (python-super.python-lsp-server.override
+        {
+          withAutopep8 = false;
+          withFlake8 = false;
+          withMccabe = false;
+          withPycodestyle = false;
+          withPydocstyle = false;
+          withPyflakes = false;
+          withPylint = false;
+          withYapf = false;
+        }).overridePythonAttrs
+        (oldAttrs: {
+          doCheck = false;
+          checkInputs = [ ];
+        });
+    };
+  };
   userPackages = super.userPackages or { } // {
     neovim = super.neovim.override {
       extraPython3Packages = (ps: [ ps.pythonPackages.jedi ]);
@@ -73,7 +92,7 @@ self: super:
           let g:nix_exes = {
           \ 'pylsp': '${self.python39Packages.python-lsp-server}/bin/pylsp',
           \ 'tsserver': '${self.nodePackages.typescript-language-server}/bin/typescript-language-server',
-          \ 'pg_format': '${super.userPackages.pgformatter}/bin/pg_format',
+          \ 'pg_format': '${self.userPackages.pgformatter}/bin/pg_format',
           \}
           source ${../../vim/init.vim}
           source ${../../vim/init.lua}

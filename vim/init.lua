@@ -5,7 +5,7 @@ vim.o.completeopt = 'menuone,noselect'
 require('which-key').setup {}
 require'lualine'.setup {
     options = {
-        theme = onedark,
+        theme = 'onedark',
     },
     sections = {
         lualine_a = {'mode'},
@@ -14,7 +14,7 @@ require'lualine'.setup {
         lualine_x = {
             {
                 'diagnostics',
-                sources = { 'nvim_lsp', 'ale' },
+                sources = { 'nvim_diagnostic', 'ale' },
                 sections = {'error', 'warn', 'info', 'hint'}
             },
             'filetype'
@@ -74,7 +74,7 @@ cmp.setup {
         { name = 'path' },
         {
             name = 'buffer',
-            opts = {
+            option = {
                 get_bufnrs = function()
                     local bufs = {}
                     for _, buf in ipairs(vim.api.nvim_list_bufs()) do

@@ -3,6 +3,7 @@ self: super:
 {
   userPackages = super.userPackages or { } // {
     ticker = self.ticker;
+    timewarrior = self.timewarrior;
     dotnet-sdk_6 = self.dotnet-sdk_6;
     ### shell utils
     bat = self.bat;
@@ -12,7 +13,7 @@ self: super:
     starship = self.starship;
     fd = self.fd;
     icdiff = self.icdiff;
-    skim = self.skim;
+    # skim = self.skim;
     z-lua = self.z-lua;
     nmap = self.nmap;
     poetry = self.poetry;
