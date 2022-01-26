@@ -48,32 +48,7 @@ mkcd() {
 }
 
 cdsitepackages() {
-    local python=`which python`
-    local venv=${python%/bin/python}
-    local python_v=$(readlink $python)
-    cd "$venv/lib/$python_v/site-packages/"
+    cd $(python -c 'import site; print(site.getsitepackages()[0])')
 }
 
 function anybar { echo -n $1 | nc -4u -w0 localhost ${2:-1738}; }
-
-function fix_pipx {
-    # https://github.com/pipxproject/pipx/issues/146#issuecomment-487706652
-    VENV_DIR="${1:-${HOME}/.local/pipx/venvs}"
-
-    # Delete any symlinks that point nowhere
-    find -L "$VENV_DIR" -type l | xargs rm
-
-    # Assume that a directory is a broken virtual environment if
-    # after the symlink cleanup:
-    #
-    # 1. bin/activate exists
-    # 2. bin/python does not exist
-    #
-    # And for those cases, create a fresh virtual environment.
-    for dir in $(find "$VENV_DIR" -type d -depth 1); do
-    if [[ -f "$dir/bin/activate" && -d "$dir/lib/python3.7" && ! -f "$dir/bin/python" ]]; then
-        echo "Refreshing Python virtual environment for $dir..."
-        python3 -m venv $dir
-    fi
-    done
-}

@@ -52,14 +52,14 @@ self: super:
         sha256 = "sha256-4Bj7ekoNCG80C4Lb9+l6KFJfeXQ0NbtjOKmOnlzw6u8=";
       };
     };
-    orgmode-nvim = super.vimUtils.buildVimPluginFrom2Nix {
-      pname = "orgmode-nvim";
-      version = "2021-09-10";
+    ionide-vim = super.vimUtils.buildVimPluginFrom2Nix {
+      pname = "ionide-vim";
+      version = "2021-12-03";
       src = super.fetchFromGitHub {
-        owner = "kristijanhusak";
-        repo = "orgmode.nvim";
-        rev = "e7fff702db42ed1d90bc9fa46c3b3a102024041f";
-        sha256 = "sha256-ki1jXviPswQ3muYU15slIlAEh9Ry9IlCJ0YvWY8Evzs=";
+        owner = "ionide";
+        repo = "ionide-vim";
+        rev = "b341da457c352d83e155e8d3979e4983686abb11";
+        sha256 = "sha256-+UD3oelnlOl+pCkW7SmkSu06gzGxT0mu9FcOoK3Rp00=";
       };
     };
   };
@@ -113,7 +113,7 @@ self: super:
             nvim-tree-lua
             nvim-web-devicons
             # onedark-nvim
-            orgmode-nvim
+            ionide-vim
             plenary-nvim
             telescope-nvim
             which-key-nvim

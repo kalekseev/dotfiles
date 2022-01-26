@@ -41,11 +41,6 @@ require('telescope').setup {
     }
 }
 
-require('orgmode').setup({
-        org_agenda_files = {'~/org/*'},
-        org_default_notes_file = '~/org/notes.org',
-    })
-
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup {
@@ -86,7 +81,6 @@ cmp.setup {
                 end
             }
         },
-        { name = 'orgmode'},
     },
 }
 
@@ -138,7 +132,7 @@ nvim_lsp.pylsp.setup {
     end,
 }
 
-require'lspconfig'.fsautocomplete.setup{
+require'ionide'.setup{
     on_attach = on_attach,
     flags = { debounce_text_changes = 150 },
     capabilities = capabilities,
