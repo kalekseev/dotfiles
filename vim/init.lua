@@ -132,22 +132,25 @@ nvim_lsp.pylsp.setup {
     end,
 }
 
-require'ionide'.setup{
+nvim_lsp.csharp_ls.setup{
     on_attach = on_attach,
     flags = { debounce_text_changes = 150 },
     capabilities = capabilities,
 }
 
-local servers = { 'tsserver' }
-for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup {
-        on_attach = on_attach,
-        flags = { debounce_text_changes = 150 },
-        capabilities = capabilities,
+nvim_lsp.tsserver.setup {
+    on_attach = on_attach,
+    flags = { debounce_text_changes = 150 },
+    capabilities = capabilities,
 
-        cmd = { vim.g.nix_exes[lsp], "--stdio" },
-    }
-end
+    cmd = { vim.g.nix_exes.tsserver, "--stdio" },
+}
+
+require'ionide'.setup{
+    on_attach = on_attach,
+    flags = { debounce_text_changes = 150 },
+    capabilities = capabilities,
+}
 
 
 require'nvim-tree'.setup {

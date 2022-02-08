@@ -397,10 +397,6 @@ let g:direnv_silent_load = 1
 
 " ionide-vim
 let g:fsharp#lsp_auto_setup = 0
-let g:fsharp#fsautocomplete_command =
-    \ [ 'fsautocomplete',
-    \   '--background-service-enabled'
-    \ ]
 
 " test
 let test#python#runner = 'pytest'

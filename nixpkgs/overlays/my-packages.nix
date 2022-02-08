@@ -2,6 +2,7 @@ self: super:
 
 {
   userPackages = super.userPackages or { } // {
+    dos2unix = self.dos2unix;
     ticker = self.ticker;
     timewarrior = self.timewarrior;
     dotnet-sdk_6 = self.dotnet-sdk_6;

@@ -22,16 +22,6 @@ self: super:
         sha256 = "sha256-xEmc85GsKB4fTZYzf9z+apxdOAvW5AwUNA8bSjXg7Ic=";
       };
     };
-    vim-argwrap = super.vimUtils.buildVimPluginFrom2Nix {
-      pname = "vim-argwrap";
-      version = "2021-06-11";
-      src = super.fetchFromGitHub {
-        owner = "FooSoft";
-        repo = "vim-argwrap";
-        rev = "f1c1d2b0c763ed77f9b9f2515ffff99a72c6a757";
-        sha256 = "sha256-n5O9qctmhXyMb6eHjbNdRqzvETjtVOj9f1aFpdPatg4=";
-      };
-    };
     vim-qfreplace = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "vim-qfreplace";
       version = "2014-06-07";
@@ -42,24 +32,14 @@ self: super:
         sha256 = "sha256-Ttu9QqIRLf1o+DX0Un3quk4TcOgzRhnDidqY7iMvQGE=";
       };
     };
-    vim-jdaddy = super.vimUtils.buildVimPluginFrom2Nix {
-      pname = "vim-jdaddy";
-      version = "2014-06-07";
-      src = super.fetchFromGitHub {
-        owner = "tpope";
-        repo = "vim-jdaddy";
-        rev = "5cffddb8e644d3a3d0c0ee6a7abf5b713e3c4f97";
-        sha256 = "sha256-4Bj7ekoNCG80C4Lb9+l6KFJfeXQ0NbtjOKmOnlzw6u8=";
-      };
-    };
     ionide-vim = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "ionide-vim";
-      version = "2021-12-03";
+      version = "2022-02-06";
       src = super.fetchFromGitHub {
         owner = "ionide";
         repo = "ionide-vim";
-        rev = "b341da457c352d83e155e8d3979e4983686abb11";
-        sha256 = "sha256-+UD3oelnlOl+pCkW7SmkSu06gzGxT0mu9FcOoK3Rp00=";
+        rev = "6eb5de0b13cee781d0ccc0559d614ea032967293";
+        sha256 = "sha256-p8qPjBO83KQSNRbIZ7Zt4fEYaWzAjkyI3klUgXLq+ho=";
       };
     };
   };
@@ -75,10 +55,6 @@ self: super:
           withPyflakes = false;
           withPylint = false;
           withYapf = false;
-        }).overridePythonAttrs
-        (oldAttrs: {
-          doCheck = false;
-          checkInputs = [ ];
         });
     };
   };
@@ -118,6 +94,7 @@ self: super:
             telescope-nvim
             which-key-nvim
             # -- vim
+            jdaddy-vim
             vim-coverage-py
             ReplaceWithRegister
             ale
@@ -144,7 +121,6 @@ self: super:
             vim-fugitive
             vim-rhubarb
             vim-go
-            vim-jdaddy
             vim-niceblock
             vim-polyglot
             vim-qfreplace
