@@ -6,13 +6,16 @@ self: super:
     ticker = self.ticker;
     timewarrior = self.timewarrior;
     dotnet-sdk_6 = self.dotnet-sdk_6;
+    yt-dlp = self.yt-dlp;
     ### shell utils
     bat = self.bat;
-    pspg = self.pspg;
+    difftastic = self.difftastic;
+    # pspg = self.pspg;
     # bindfs = self.bindfs;
     # unionfs-fuse = self.unionfs-fuse;
     starship = self.starship;
     fd = self.fd;
+    sd = self.sd;
     icdiff = self.icdiff;
     # skim = self.skim;
     z-lua = self.z-lua;

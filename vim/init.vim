@@ -61,7 +61,7 @@ if !has('nvim')
 endif
 
 " always show statusline
-set laststatus=2
+set laststatus=3
 
 " hide buffers when not displayed
 set hidden

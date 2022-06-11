@@ -45,17 +45,18 @@ self: super:
   };
   python39 = super.python39.override {
     packageOverrides = python-self: python-super: {
-      python-lsp-server = (python-super.python-lsp-server.override
-        {
-          withAutopep8 = false;
-          withFlake8 = false;
-          withMccabe = false;
-          withPycodestyle = false;
-          withPydocstyle = false;
-          withPyflakes = false;
-          withPylint = false;
-          withYapf = false;
-        });
+      python-lsp-server = (
+        (python-super.python-lsp-server.override
+          {
+            withAutopep8 = false;
+            withFlake8 = false;
+            withMccabe = false;
+            withPycodestyle = false;
+            withPydocstyle = false;
+            withPyflakes = false;
+            withPylint = false;
+            withYapf = false;
+          }).overridePythonAttrs (o: { doCheck = false; }));
     };
   };
   userPackages = super.userPackages or { } // {
@@ -120,7 +121,7 @@ self: super:
             vim-eunuch
             vim-fugitive
             vim-rhubarb
-            vim-go
+            # vim-go
             vim-niceblock
             vim-polyglot
             vim-qfreplace

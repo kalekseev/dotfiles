@@ -47,3 +47,7 @@
     path=.gitconfig.local
 [init]
     defaultBranch = main
+[diff]
+    external = difft --background light
+[pager]
+    difftool = true
