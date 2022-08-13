@@ -3,39 +3,42 @@
 vim.o.completeopt = 'menuone,noselect'
 
 require('which-key').setup {}
-require'lualine'.setup {
+require 'lualine'.setup {
     options = {
         theme = 'onedark',
     },
     sections = {
-        lualine_a = {'mode'},
-        lualine_b = {'branch'},
-        lualine_c = {'filename'},
+        lualine_a = { 'mode' },
+        lualine_b = { 'branch' },
+        lualine_c = { 'filename' },
         lualine_x = {
             {
                 'diagnostics',
-                sources = { 'nvim_diagnostic', 'ale' },
-                sections = {'error', 'warn', 'info', 'hint'}
+                sources = { 'nvim_diagnostic' },
+                sections = { 'error', 'warn', 'info', 'hint' }
             },
             'filetype'
         },
-        lualine_y = {'progress'},
-        lualine_z = {'location'}
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' }
     },
 }
 require('gitsigns').setup {}
 
 local actions = require('telescope.actions')
+local trouble = require("trouble.providers.telescope")
 require('telescope').setup {
     defaults = {
         mappings = {
             n = {
                 ["q"] = actions.close,
+                ["<c-t>"] = trouble.open_with_trouble
             },
             i = {
                 ["<C-u>"] = function()
                     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>cc", true, false, true), "t", true)
                 end,
+                ["<c-t>"] = trouble.open_with_trouble
             },
         },
     }
@@ -45,9 +48,9 @@ require('telescope').setup {
 local cmp = require 'cmp'
 cmp.setup {
     snippet = {
-      expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body)
-      end,
+        expand = function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+        end,
     },
     mapping = {
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
@@ -88,10 +91,11 @@ cmp.setup {
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+    -- local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
     -- Mappings.
-    local opts = { noremap=true, silent=true }
+    local opts = { noremap = true, silent = true }
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
@@ -120,7 +124,6 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 nvim_lsp.pylsp.setup {
     on_attach = on_attach,
-    flags = { debounce_text_changes = 150 },
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes.pylsp },
@@ -132,33 +135,60 @@ nvim_lsp.pylsp.setup {
     end,
 }
 
-nvim_lsp.csharp_ls.setup{
+nvim_lsp.csharp_ls.setup {
     on_attach = on_attach,
-    flags = { debounce_text_changes = 150 },
     capabilities = capabilities,
 }
 
 nvim_lsp.tsserver.setup {
     on_attach = on_attach,
-    flags = { debounce_text_changes = 150 },
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes.tsserver, "--stdio" },
 }
 
-require'ionide'.setup{
+nvim_lsp.sumneko_lua.setup {
     on_attach = on_attach,
-    flags = { debounce_text_changes = 150 },
+    capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes.lua_language_server, "--stdio" },
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { 'vim' }
+            },
+            telemetry = {
+                enable = false,
+            },
+        }
+    }
+}
+
+local null_ls = require('null-ls')
+null_ls.setup({
+    sources = {
+        null_ls.builtins.diagnostics.eslint_d.with({
+            command = vim.g.nix_exes.eslint_d
+        }),
+        null_ls.builtins.diagnostics.flake8,
+        null_ls.builtins.diagnostics.shellcheck.with({
+            command = vim.g.nix_exes.shellcheck
+        }),
+    },
+    on_attach = on_attach,
+})
+
+require 'ionide'.setup {
+    on_attach = on_attach,
     capabilities = capabilities,
 }
 
-
-require'nvim-tree'.setup {
+require 'nvim-tree'.setup {
     disable_netrw       = false,
     hijack_netrw        = true,
     open_on_setup       = false,
     ignore_ft_on_setup  = {},
-    hijack_directories   = {
+    hijack_directories  = {
         enable = true,
         auto_open = true,
     },
@@ -179,11 +209,11 @@ require'nvim-tree'.setup {
         update_cwd  = false,
         ignore_list = {}
     },
-    system_open = {
+    system_open         = {
         cmd  = nil,
         args = {}
     },
-    view = {
+    view                = {
         width = 30,
         height = 30,
         side = 'left',

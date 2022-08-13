@@ -325,20 +325,11 @@ nmap <silent> <F9> :TagbarToggle<CR>
 
 " ale
 "==============================================================================
-let g:ale_linters = {
-            \   'javascript': ['eslint'],
-            \   'python': ['flake8'],
-            \   'scss': ['stylelint'],
-            \   'typescript': ['eslint'],
-            \}
-let g:ale_sign_error = '✗'
-let g:ale_sign_warning = '⚠'
-let g:ale_lint_on_save = 1
-let g:ale_lint_on_text_changed = 0
+let g:ale_enabled = 0
 let g:ale_fix_on_save = 1
-let g:ale_floating_preview = 1
 let g:ale_fixers = {
 \   'javascript': ['eslint', 'prettier'],
+\   'json': ['prettier'],
 \   'typescript': ['eslint', 'prettier'],
 \   'typescriptreact': ['eslint', 'prettier'],
 \   'vue': ['eslint'],
@@ -348,12 +339,6 @@ let g:ale_fixers = {
 \   'markdown': ['prettier'],
 \   'nix': ['nixpkgs-fmt'],
 \}
-
-
-nmap <silent> <leader>pe <Plug>(ale_previous_wrap)
-nmap <silent> <leader>ne <Plug>(ale_next_wrap)
-" nnoremap <Leader>f <Plug>(ale_fix)
-nnoremap <Leader>h :ALEDetail<CR>
 
 
 " git and diff
@@ -494,4 +479,4 @@ let g:vue_disable_pre_processors=1
 
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
-au FileType sql let &l:formatprg=g:nix_exes['pg_format'] . ' -'
+au FileType sql let &l:formatprg=g:nix_exes['sql-formatter']

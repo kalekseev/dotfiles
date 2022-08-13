@@ -69,7 +69,11 @@ self: super:
           let g:nix_exes = {
           \ 'pylsp': '${self.python39Packages.python-lsp-server}/bin/pylsp',
           \ 'tsserver': '${self.nodePackages.typescript-language-server}/bin/typescript-language-server',
-          \ 'pg_format': '${self.userPackages.pgformatter}/bin/pg_format',
+          \ 'pg_format': '${self.pgformatter}/bin/pg_format',
+          \ 'sql-formatter': '${super.userPackages.sql-formatter}/bin/sql-formatter',
+          \ 'shellcheck': '${self.shellcheck}/bin/shellcheck',
+          \ 'eslint_d': '${self.nodePackages.eslint_d}/bin/eslint_d',
+          \ 'lua_language_server': '${self.sumneko-lua-language-server}/bin/lua-language-server',
           \}
           source ${../../vim/init.vim}
           source ${../../vim/init.lua}
@@ -89,6 +93,8 @@ self: super:
             nvim-lspconfig
             nvim-tree-lua
             nvim-web-devicons
+            null-ls-nvim
+            trouble-nvim
             # onedark-nvim
             ionide-vim
             plenary-nvim
@@ -130,6 +136,7 @@ self: super:
             vim-rooter
             vim-surround
             vim-test
+            vim-dispatch # recommended for vim-test
             vim-tmux-navigator
             vim-tsx
             vim-visualstar

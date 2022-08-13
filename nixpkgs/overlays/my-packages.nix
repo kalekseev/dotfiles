@@ -7,6 +7,13 @@ self: super:
     timewarrior = self.timewarrior;
     dotnet-sdk_6 = self.dotnet-sdk_6;
     yt-dlp = self.yt-dlp;
+    sql-formatter = super.nodePackages.sql-formatter.override {
+      buildInputs = [ super.makeWrapper ];
+      preFixup = ''
+        wrapProgram $out/bin/sql-formatter --add-flags \
+          '-l postgresql -c ${super.writeText "sql-formatter-config" ''{ "expressionWidth": 80 }''}'
+      '';
+    };
     ### shell utils
     bat = self.bat;
     difftastic = self.difftastic;
