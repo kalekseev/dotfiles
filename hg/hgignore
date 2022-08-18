@@ -1,5 +1,0 @@
-.ackrc
-node_modules
-^tags$
-/tags$
-.lvimrc

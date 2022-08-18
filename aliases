@@ -1,0 +1,27 @@
+alias g='git '
+alias gs='git status '
+alias gd='git diff '
+alias ga='git add '
+alias gu='git add -u'
+alias gb='git branch '
+alias gc='git commit'
+alias gl='git pull'
+alias gp='git push'
+alias gca='git commit -a'
+
+alias vim='nvim'
+alias da='django-admin'
+alias djkill='kill -15 $(lsof -ti :8000 -sTCP:LISTEN)'
+
+svim() { x="$(sk)"; [[ $? -eq 0 ]] && nvim "$x" || true }
+
+rvim() { x="$(sk -c "rg --color=always --line-number \"{}\"")"; [[ $? -eq 0 ]] && vim "$(echo $x|cut -d: -f1)" "+$(echo $x|cut -d: -f2)" || true }
+
+mkcd() { mkdir -p "$1" && cd "$1" }
+
+anybar() { echo -n $1 | nc -4u -w0 localhost ${2:-1738}; }
+
+cdsitepackages() {
+    cd $(python -c 'import site; print(site.getsitepackages()[0])')
+}
+

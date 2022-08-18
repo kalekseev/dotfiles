@@ -1,6 +1,6 @@
 [core]
     editor = nvim
-    excludesfile = ~/.gitignore
+    excludesfile = ~/dotfiles/_gitignore
 [alias]
     co = checkout
     ci = commit

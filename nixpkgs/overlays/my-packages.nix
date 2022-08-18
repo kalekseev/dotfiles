@@ -32,13 +32,26 @@ self: super:
     nixpkgs-fmt = self.nixpkgs-fmt;
     nix-update = self.nix-update;
     ### custom
-    preview_sh =
+    skim =
       let
-        src = super.fetchurl {
-          url = "https://raw.githubusercontent.com/junegunn/fzf.vim/f86ef1bce602713fe0b5b68f4bdca8c6943ecb59/bin/preview.sh";
-          sha256 = "41d28a28256d837f4e39a9b750ac2fe87622d0303301f1223a0f6820bc390eea";
+        previewSrc = super.fetchurl {
+          url = "https://raw.githubusercontent.com/junegunn/fzf.vim/0452b71830b1a219b8cdc68141ee58ec288ea711/bin/preview.sh";
+          sha256 = "sha256-xAnde3In19gid3Fn1hlZZVCd/tIQLLmku0n9OsmOsIo=";
         };
+        preview = super.writeShellScriptBin "preview.sh" (builtins.readFile previewSrc);
       in
-      super.writeScriptBin "preview.sh" (builtins.readFile src);
+      self.symlinkJoin {
+        name = self.skim.name;
+        paths = [
+          self.skim
+        ];
+        buildInputs = [ self.makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/sk \
+            --add-flags "--bind 'ctrl-p:toggle-preview' --ansi --preview='${preview}/bin/preview.sh {}' --preview-window=up:50%:hidden" \
+            --prefix SKIM_DEFAULT_COMMAND : "${self.fd}/bin/fd"
+        '';
+      };
   };
 }
+

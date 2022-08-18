@@ -74,8 +74,7 @@ export DIRENV_LOG_FORMAT="`tput setaf 11`%s`tput sgr0`"
 
 
 source $ZSH/oh-my-zsh.sh
-source ~/dotfiles/zsh/aliases
-source ~/dotfiles/zsh/fab-completion.sh
+source ~/dotfiles/aliases
 complete -C 'aws_completer' aws
 
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi

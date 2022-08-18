@@ -22,3 +22,4 @@ CVS
 .svn
 .git
 *.pyc
+.DS_Store

@@ -69,7 +69,16 @@ let
 in
 {
   userPackages = super.userPackages or { } // {
-    tmux = super.writeScriptBin "tmux" ''${self.tmux}/bin/tmux -f ${super.writeText "tmux.conf" config} '';
+    tmux = self.symlinkJoin {
+      name = self.tmux.name;
+      paths = [
+        self.tmux
+        self.tmux.man
+      ];
+      buildInputs = [ self.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/tmux --add-flags "-f ${self.writeText ''tmux.conf'' config}"
+      '';
+    };
   };
 }
-
