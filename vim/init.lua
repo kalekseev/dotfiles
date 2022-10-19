@@ -87,6 +87,7 @@ cmp.setup {
     },
 }
 
+local augroupFormat = vim.api.nvim_create_augroup("LspFormatting", {})
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -115,12 +116,22 @@ local on_attach = function(client, bufnr)
     buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
     buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+    if client.supports_method("textDocument/formatting") then
+        vim.api.nvim_clear_autocmds({ group = augroupFormat, buffer = bufnr })
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            group = augroupFormat,
+            buffer = bufnr,
+            callback = function()
+                vim.lsp.buf.format({ bufnr = bufnr })
+            end,
+        })
+    end
 end
 
 local nvim_lsp = require('lspconfig')
 local util = require('lspconfig/util')
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 nvim_lsp.pylsp.setup {
     on_attach = on_attach,
@@ -166,6 +177,7 @@ nvim_lsp.sumneko_lua.setup {
 
 local null_ls = require('null-ls')
 null_ls.setup({
+    diagnostics_format = "[#{c}] #{m} (#{s})",
     sources = {
         null_ls.builtins.diagnostics.eslint_d.with({
             command = vim.g.nix_exes.eslint_d
@@ -173,6 +185,15 @@ null_ls.setup({
         null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.diagnostics.shellcheck.with({
             command = vim.g.nix_exes.shellcheck
+        }),
+        null_ls.builtins.formatting.isort,
+        null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.nixpkgs_fmt.with({
+            command = vim.g.nix_exes.nixpkgs_fmt
+        }),
+        null_ls.builtins.formatting.prettier,
+        null_ls.builtins.formatting.eslint_d.with({
+            command = vim.g.nix_exes.eslint_d
         }),
     },
     on_attach = on_attach,
@@ -215,7 +236,6 @@ require 'nvim-tree'.setup {
     },
     view                = {
         width = 30,
-        height = 30,
         side = 'left',
         mappings = {
             custom_only = false,

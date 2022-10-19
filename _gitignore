@@ -16,7 +16,6 @@
 *.class
 *.org
 a.out
-tags
 tags-ja
 CVS
 .svn

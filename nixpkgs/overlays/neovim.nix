@@ -72,6 +72,7 @@ self: super:
           \ 'pg_format': '${self.pgformatter}/bin/pg_format',
           \ 'sql-formatter': '${super.userPackages.sql-formatter}/bin/sql-formatter',
           \ 'shellcheck': '${self.shellcheck}/bin/shellcheck',
+          \ 'nixpkgs_fmt': '${self.nixpkgs-fmt}/bin/nixpkgs-fmt',
           \ 'eslint_d': '${self.nodePackages.eslint_d}/bin/eslint_d',
           \ 'lua_language_server': '${self.sumneko-lua-language-server}/bin/lua-language-server',
           \}

@@ -323,24 +323,6 @@ let g:tagbar_autoclose = 1
 nmap <silent> <F9> :TagbarToggle<CR>
 
 
-" ale
-"==============================================================================
-let g:ale_enabled = 0
-let g:ale_fix_on_save = 1
-let g:ale_fixers = {
-\   'javascript': ['eslint', 'prettier'],
-\   'json': ['prettier'],
-\   'typescript': ['eslint', 'prettier'],
-\   'typescriptreact': ['eslint', 'prettier'],
-\   'vue': ['eslint'],
-\   'css': ['prettier'],
-\   'scss': ['prettier'],
-\   'python': ['isort', 'black'],
-\   'markdown': ['prettier'],
-\   'nix': ['nixpkgs-fmt'],
-\}
-
-
 " git and diff
 "==============================================================================
 autocmd MyAutoCmd BufReadPost fugitive://* set bufhidden=delete

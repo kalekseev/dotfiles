@@ -11,7 +11,7 @@ self: super:
       buildInputs = [ super.makeWrapper ];
       preFixup = ''
         wrapProgram $out/bin/sql-formatter --add-flags \
-          '-l postgresql -c ${super.writeText "sql-formatter-config" ''{ "expressionWidth": 80 }''}'
+          '-l postgresql -c ${super.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
       '';
     };
     ### shell utils
