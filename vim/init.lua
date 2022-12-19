@@ -2,6 +2,24 @@
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
+require('onedark').setup {
+    style = 'dark',
+    toggle_style_key = "<leader>tn",
+    toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }
+}
+require('onedark').load()
+
+require('treesitter-context').setup {
+    enable = true,
+}
+
+require 'nvim-treesitter.configs'.setup {
+    highlight = { enable = true },
+    incremental_selection = { enable = true },
+    textobjects = { enable = true },
+    indent = { enable = true }
+}
+
 require('which-key').setup {}
 require 'lualine'.setup {
     options = {
@@ -27,6 +45,9 @@ require('gitsigns').setup {}
 
 local actions = require('telescope.actions')
 local trouble = require("trouble.providers.telescope")
+vim.keymap.set("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
+    { silent = true, noremap = true }
+)
 require('telescope').setup {
     defaults = {
         mappings = {

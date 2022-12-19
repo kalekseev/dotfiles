@@ -206,13 +206,6 @@ if has("termguicolors")
     set termguicolors
 endif
 
-
-" colorscheme
-let g:onedark_hide_endofbuffer = 1
-let g:onedark_terminal_italics = 1
-let g:airline_theme = 'onedark'
-colorscheme onedark
-
 set colorcolumn=80
 
 "* * * * * * * * * * * * * * * * * MAPPING * * * * * * * * * * * * * * * * * *
@@ -364,6 +357,11 @@ let g:direnv_silent_load = 1
 
 " ionide-vim
 let g:fsharp#lsp_auto_setup = 0
+let g:fsharp#fsautocomplete_command =
+    \ [
+    \   'fsautocomplete',
+    \   '--adaptive-lsp-server-enabled'
+    \ ]
 
 " test
 let test#python#runner = 'pytest'

@@ -2,6 +2,18 @@ self: super:
 
 {
   vimPlugins = super.vimPlugins // {
+
+    vim-visual-star-search = super.vimUtils.buildVimPluginFrom2Nix {
+      pname = "vim-visual-star-search";
+      version = "2022-12-15";
+      src = super.fetchFromGitHub {
+        owner = "bronson";
+        repo = "vim-visual-star-search";
+        rev = "7c32edb9e3c85d473d9be4dec721a4c9d5d4d69c";
+        sha256 = "sha256-Cx1Ev4S7d/3Re3GfU+jmMlikhyQB8o5sGUX4zRdBdrw=";
+      };
+    };
+
     vim-coverage-py = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "vim-coverage.py";
       version = "2021-08-01";
@@ -42,22 +54,26 @@ self: super:
         sha256 = "sha256-p8qPjBO83KQSNRbIZ7Zt4fEYaWzAjkyI3klUgXLq+ho=";
       };
     };
-  };
-  python39 = super.python39.override {
-    packageOverrides = python-self: python-super: {
-      python-lsp-server = (
-        (python-super.python-lsp-server.override
-          {
-            withAutopep8 = false;
-            withFlake8 = false;
-            withMccabe = false;
-            withPycodestyle = false;
-            withPydocstyle = false;
-            withPyflakes = false;
-            withPylint = false;
-            withYapf = false;
-          }).overridePythonAttrs (o: { doCheck = false; }));
-    };
+
+    nvim-treesitter = super.vimPlugins.nvim-treesitter.withPlugins
+      (p: with p; [
+        typescript
+        tsx
+        javascript
+        python
+        css
+        diff
+        html
+        json
+        lua
+        make
+        markdown
+        nix
+        scss
+        vue
+        vim
+        yaml
+      ]);
   };
   userPackages = super.userPackages or { } // {
     neovim = super.neovim.override {
@@ -67,7 +83,7 @@ self: super:
       configure = {
         customRC = ''
           let g:nix_exes = {
-          \ 'pylsp': '${self.python39Packages.python-lsp-server}/bin/pylsp',
+          \ 'pylsp': '${self.python3Packages.python-lsp-server}/bin/pylsp',
           \ 'tsserver': '${self.nodePackages.typescript-language-server}/bin/typescript-language-server',
           \ 'pg_format': '${self.pgformatter}/bin/pg_format',
           \ 'sql-formatter': '${super.userPackages.sql-formatter}/bin/sql-formatter',
@@ -87,25 +103,28 @@ self: super:
             cmp-nvim-lsp
             cmp-path
             cmp-vsnip
+            diffview-nvim
             vim-vsnip
             gitsigns-nvim
             lualine-nvim
             nvim-cmp
             nvim-lspconfig
             nvim-tree-lua
+            nvim-treesitter
+            nvim-treesitter-context
             nvim-web-devicons
             null-ls-nvim
             trouble-nvim
-            # onedark-nvim
+            onedark-nvim
             ionide-vim
             plenary-nvim
             telescope-nvim
             which-key-nvim
+            vim-visual-multi
             # -- vim
             jdaddy-vim
             vim-coverage-py
             ReplaceWithRegister
-            ale
             asyncrun-vim
             camelcasemotion
             delimitMate
@@ -116,7 +135,6 @@ self: super:
             indentLine
             limelight-vim
             matchit-zip
-            onedark-vim
             smartpairs-vim
             splitjoin-vim
             targets-vim
@@ -140,7 +158,7 @@ self: super:
             vim-dispatch # recommended for vim-test
             vim-tmux-navigator
             vim-tsx
-            vim-visualstar
+            vim-visual-star-search
           ];
           opt = [ ];
         };
