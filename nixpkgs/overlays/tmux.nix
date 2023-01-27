@@ -13,6 +13,7 @@ let
     bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
     set -sg escape-time 10
+    set-option -g focus-events on
 
     bind-key C-v run "xsel -o | tmux load-buffer - ; tmux paste-buffer"
 

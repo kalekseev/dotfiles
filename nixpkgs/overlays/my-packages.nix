@@ -6,7 +6,7 @@ self: super:
     ticker = self.ticker;
     timewarrior = self.timewarrior;
     dotnet-sdk_6 = self.dotnet-sdk_6;
-    ocaml = self.ocaml-ng.ocamlPackages_5_0.ocaml;
+    # ocaml = self.ocaml-ng.ocamlPackages_5_0.ocaml;
     yt-dlp = self.yt-dlp;
     sql-formatter = super.nodePackages.sql-formatter.override {
       buildInputs = [ super.makeWrapper ];

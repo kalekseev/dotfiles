@@ -70,6 +70,8 @@ self: super:
         markdown
         nix
         scss
+        sql
+        query
         vue
         vim
         yaml
@@ -84,12 +86,15 @@ self: super:
         customRC = ''
           let g:nix_exes = {
           \ 'pylsp': '${self.python3Packages.python-lsp-server}/bin/pylsp',
+          \ 'bash-language-server': '${self.nodePackages.bash-language-server}/bin/bash-language-server',
+          \ 'vscode-css-language-server': '${self.nodePackages.vscode-langservers-extracted}/bin/vscode-css-language-server',
+          \ 'vscode-eslint-language-server': '${self.nodePackages.vscode-langservers-extracted}/bin/vscode-eslint-language-server',
+          \ 'nil_ls': '${self.nil}/bin/nil',
           \ 'tsserver': '${self.nodePackages.typescript-language-server}/bin/typescript-language-server',
           \ 'pg_format': '${self.pgformatter}/bin/pg_format',
           \ 'sql-formatter': '${super.userPackages.sql-formatter}/bin/sql-formatter',
           \ 'shellcheck': '${self.shellcheck}/bin/shellcheck',
           \ 'nixpkgs_fmt': '${self.nixpkgs-fmt}/bin/nixpkgs-fmt',
-          \ 'eslint_d': '${self.nodePackages.eslint_d}/bin/eslint_d',
           \ 'lua_language_server': '${self.sumneko-lua-language-server}/bin/lua-language-server',
           \}
           source ${../../vim/init.vim}
@@ -104,23 +109,28 @@ self: super:
             cmp-path
             cmp-vsnip
             diffview-nvim
-            vim-vsnip
+            fidget-nvim
             gitsigns-nvim
+            ionide-vim
+            lspsaga-nvim
             lualine-nvim
+            neodev-nvim
+            null-ls-nvim
             nvim-cmp
             nvim-lspconfig
             nvim-tree-lua
             nvim-treesitter
             nvim-treesitter-context
+            nvim-treesitter-textobjects
             nvim-web-devicons
-            null-ls-nvim
-            trouble-nvim
             onedark-nvim
-            ionide-vim
+            playground
             plenary-nvim
             telescope-nvim
-            which-key-nvim
+            trouble-nvim
             vim-visual-multi
+            vim-vsnip
+            which-key-nvim
             # -- vim
             jdaddy-vim
             vim-coverage-py
@@ -143,6 +153,8 @@ self: super:
             vim-abolish
             vim-argwrap
             vim-dadbod
+            vim-dadbod-ui
+            vim-dadbod-completion
             vim-eunuch
             vim-fugitive
             vim-rhubarb

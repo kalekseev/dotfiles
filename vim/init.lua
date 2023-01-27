@@ -1,6 +1,17 @@
 -- nvim-cmp setup
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
+vim.o.syntax = 'ON'
+vim.o.exrc = true
+vim.o.secure = true
+vim.o.number = true
+vim.o.showbreak = '↪..'
+vim.o.linebreak = true
+vim.o.listchars = 'tab:»·'
+vim.o.laststatus = 3
+
+
+local keymap = vim.keymap.set
 
 require('onedark').setup {
     style = 'dark',
@@ -16,8 +27,24 @@ require('treesitter-context').setup {
 require 'nvim-treesitter.configs'.setup {
     highlight = { enable = true },
     incremental_selection = { enable = true },
-    textobjects = { enable = true },
-    indent = { enable = true }
+    indent = { enable = true, disable = { 'python', } },
+    textobjects = {
+        select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+                ["af"] = "@function.outer",
+                ["if"] = "@function.inner",
+                ["ac"] = "@class.outer",
+                ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+            },
+            selection_modes = {
+                ['@parameter.outer'] = 'v',
+                ['@function.outer'] = 'V',
+                ['@class.outer'] = 'V',
+            },
+        }
+    }
 }
 
 require('which-key').setup {}
@@ -45,7 +72,7 @@ require('gitsigns').setup {}
 
 local actions = require('telescope.actions')
 local trouble = require("trouble.providers.telescope")
-vim.keymap.set("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
+keymap("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
     { silent = true, noremap = true }
 )
 require('telescope').setup {
@@ -66,6 +93,14 @@ require('telescope').setup {
 }
 
 -- nvim-cmp setup
+local has_words_before = function()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local feedkey = function(key, mode)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
 local cmp = require 'cmp'
 cmp.setup {
     snippet = {
@@ -78,21 +113,39 @@ cmp.setup {
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-p>'] = cmp.mapping.select_prev_item(),
         ['<C-n>'] = cmp.mapping.select_next_item(),
-        ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>'] = cmp.mapping.close(),
+        ['<C-Space>'] = cmp.mapping.complete({}),
+        ['<C-e>'] = cmp.mapping.abort(),
         ['<CR>'] = cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         },
-        ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-        ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+        ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+            elseif vim.fn["vsnip#available"](1) == 1 then
+                feedkey("<Plug>(vsnip-expand-or-jump)", "")
+            elseif has_words_before() then
+                cmp.complete()
+            else
+                fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+            end
+        end, { "i", "s" }),
+
+        ["<S-Tab>"] = cmp.mapping(function()
+            if cmp.visible() then
+                cmp.select_prev_item()
+            elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+                feedkey("<Plug>(vsnip-jump-prev)", "")
+            end
+        end, { "i", "s" }),
     },
     sources = {
-        { name = 'nvim_lsp' },
-        { name = 'vsnip' },
-        { name = 'path' },
+        { name = 'nvim_lsp', group_index = 1 },
+        { name = 'vsnip', group_index = 1 },
+        { name = 'path', group_index = 1 },
         {
             name = 'buffer',
+            group_index = 2,
             option = {
                 get_bufnrs = function()
                     local bufs = {}
@@ -107,8 +160,15 @@ cmp.setup {
         },
     },
 }
-
-local augroupFormat = vim.api.nvim_create_augroup("LspFormatting", {})
+-- cmp.setup.filetype({ 'sql', 'mysql,plsql' }, {
+--     sources = cmp.config.sources({
+--         { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+--     }, {
+--         { name = 'buffer' },
+--     })
+-- })
+--
+local augroupFormat = vim.api.nvim_create_augroup("LspFormatting", { clear = false })
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -122,19 +182,19 @@ local on_attach = function(client, bufnr)
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
     buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-    buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    -- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
     buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
     buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
     buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
     buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-    buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-    buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
-    buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-    buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+    -- buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+    -- buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
     buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
@@ -144,12 +204,24 @@ local on_attach = function(client, bufnr)
             group = augroupFormat,
             buffer = bufnr,
             callback = function()
-                vim.lsp.buf.format({ bufnr = bufnr })
+                vim.lsp.buf.format({
+                    bufnr      = bufnr,
+                    timeout_ms = 2000,
+                })
             end,
         })
     end
 end
 
+-- IMPORTANT: make sure to setup neodev BEFORE lspconfig
+require("neodev").setup {
+    override = function(root_dir, library)
+        if require("neodev.util").has_file(root_dir, "~/dotfiles/vim") then
+            library.enabled = true
+            library.plugins = true
+        end
+    end,
+}
 local nvim_lsp = require('lspconfig')
 local util = require('lspconfig/util')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -172,11 +244,47 @@ nvim_lsp.csharp_ls.setup {
     capabilities = capabilities,
 }
 
+nvim_lsp.nil_ls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes.nil_ls },
+}
+
 nvim_lsp.tsserver.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes.tsserver, "--stdio" },
+}
+
+nvim_lsp.bashls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes['bash-language-server'], "start" },
+}
+
+local augroupEslintFormat = vim.api.nvim_create_augroup("LspEslintFormatting", { clear = false })
+nvim_lsp.eslint.setup {
+    on_attach = function(_, bufnr)
+        vim.api.nvim_clear_autocmds({ group = augroupEslintFormat, buffer = bufnr })
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            group = augroupEslintFormat,
+            buffer = bufnr,
+            command = 'EslintFixAll'
+        })
+    end,
+    capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes['vscode-eslint-language-server'], "--stdio" },
+}
+
+nvim_lsp.cssls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes['vscode-css-language-server'], "--stdio" },
 }
 
 nvim_lsp.sumneko_lua.setup {
@@ -199,10 +307,8 @@ nvim_lsp.sumneko_lua.setup {
 local null_ls = require('null-ls')
 null_ls.setup({
     diagnostics_format = "[#{c}] #{m} (#{s})",
+    -- debug = true,
     sources = {
-        null_ls.builtins.diagnostics.eslint_d.with({
-            command = vim.g.nix_exes.eslint_d
-        }),
         null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.diagnostics.shellcheck.with({
             command = vim.g.nix_exes.shellcheck
@@ -213,9 +319,6 @@ null_ls.setup({
             command = vim.g.nix_exes.nixpkgs_fmt
         }),
         null_ls.builtins.formatting.prettier,
-        null_ls.builtins.formatting.eslint_d.with({
-            command = vim.g.nix_exes.eslint_d
-        }),
     },
     on_attach = on_attach,
 })
@@ -264,3 +367,36 @@ require 'nvim-tree'.setup {
         }
     }
 }
+
+require "fidget".setup {}
+
+vim.diagnostic.config {
+    float = {
+        format = function(diagnostic)
+            if diagnostic.source == 'eslint' then
+                return string.format(
+                    '%s [%s]',
+                    diagnostic.message,
+                    -- shows the name of the rule
+                    diagnostic.user_data.lsp.code
+                )
+            end
+            return string.format('%s [%s]', diagnostic.message, diagnostic.source)
+        end,
+    },
+}
+
+
+require('lspsaga').init_lsp_saga {}
+keymap("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true })
+keymap("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true })
+keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
+keymap("n", "[e", function()
+    require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { silent = true })
+keymap("n", "]e", function()
+    require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { silent = true })
+keymap("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
+keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
+keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", { silent = true })

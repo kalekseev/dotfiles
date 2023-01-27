@@ -18,39 +18,39 @@ augroup END
 
 
 " turn on syntax highlighting
-syntax on
+" syntax on
 
 " load local rc files
-set exrc
-set secure
+" set exrc
+" set secure
 
 " set regexpengine=1  "work faster on macos
 " allow backspacing over everything in INS mode
-set backspace=indent,eol,start
+" set backspace=indent,eol,start
 
 " store lots of :cmdline history
-set history=1000
+" set history=1000
 
 " show incomplete cmds down the bottom
-set showcmd
+" set showcmd
 
 " show current mode down the bottom
-set showmode
+" set showmode
 
 " add line numbers
-set number
+" set number
 
 " start wrapped lines with the string
-set showbreak=↪..
+" set showbreak=↪..
 
 " wrap lines
-set wrap
+" set wrap
 
 " don't break words
-set linebreak
+" set linebreak
 
 " listchars
-set list listchars=tab:»·
+" set list listchars=tab:»·
 
 " add some line space for easy reading
 " set linespace=4
@@ -61,10 +61,10 @@ if !has('nvim')
 endif
 
 " always show statusline
-set laststatus=3
+" set laststatus=3
 
 " hide buffers when not displayed
-set hidden
+" set hidden
 
 " remap leader
 let g:mapleader = "\<Space>"
@@ -165,7 +165,7 @@ set splitright
 set splitbelow
 
 " reload when files modified outside of vim
-set autoread
+" set autoread
 
 " fast terminal connection
 if !has('nvim')
@@ -310,12 +310,6 @@ xmap I <Plug>(niceblock-I)
 xmap A <Plug>(niceblock-A)
 
 
-" tagbar
-"==============================================================================
-let g:tagbar_autoclose = 1
-nmap <silent> <F9> :TagbarToggle<CR>
-
-
 " git and diff
 "==============================================================================
 autocmd MyAutoCmd BufReadPost fugitive://* set bufhidden=delete
@@ -381,14 +375,6 @@ nmap <silent> <leader>tq :autocmd! BufWritePost *<CR>
 "* * * * * * * * * * * * * * * * * EXTRA * * * * * * * * * * * * * * * * * * *
 " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-let g:racer_cmd = $HOME.'/.cargo/bin/racer'
-let g:racer_experimental_completer = 1
-autocmd MyAutoCmd FileType rust nmap gd <Plug>(rust-def)
-autocmd MyAutoCmd FileType rust nmap gs <Plug>(rust-def-split)
-autocmd MyAutoCmd FileType rust nmap gx <Plug>(rust-def-vertical)
-autocmd MyAutoCmd FileType rust nmap K <Plug>(rust-doc)
-
-
 " filetype specific settings
 autocmd MyAutoCmd FileType html setlocal ts=2 sw=2 sta et sts=2 ai
 autocmd MyAutoCmd FileType javascript setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
@@ -453,9 +439,7 @@ endfunc
 " windows
 nnoremap <c-w>z <C-W>\| <C-W>_
 
-" vue
-autocmd FileType vue syntax sync fromstart
-let g:vue_disable_pre_processors=1
+let g:db_ui_env_variable_url = 'DATABASE_URL'
 
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
