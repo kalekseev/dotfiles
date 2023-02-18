@@ -91,6 +91,7 @@ self: super:
           \ 'vscode-eslint-language-server': '${self.nodePackages.vscode-langservers-extracted}/bin/vscode-eslint-language-server',
           \ 'nil_ls': '${self.nil}/bin/nil',
           \ 'tsserver': '${self.nodePackages.typescript-language-server}/bin/typescript-language-server',
+          \ 'prettier': '${self.nodePackages.prettier}/bin/prettier',
           \ 'pg_format': '${self.pgformatter}/bin/pg_format',
           \ 'sql-formatter': '${super.userPackages.sql-formatter}/bin/sql-formatter',
           \ 'shellcheck': '${self.shellcheck}/bin/shellcheck',
@@ -112,7 +113,7 @@ self: super:
             fidget-nvim
             gitsigns-nvim
             ionide-vim
-            lspsaga-nvim
+            lspsaga-nvim-original
             lualine-nvim
             neodev-nvim
             null-ls-nvim

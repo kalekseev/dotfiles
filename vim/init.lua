@@ -109,7 +109,7 @@ cmp.setup {
         end,
     },
     mapping = {
-        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-d>'] = cmp.mapping.scroll_docs( -4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-p>'] = cmp.mapping.select_prev_item(),
         ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -134,15 +134,15 @@ cmp.setup {
         ["<S-Tab>"] = cmp.mapping(function()
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+            elseif vim.fn["vsnip#jumpable"]( -1) == 1 then
                 feedkey("<Plug>(vsnip-jump-prev)", "")
             end
         end, { "i", "s" }),
     },
     sources = {
         { name = 'nvim_lsp', group_index = 1 },
-        { name = 'vsnip', group_index = 1 },
-        { name = 'path', group_index = 1 },
+        { name = 'vsnip',    group_index = 1 },
+        { name = 'path',     group_index = 1 },
         {
             name = 'buffer',
             group_index = 2,
@@ -287,7 +287,7 @@ nvim_lsp.cssls.setup {
     cmd = { vim.g.nix_exes['vscode-css-language-server'], "--stdio" },
 }
 
-nvim_lsp.sumneko_lua.setup {
+nvim_lsp.lua_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 
@@ -303,22 +303,28 @@ nvim_lsp.sumneko_lua.setup {
         }
     }
 }
+require 'lspconfig'.ruff_lsp.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
 
 local null_ls = require('null-ls')
 null_ls.setup({
     diagnostics_format = "[#{c}] #{m} (#{s})",
     -- debug = true,
     sources = {
-        null_ls.builtins.diagnostics.flake8,
+        -- null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.diagnostics.shellcheck.with({
             command = vim.g.nix_exes.shellcheck
         }),
-        null_ls.builtins.formatting.isort,
+        -- null_ls.builtins.formatting.isort,
         null_ls.builtins.formatting.black,
         null_ls.builtins.formatting.nixpkgs_fmt.with({
             command = vim.g.nix_exes.nixpkgs_fmt
         }),
-        null_ls.builtins.formatting.prettier,
+        null_ls.builtins.formatting.prettier.with({
+            command = vim.g.nix_exes.prettier
+        }),
     },
     on_attach = on_attach,
 })
@@ -387,7 +393,15 @@ vim.diagnostic.config {
 }
 
 
-require('lspsaga').init_lsp_saga {}
+require('lspsaga').setup({
+    lightbulb = {
+        enable = false,
+    },
+    symbol_in_winbar = {
+        respect_root = true,
+    },
+})
+
 keymap("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true })
 keymap("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true })
 keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })

@@ -3,6 +3,8 @@ self: super:
 {
   userPackages = super.userPackages or { } // {
     dos2unix = self.dos2unix;
+    devd = self.devd;
+    modd = self.modd;
     ticker = self.ticker;
     timewarrior = self.timewarrior;
     dotnet-sdk_6 = self.dotnet-sdk_6;
@@ -33,6 +35,44 @@ self: super:
     nixpkgs-fmt = self.nixpkgs-fmt;
     nix-update = self.nix-update;
     ### custom
+    ruff-lsp =
+      let
+        pkgs = super.python310.pkgs;
+      in
+      pkgs.buildPythonPackage
+        rec {
+          pname = "ruff-lsp";
+          version = "0.0.18";
+          format = "pyproject";
+          disabled = pkgs.pythonOlder "3.7";
+
+          src = pkgs.fetchPypi {
+            inherit version;
+            pname = "ruff_lsp";
+            sha256 = "sha256-GNOrEQcErJnFb7vESOB0eXmQYp1PCRPJF75YKRawLIc=";
+          };
+
+          nativeBuildInputs = [
+            pkgs.hatchling
+          ];
+
+          propagatedBuildInputs = [
+            pkgs.pygls
+            pkgs.typing-extensions
+          ];
+
+          postPatch = ''
+            sed -i '/"ruff>=/d' pyproject.toml
+            sed -i 's|USER_DEFAULTS: dict\[str, str\] = {}|USER_DEFAULTS: dict[str, str] = {"path": ["${super.ruff}/bin/ruff"]}|' ruff_lsp/server.py
+          '';
+
+          meta = with super.lib; {
+            homepage = "https://github.com/charliermarsh/ruff-lsp";
+            description = "A Language Server Protocol implementation for Ruff";
+            license = licenses.mit;
+            maintainers = with maintainers; [ kalekseev ];
+          };
+        };
     skim =
       let
         previewSrc = super.fetchurl {
