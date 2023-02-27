@@ -309,6 +309,11 @@ require 'lspconfig'.ruff_lsp.setup {
 }
 
 local null_ls = require('null-ls')
+
+if vim.fn.executable('rg') == 1 then
+    vim.o.grepprg = 'rg --vimgrep'
+end
+
 null_ls.setup({
     diagnostics_format = "[#{c}] #{m} (#{s})",
     -- debug = true,
@@ -322,9 +327,9 @@ null_ls.setup({
         null_ls.builtins.formatting.nixpkgs_fmt.with({
             command = vim.g.nix_exes.nixpkgs_fmt
         }),
-        null_ls.builtins.formatting.prettier.with({
+        null_ls.builtins.formatting.prettier.with(vim.fn.executable('prettier') ~= 1 and {
             command = vim.g.nix_exes.prettier
-        }),
+        } or {}),
     },
     on_attach = on_attach,
 })

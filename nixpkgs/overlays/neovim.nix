@@ -68,6 +68,7 @@ self: super:
         lua
         make
         markdown
+        markdown_inline
         nix
         scss
         sql

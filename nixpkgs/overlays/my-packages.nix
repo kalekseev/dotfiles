@@ -56,6 +56,12 @@ self: super:
             pkgs.hatchling
           ];
 
+          nativeCheckInputs = [
+            pkgs.unittestCheckHook
+            pkgs.python-lsp-jsonrpc
+            super.ruff
+          ];
+
           propagatedBuildInputs = [
             pkgs.pygls
             pkgs.typing-extensions
@@ -63,8 +69,11 @@ self: super:
 
           postPatch = ''
             sed -i '/"ruff>=/d' pyproject.toml
-            sed -i 's|USER_DEFAULTS: dict\[str, str\] = {}|USER_DEFAULTS: dict[str, str] = {"path": ["${super.ruff}/bin/ruff"]}|' ruff_lsp/server.py
           '';
+
+          makeWrapperArgs = [
+            "--suffix PATH : ${super.lib.makeBinPath [ super.ruff ]}"
+          ];
 
           meta = with super.lib; {
             homepage = "https://github.com/charliermarsh/ruff-lsp";
