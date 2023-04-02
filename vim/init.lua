@@ -20,6 +20,12 @@ require('onedark').setup {
 }
 require('onedark').load()
 
+require("copilot").setup({
+    suggestion = { enabled = false },
+    panel = { enabled = false },
+})
+require("copilot_cmp").setup()
+
 require('treesitter-context').setup {
     enable = true,
 }
@@ -109,7 +115,7 @@ cmp.setup {
         end,
     },
     mapping = {
-        ['<C-d>'] = cmp.mapping.scroll_docs( -4),
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-p>'] = cmp.mapping.select_prev_item(),
         ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -130,16 +136,16 @@ cmp.setup {
                 fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
             end
         end, { "i", "s" }),
-
         ["<S-Tab>"] = cmp.mapping(function()
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif vim.fn["vsnip#jumpable"]( -1) == 1 then
+            elseif vim.fn["vsnip#jumpable"](-1) == 1 then
                 feedkey("<Plug>(vsnip-jump-prev)", "")
             end
         end, { "i", "s" }),
     },
     sources = {
+        { name = "copilot",  group_index = 1 },
         { name = 'nvim_lsp', group_index = 1 },
         { name = 'vsnip',    group_index = 1 },
         { name = 'path',     group_index = 1 },
@@ -328,8 +334,8 @@ null_ls.setup({
             command = vim.g.nix_exes.nixpkgs_fmt
         }),
         null_ls.builtins.formatting.prettier.with(vim.fn.executable('prettier') ~= 1 and {
-            command = vim.g.nix_exes.prettier
-        } or {}),
+                command = vim.g.nix_exes.prettier
+            } or {}),
     },
     on_attach = on_attach,
 })

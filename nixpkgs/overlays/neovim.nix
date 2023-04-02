@@ -127,12 +127,13 @@ self: super:
             nvim-web-devicons
             onedark-nvim
             playground
-            plenary-nvim
             telescope-nvim
             trouble-nvim
             vim-visual-multi
             vim-vsnip
             which-key-nvim
+            copilot-lua
+            copilot-cmp
             # -- vim
             jdaddy-vim
             vim-coverage-py
