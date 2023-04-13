@@ -7,6 +7,8 @@ let
     bind C-a send-prefix
 
     set-option default-terminal "screen-256color"
+    set-option -sa terminal-features ',xterm-kitty:RGB'
+
     set -g mouse on
     set-window-option -g mode-keys vi
     bind -T copy-mode-vi v send-keys -X begin-selection

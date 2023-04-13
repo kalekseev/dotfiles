@@ -142,7 +142,6 @@ self: super:
             camelcasemotion
             delimitMate
             direnv-vim
-            editorconfig-vim
             emmet-vim
             goyo-vim
             indentLine

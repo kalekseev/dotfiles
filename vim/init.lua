@@ -10,6 +10,10 @@ vim.o.linebreak = true
 vim.o.listchars = 'tab:»·'
 vim.o.laststatus = 3
 
+vim.g.loaded_perl_provider = 0
+
+vim.o.inccommand = 'nosplit'
+vim.o.shada = "!,'100,<50,s10,h,n~/.vim/.viminfo.shada"
 
 local keymap = vim.keymap.set
 
@@ -348,8 +352,6 @@ require 'ionide'.setup {
 require 'nvim-tree'.setup {
     disable_netrw       = false,
     hijack_netrw        = true,
-    open_on_setup       = false,
-    ignore_ft_on_setup  = {},
     hijack_directories  = {
         enable = true,
         auto_open = true,

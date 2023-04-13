@@ -1,10 +1,16 @@
 if has('vim_starting')
     set encoding=utf-8
     scriptencoding utf-8
+endif
 
-    if !has('nvim')
-        set nocompatible
-    endif
+if !has('nvim')
+    set nocompatible
+    " disable visual bell
+    set visualbell t_vb=
+    " fast terminal connection
+    set ttyfast
+    set ttymouse=xterm2
+    set viminfo+=n$HOME/.vim/.viminfo
 endif
 
 " reset my autocmd group
@@ -54,11 +60,6 @@ augroup END
 
 " add some line space for easy reading
 " set linespace=4
-
-" disable visual bell
-if !has('nvim')
-    set visualbell t_vb=
-endif
 
 " always show statusline
 " set laststatus=3
@@ -117,9 +118,6 @@ set sidescroll=1
 
 " some stuff to get the mouse going in term
 set mouse=n
-if !has('nvim')
-    set ttymouse=xterm2
-endif
 
 " BACKUP
 " https://begriffs.com/posts/2019-07-19-history-use-vim.html
@@ -137,22 +135,14 @@ set nobackup
 " use rename-and-write-new method whenever safe
 set backupcopy=auto
 " patch required to honor double slash at end
-if has("patch-8.1.0251")
-    " consolidate the writebackups -- not a big
-    " deal either way, since they usually get deleted
-    set backupdir^=~/.vim/backup//
-end
+" consolidate the writebackups -- not a big
+" deal either way, since they usually get deleted
+set backupdir^=~/.vim/backup//
 
 " persist the undo tree for each file
 set undofile
 set undodir^=~/.vim/undo//
 " END BACKUP
-
-if has('nvim')
-    set shada+=n$HOME/.vim/.viminfo.shada
-else
-    set viminfo+=n$HOME/.vim/.viminfo
-endif
 
 " store undo
 if has('persistent_undo')
@@ -167,10 +157,6 @@ set splitbelow
 " reload when files modified outside of vim
 " set autoread
 
-" fast terminal connection
-if !has('nvim')
-    set ttyfast
-endif
 
 " yank use system clipboard
 set clipboard=unnamed
@@ -178,9 +164,6 @@ set clipboard=unnamed
 " ignore case only if contains upper case
 set ignorecase
 set smartcase
-if has('nvim')
-    set inccommand=nosplit
-endif
 
 " incremental search
 set incsearch
@@ -199,9 +182,6 @@ set noshowmode
 
 " theme
 set background=dark
-if has('nvim')
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-endif
 if has("termguicolors")
     set termguicolors
 endif
@@ -278,10 +258,6 @@ nmap <silent> <C-f> :NvimTreeFindFile<CR>
 
 "vim-argwrap
 nnoremap <silent>gW :<C-u>:ArgWrap<CR>
-
-"editorconfig-vim
-let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
-
 
 " CamelCaseMotion
 "==============================================================================

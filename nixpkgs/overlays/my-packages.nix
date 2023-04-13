@@ -41,14 +41,14 @@ self: super:
       pkgs.buildPythonPackage
         rec {
           pname = "ruff-lsp";
-          version = "0.0.18";
+          version = "0.0.24";
           format = "pyproject";
           disabled = pkgs.pythonOlder "3.7";
 
           src = pkgs.fetchPypi {
             inherit version;
             pname = "ruff_lsp";
-            sha256 = "sha256-GNOrEQcErJnFb7vESOB0eXmQYp1PCRPJF75YKRawLIc=";
+            sha256 = "sha256-1he/GYk8O9LqPXH3mu7eGWuRygiDG1OnJ+JNT2Pynzo=";
           };
 
           nativeBuildInputs = [
@@ -63,20 +63,24 @@ self: super:
 
           propagatedBuildInputs = [
             pkgs.pygls
+            pkgs.lsprotocol
             pkgs.typing-extensions
           ];
 
           postPatch = ''
+            # ruff binary added to PATH in wrapper so it's not needed
             sed -i '/"ruff>=/d' pyproject.toml
           '';
 
           makeWrapperArgs = [
+            # prefer ruff from user's PATH, that's usually desired behavior
             "--suffix PATH : ${super.lib.makeBinPath [ super.ruff ]}"
           ];
 
           meta = with super.lib; {
             homepage = "https://github.com/charliermarsh/ruff-lsp";
             description = "A Language Server Protocol implementation for Ruff";
+            changelog = "https://github.com/charliermarsh/ruff-lsp/releases/tag/v${version}";
             license = licenses.mit;
             maintainers = with maintainers; [ kalekseev ];
           };
