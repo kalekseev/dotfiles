@@ -24,11 +24,11 @@ require('onedark').setup {
 }
 require('onedark').load()
 
-require("copilot").setup({
-    suggestion = { enabled = false },
-    panel = { enabled = false },
-})
-require("copilot_cmp").setup()
+-- require("copilot").setup({
+--     suggestion = { enabled = false },
+--     panel = { enabled = false },
+-- })
+-- require("copilot_cmp").setup()
 
 require('treesitter-context').setup {
     enable = true,
@@ -149,7 +149,7 @@ cmp.setup {
         end, { "i", "s" }),
     },
     sources = {
-        { name = "copilot",  group_index = 1 },
+        -- { name = "copilot",  group_index = 1 },
         { name = 'nvim_lsp', group_index = 1 },
         { name = 'vsnip',    group_index = 1 },
         { name = 'path',     group_index = 1 },
@@ -249,6 +249,12 @@ nvim_lsp.pylsp.setup {
     end,
 }
 
+nvim_lsp.volar.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { vim.g.nix_exes.volar, "--stdio" },
+}
+
 nvim_lsp.csharp_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
@@ -275,16 +281,17 @@ nvim_lsp.bashls.setup {
     cmd = { vim.g.nix_exes['bash-language-server'], "start" },
 }
 
-local augroupEslintFormat = vim.api.nvim_create_augroup("LspEslintFormatting", { clear = false })
+-- local augroupEslintFormat = vim.api.nvim_create_augroup("LspEslintFormatting", { clear = false })
 nvim_lsp.eslint.setup {
-    on_attach = function(_, bufnr)
-        vim.api.nvim_clear_autocmds({ group = augroupEslintFormat, buffer = bufnr })
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            group = augroupEslintFormat,
-            buffer = bufnr,
-            command = 'EslintFixAll'
-        })
-    end,
+    on_attach = on_attach,
+    -- on_attach = function(_, bufnr)
+    --     vim.api.nvim_clear_autocmds({ group = augroupEslintFormat, buffer = bufnr })
+    --     vim.api.nvim_create_autocmd("BufWritePre", {
+    --         group = augroupEslintFormat,
+    --         buffer = bufnr,
+    --         command = 'EslintFixAll'
+    --     })
+    -- end,
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes['vscode-eslint-language-server'], "--stdio" },
@@ -338,8 +345,9 @@ null_ls.setup({
             command = vim.g.nix_exes.nixpkgs_fmt
         }),
         null_ls.builtins.formatting.prettier.with(vim.fn.executable('prettier') ~= 1 and {
-                command = vim.g.nix_exes.prettier
-            } or {}),
+            command = vim.g.nix_exes.prettier,
+        } or {}),
+        null_ls.builtins.formatting.ruff
     },
     on_attach = on_attach,
 })

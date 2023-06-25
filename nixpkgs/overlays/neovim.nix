@@ -3,17 +3,6 @@ self: super:
 {
   vimPlugins = super.vimPlugins // {
 
-    vim-visual-star-search = super.vimUtils.buildVimPluginFrom2Nix {
-      pname = "vim-visual-star-search";
-      version = "2022-12-15";
-      src = super.fetchFromGitHub {
-        owner = "bronson";
-        repo = "vim-visual-star-search";
-        rev = "7c32edb9e3c85d473d9be4dec721a4c9d5d4d69c";
-        sha256 = "sha256-Cx1Ev4S7d/3Re3GfU+jmMlikhyQB8o5sGUX4zRdBdrw=";
-      };
-    };
-
     vim-coverage-py = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "vim-coverage.py";
       version = "2021-08-01";
@@ -24,16 +13,6 @@ self: super:
         sha256 = "sha256-9dpw+0UmuE9R8Lr+npJ9vQYwoSexsU/XJbhnOL+HulY=";
       };
     };
-    asyncrun-vim = super.vimUtils.buildVimPluginFrom2Nix {
-      pname = "asyncrun-vim";
-      version = "2021-03-29";
-      src = super.fetchFromGitHub {
-        owner = "skywind3000";
-        repo = "asyncrun.vim";
-        rev = "168d6b4be9d003ed14ef5d0e1668f01145327e68";
-        sha256 = "sha256-xEmc85GsKB4fTZYzf9z+apxdOAvW5AwUNA8bSjXg7Ic=";
-      };
-    };
     vim-qfreplace = super.vimUtils.buildVimPluginFrom2Nix {
       pname = "vim-qfreplace";
       version = "2014-06-07";
@@ -42,16 +21,6 @@ self: super:
         repo = "vim-qfreplace";
         rev = "89e64ae24fb4b8e2402ba6d84971c06606f4adf4";
         sha256 = "sha256-Ttu9QqIRLf1o+DX0Un3quk4TcOgzRhnDidqY7iMvQGE=";
-      };
-    };
-    ionide-vim = super.vimUtils.buildVimPluginFrom2Nix {
-      pname = "ionide-vim";
-      version = "2022-02-06";
-      src = super.fetchFromGitHub {
-        owner = "ionide";
-        repo = "ionide-vim";
-        rev = "6eb5de0b13cee781d0ccc0559d614ea032967293";
-        sha256 = "sha256-p8qPjBO83KQSNRbIZ7Zt4fEYaWzAjkyI3klUgXLq+ho=";
       };
     };
 
@@ -98,6 +67,7 @@ self: super:
           \ 'shellcheck': '${self.shellcheck}/bin/shellcheck',
           \ 'nixpkgs_fmt': '${self.nixpkgs-fmt}/bin/nixpkgs-fmt',
           \ 'lua_language_server': '${self.sumneko-lua-language-server}/bin/lua-language-server',
+          \ 'volar': '${super.userPackages.volar}/bin/vue-language-server',
           \}
           source ${../../vim/init.vim}
           source ${../../vim/init.lua}
@@ -113,7 +83,7 @@ self: super:
             diffview-nvim
             fidget-nvim
             gitsigns-nvim
-            ionide-vim
+            Ionide-vim
             lspsaga-nvim-original
             lualine-nvim
             neodev-nvim
@@ -132,8 +102,8 @@ self: super:
             vim-visual-multi
             vim-vsnip
             which-key-nvim
-            copilot-lua
-            copilot-cmp
+            # copilot-lua
+            # copilot-cmp
             # -- vim
             jdaddy-vim
             vim-coverage-py

@@ -370,6 +370,8 @@ autocmd MyAutoCmd InsertLeave * :set listchars+=trail:·
 " js, jsx
 autocmd MyAutoCmd BufRead,BufNewFile *.js call s:FTjs()
 
+" django
+autocmd MyAutoCmd BufRead,BufNewFile */backend/*/templates/*.html set filetype=htmldjango
 
 " jump to last cursor position when opening a file
 " don't do it when writing a commit log entry
