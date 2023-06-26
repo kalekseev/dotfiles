@@ -17,13 +17,15 @@
     in
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            (final: prev: { neovim = ((import ./nixpkgs/overlays/neovim.nix) final prev).userPackages.neovim; })
-            (import ./nixpkgs/overlays/tmux.nix)
-          ];
-        };
+        pkgs = import nixpkgs
+          {
+            inherit system;
+            overlays = [
+              (final: prev: { neovim = ((import ./nixpkgs/overlays/neovim.nix) final prev).userPackages.neovim; })
+              (final: prev: { tmux = ((import ./nixpkgs/overlays/tmux.nix) final prev).userPackages.tmux; })
+            ];
+            config = { allowUnfree = true; };
+          };
       in
       {
         packages = {

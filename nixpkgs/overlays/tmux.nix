@@ -1,4 +1,4 @@
-self: super:
+final: prev:
 
 let
   config = ''
@@ -63,24 +63,24 @@ let
     bind-key -T copy-mode-vi C-l select-pane -R
     # bind-key -T copy-mode-vi C-\\ select-pane -l
     # end nav
-    run-shell ${self.tmuxPlugins.sensible}
-    run-shell ${self.tmuxPlugins.yank}
-    run-shell ${self.tmuxPlugins.copycat}
-    run-shell ${self.tmuxPlugins.open}
-    run-shell ${self.tmuxPlugins.resurrect}
+    run-shell ${final.tmuxPlugins.sensible}
+    run-shell ${final.tmuxPlugins.yank}
+    run-shell ${final.tmuxPlugins.copycat}
+    run-shell ${final.tmuxPlugins.open}
+    run-shell ${final.tmuxPlugins.resurrect}
   '';
 in
 {
-  userPackages = super.userPackages or { } // {
-    tmux = self.symlinkJoin {
-      name = self.tmux.name;
+  userPackages = prev.userPackages or { } // {
+    tmux = prev.symlinkJoin {
+      name = prev.tmux.name;
       paths = [
-        self.tmux
-        self.tmux.man
+        prev.tmux
+        prev.tmux.man
       ];
-      buildInputs = [ self.makeWrapper ];
+      buildInputs = [ prev.makeWrapper ];
       postBuild = ''
-        wrapProgram $out/bin/tmux --add-flags "-f ${self.writeText ''tmux.conf'' config}"
+        wrapProgram $out/bin/tmux --add-flags "-f ${prev.writeText ''tmux.conf'' config}"
       '';
     };
   };
