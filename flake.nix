@@ -6,15 +6,6 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
   outputs = { self, nixpkgs, flake-utils }:
-    let
-      sql-formatter = nixpkgs.nodePackages.sql-formatter.override {
-        buildInputs = [ nixpkgs.makeWrapper ];
-        preFixup = ''
-          wrapProgram $out/bin/sql-formatter --add-flags \
-            '-l postgresql -c ${nixpkgs.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
-        '';
-      };
-    in
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs
@@ -32,7 +23,6 @@
           inherit (pkgs)
             neovim
             tmux;
-          sql-formatter = sql-formatter;
         };
       });
 }

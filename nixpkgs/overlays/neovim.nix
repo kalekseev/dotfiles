@@ -2,6 +2,13 @@ final: prev: {
   userPackages = prev.userPackages or { } // {
     neovim =
       let
+        sql-formatter = prev.nodePackages.sql-formatter.override {
+          buildInputs = [ prev.makeWrapper ];
+          preFixup = ''
+            wrapProgram $out/bin/sql-formatter --add-flags \
+              '-l postgresql -c ${prev.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
+          '';
+        };
         vscode-langservers-extracted = prev.buildNpmPackage rec {
           pname = "vscode-langservers-extracted";
           version = "4.7.0";
@@ -105,7 +112,7 @@ final: prev: {
             \ 'tsserver': '${final.nodePackages.typescript-language-server}/bin/typescript-language-server',
             \ 'prettier': '${final.nodePackages.prettier}/bin/prettier',
             \ 'pg_format': '${final.pgformatter}/bin/pg_format',
-            \ 'sql-formatter': '${final.nodePackages.sql-formatter}/bin/sql-formatter',
+            \ 'sql-formatter': '${sql-formatter}/bin/sql-formatter',
             \ 'shellcheck': '${final.shellcheck}/bin/shellcheck',
             \ 'nixpkgs_fmt': '${final.nixpkgs-fmt}/bin/nixpkgs-fmt',
             \ 'lua_language_server': '${final.sumneko-lua-language-server}/bin/lua-language-server',
