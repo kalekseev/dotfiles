@@ -75,24 +75,30 @@ final: prev: {
 
           nvim-treesitter = prev.vimPlugins.nvim-treesitter.withPlugins
             (p: with p; [
-              typescript
-              tsx
-              javascript
-              python
+              bash
+              comment
               css
               diff
+              dockerfile
               html
+              htmldjango
+              javascript
               json
               lua
               make
               markdown
               markdown_inline
               nix
+              python
+              query
+              regex
               scss
               sql
-              query
-              vue
+              toml
+              tsx
+              typescript
               vim
+              vue
               yaml
             ]);
         };
