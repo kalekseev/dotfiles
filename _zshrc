@@ -77,7 +77,10 @@ source $ZSH/oh-my-zsh.sh
 source ~/dotfiles/aliases
 complete -C 'aws_completer' aws
 
-if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+
 export PATH="$PATH:$HOME/.dotnet/tools"
 export DOTNET_ROOT=$(dirname $(dirname $(readlink $(which dotnet))))
 eval "$(z --init zsh)"

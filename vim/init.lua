@@ -236,23 +236,41 @@ local nvim_lsp = require('lspconfig')
 local util = require('lspconfig/util')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-nvim_lsp.pylsp.setup {
+require 'lspconfig'.pyright.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 
-    cmd = { vim.g.nix_exes.pylsp },
-    root_dir = function(fname)
-        local root_files = {
-            'setup.cfg',
+    cmd = { vim.g.nix_exes.pyright, "--stdio" },
+    settings = {
+        python = {
+            analysis = {
+                diagnosticSeverityOverrides = {
+                    reportUnusedVariable = "none",
+                    reportGeneralTypeIssues = "none",
+                    reportOptionalMemberAccess = "none",
+                    reportOptionalSubscript = "none"
+                }
+            }
         }
-        return util.root_pattern(unpack(root_files))(fname) or util.find_git_ancestor(fname) or util.path.dirname(fname)
-    end,
+    }
 }
 
 nvim_lsp.volar.setup {
     on_attach = on_attach,
     capabilities = capabilities,
+    filetypes = {
+        'typescript',
+        'javascript',
+        'javascriptreact',
+        'typescriptreact',
+        'vue',
+        'json'
+    },
     cmd = { vim.g.nix_exes.volar, "--stdio" },
+    root_dir = function(fname)
+        return util.root_pattern '.env.vue' (fname)
+    end,
+    single_file_support = false,
 }
 
 nvim_lsp.csharp_ls.setup {
@@ -395,9 +413,12 @@ require 'nvim-tree'.setup {
     }
 }
 
-require "fidget".setup {}
+-- require "fidget".setup {}
 
 vim.diagnostic.config {
+    signs = {
+        severity = vim.diagnostic.severity.INFO
+    },
     float = {
         format = function(diagnostic)
             if diagnostic.source == 'eslint' then
@@ -423,14 +444,14 @@ require('lspsaga').setup({
     },
 })
 
-keymap("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true })
-keymap("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true })
+keymap("n", "[D", "<cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true })
+keymap("n", "]D", "<cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true })
 keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
-keymap("n", "[e", function()
-    require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
+keymap("n", "[d", function()
+    require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.INFO })
 end, { silent = true })
-keymap("n", "]e", function()
-    require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
+keymap("n", "]d", function()
+    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.INFO })
 end, { silent = true })
 keymap("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
 keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })

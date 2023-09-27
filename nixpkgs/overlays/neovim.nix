@@ -9,48 +9,6 @@ final: prev: {
               '-l postgresql -c ${prev.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
           '';
         };
-        vscode-langservers-extracted = prev.buildNpmPackage rec {
-          pname = "vscode-langservers-extracted";
-          version = "4.7.0";
-
-          src = prev.fetchFromGitHub {
-            owner = "hrsh7th";
-            repo = pname;
-            rev = "v${version}";
-            hash = "sha256-RLRDEHfEJ2ckn0HTMu0WbMK/o9W20Xwm+XI6kCq57u8=";
-          };
-
-          npmDepsHash = "sha256-DhajWr+O0zgJALr7I/Nc5GmkOsa9QXfAQpZCaULV47M=";
-
-          buildPhase =
-            let
-              inherit (prev.vscode-extensions.dbaeumer) vscode-eslint;
-              extensions =
-                if prev.stdenv.isDarwin
-                then "${prev.vscode}/Applications/Visual\\ Studio\\ Code.app/Contents/Resources/app/extensions"
-                else "${prev.vscode}/lib/vscode/resources/app/extensions";
-            in
-            ''
-              npx babel ${extensions}/css-language-features/server/dist/node \
-                --out-dir lib/css-language-server/node/
-              npx babel ${extensions}/html-language-features/server/dist/node \
-                --out-dir lib/html-language-server/node/
-              npx babel ${extensions}/json-language-features/server/dist/node \
-                --out-dir lib/json-language-server/node/
-              npx babel ${extensions}/markdown-language-features/server/dist/node \
-                --out-dir lib/markdown-language-server/node/
-              cp -r ${vscode-eslint}/share/vscode/extensions/dbaeumer.vscode-eslint/server/out \
-                lib/eslint-language-server
-              mv lib/markdown-language-server/node/workerMain.js lib/markdown-language-server/node/main.js
-            '';
-
-          meta = with prev.lib; {
-            description = "HTML/CSS/JSON/ESLint language servers extracted from vscode";
-            homepage = "https://github.com/hrsh7th/vscode-langservers-extracted";
-            license = licenses.mit;
-            maintainers = with maintainers; [ lord-valen ];
-          };
-        };
         myVimPlugins = {
           vim-coverage-py = prev.vimUtils.buildVimPluginFrom2Nix {
             pname = "vim-coverage.py";
@@ -110,10 +68,10 @@ final: prev: {
         configure = {
           customRC = ''
             let g:nix_exes = {
-            \ 'pylsp': '${final.python3Packages.python-lsp-server}/bin/pylsp',
+            \ 'pyright': '${final.nodePackages.pyright}/bin/pyright-langserver',
             \ 'bash-language-server': '${final.nodePackages.bash-language-server}/bin/bash-language-server',
-            \ 'vscode-css-language-server': '${vscode-langservers-extracted}/bin/vscode-css-language-server',
-            \ 'vscode-eslint-language-server': '${vscode-langservers-extracted}/bin/vscode-eslint-language-server',
+            \ 'vscode-css-language-server': '${final.nodePackages.vscode-langservers-extracted}/bin/vscode-css-language-server',
+            \ 'vscode-eslint-language-server': '${final.nodePackages.vscode-langservers-extracted}/bin/vscode-eslint-language-server',
             \ 'nil_ls': '${final.nil}/bin/nil',
             \ 'tsserver': '${final.nodePackages.typescript-language-server}/bin/typescript-language-server',
             \ 'prettier': '${final.nodePackages.prettier}/bin/prettier',
@@ -136,7 +94,7 @@ final: prev: {
               cmp-path
               cmp-vsnip
               diffview-nvim
-              fidget-nvim
+              # fidget-nvim
               gitsigns-nvim
               Ionide-vim
               lspsaga-nvim-original
