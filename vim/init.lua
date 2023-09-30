@@ -417,7 +417,10 @@ require 'nvim-tree'.setup {
 
 vim.diagnostic.config {
     signs = {
-        severity = vim.diagnostic.severity.INFO
+        severity = { min = vim.diagnostic.severity.INFO }
+    },
+    virtual_text = {
+        severity = { min = vim.diagnostic.severity.INFO }
     },
     float = {
         format = function(diagnostic)
@@ -444,14 +447,18 @@ require('lspsaga').setup({
     },
 })
 
-keymap("n", "[D", "<cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true })
-keymap("n", "]D", "<cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true })
 keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
 keymap("n", "[d", function()
-    require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.INFO })
+    require("lspsaga.diagnostic"):goto_prev({ severity = { min = vim.diagnostic.severity.INFO } })
 end, { silent = true })
 keymap("n", "]d", function()
-    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.INFO })
+    require("lspsaga.diagnostic"):goto_next({ severity = { min = vim.diagnostic.severity.INFO } })
+end, { silent = true })
+keymap("n", "[h", function()
+    require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.HINT })
+end, { silent = true })
+keymap("n", "]h", function()
+    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.HINT })
 end, { silent = true })
 keymap("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
 keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
