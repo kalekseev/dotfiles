@@ -206,7 +206,7 @@ local on_attach = function(client, bufnr)
     -- buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
     -- buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
-    buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+    buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 
     if client.supports_method("textDocument/formatting") then
         vim.api.nvim_clear_autocmds({ group = augroupFormat, buffer = bufnr })
@@ -236,7 +236,7 @@ local nvim_lsp = require('lspconfig')
 local util = require('lspconfig/util')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-require 'lspconfig'.pyright.setup {
+nvim_lsp.pyright.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 
@@ -290,6 +290,16 @@ nvim_lsp.tsserver.setup {
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes.tsserver, "--stdio" },
+    root_dir = function(fname)
+        if (util.root_pattern '.env.vue' (fname)) then
+            -- volar will start it on its own
+            -- single_file_support = false is required for this to work
+            return nil;
+        end
+        return util.root_pattern 'tsconfig.json' (fname)
+            or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
+    end,
+    single_file_support = false,
 }
 
 nvim_lsp.bashls.setup {
@@ -297,6 +307,12 @@ nvim_lsp.bashls.setup {
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes['bash-language-server'], "start" },
+    settings = {
+        bashIde = {
+            globPattern = vim.env.GLOB_PATTERN or '*@(.sh|.inc|.bash|.command)',
+            shellcheckPath = vim.g.nix_exes.shellcheck,
+        }
+    }
 }
 
 -- local augroupEslintFormat = vim.api.nvim_create_augroup("LspEslintFormatting", { clear = false })
@@ -338,34 +354,26 @@ nvim_lsp.lua_ls.setup {
         }
     }
 }
-require 'lspconfig'.ruff_lsp.setup {
+
+nvim_lsp.ruff_lsp.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 }
 
-local null_ls = require('null-ls')
 
 if vim.fn.executable('rg') == 1 then
     vim.o.grepprg = 'rg --vimgrep'
 end
 
+local null_ls = require('null-ls')
 null_ls.setup({
-    diagnostics_format = "[#{c}] #{m} (#{s})",
-    -- debug = true,
     sources = {
-        -- null_ls.builtins.diagnostics.flake8,
-        null_ls.builtins.diagnostics.shellcheck.with({
-            command = vim.g.nix_exes.shellcheck
-        }),
-        -- null_ls.builtins.formatting.isort,
-        null_ls.builtins.formatting.black,
         null_ls.builtins.formatting.nixpkgs_fmt.with({
             command = vim.g.nix_exes.nixpkgs_fmt
         }),
         null_ls.builtins.formatting.prettier.with(vim.fn.executable('prettier') ~= 1 and {
             command = vim.g.nix_exes.prettier,
         } or {}),
-        null_ls.builtins.formatting.ruff
     },
     on_attach = on_attach,
 })
