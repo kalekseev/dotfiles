@@ -78,7 +78,7 @@ final: prev: {
             \ 'pg_format': '${final.pgformatter}/bin/pg_format',
             \ 'sql-formatter': '${sql-formatter}/bin/sql-formatter',
             \ 'shellcheck': '${final.shellcheck}/bin/shellcheck',
-            \ 'nixpkgs_fmt': '${final.nixpkgs-fmt}/bin/nixpkgs-fmt',
+            \ 'nixpkgs-fmt': '${final.nixpkgs-fmt}/bin/nixpkgs-fmt',
             \ 'lua_language_server': '${final.sumneko-lua-language-server}/bin/lua-language-server',
             \ 'volar': '${final.nodePackages.volar}/bin/vue-language-server',
             \}
@@ -94,13 +94,11 @@ final: prev: {
               cmp-path
               cmp-vsnip
               diffview-nvim
-              # fidget-nvim
               gitsigns-nvim
               Ionide-vim
               lspsaga-nvim-original
               lualine-nvim
               neodev-nvim
-              null-ls-nvim
               nvim-cmp
               nvim-lspconfig
               nvim-tree-lua
@@ -118,6 +116,7 @@ final: prev: {
               # copilot-lua
               # copilot-cmp
               # -- vim
+              neoformat
               jdaddy-vim
               myVimPlugins.vim-coverage-py
               ReplaceWithRegister

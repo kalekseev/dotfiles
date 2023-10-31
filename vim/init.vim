@@ -377,6 +377,7 @@ autocmd MyAutoCmd BufRead,BufNewFile */backend/*/templates/*.html set filetype=h
 " don't do it when writing a commit log entry
 autocmd MyAutoCmd BufReadPost * call SetCursorPosition()
 
+
 function! SetCursorPosition()
     if &filetype !~ 'commit\c'
         if line("'\"") > 0 && line("'\"") <= line("$")
@@ -421,4 +422,15 @@ let g:db_ui_env_variable_url = 'DATABASE_URL'
 
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
+
+" formatter
 au FileType sql let &l:formatprg=g:nix_exes['sql-formatter']
+au FileType nix let &l:formatprg=g:nix_exes['nixpkgs-fmt']
+augroup fmt
+  autocmd!
+  autocmd BufWritePre *.css,*.md,*.yaml,*.scss,*.json,*.html,*.js,*.ts,*.tsx,*.vue try | undojoin | Neoformat prettier | catch /E790/ | Neoformat prettier | endtry
+  autocmd BufWritePre *.nix try | undojoin | Neoformat | catch /E790/ | Neoformat | endtry
+augroup END
+let g:neoformat_try_node_exe = 1
+let g:neoformat_only_msg_on_error = 1
+let g:neoformat_try_formatprg = 1

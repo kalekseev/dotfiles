@@ -217,6 +217,7 @@ local on_attach = function(client, bufnr)
                 vim.lsp.buf.format({
                     bufnr      = bufnr,
                     timeout_ms = 2000,
+                    filter     = function(sclient) return sclient.name ~= "volar" end
                 })
             end,
         })
@@ -364,19 +365,6 @@ nvim_lsp.ruff_lsp.setup {
 if vim.fn.executable('rg') == 1 then
     vim.o.grepprg = 'rg --vimgrep'
 end
-
-local null_ls = require('null-ls')
-null_ls.setup({
-    sources = {
-        null_ls.builtins.formatting.nixpkgs_fmt.with({
-            command = vim.g.nix_exes.nixpkgs_fmt
-        }),
-        null_ls.builtins.formatting.prettier.with(vim.fn.executable('prettier') ~= 1 and {
-            command = vim.g.nix_exes.prettier,
-        } or {}),
-    },
-    on_attach = on_attach,
-})
 
 require 'ionide'.setup {
     on_attach = on_attach,
