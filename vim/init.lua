@@ -343,7 +343,7 @@ nvim_lsp.lua_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 
-    cmd = { vim.g.nix_exes.lua_language_server, "--stdio" },
+    cmd = { vim.g.nix_exes['lua-language-server'], "--stdio" },
     settings = {
         Lua = {
             diagnostics = {
@@ -359,6 +359,8 @@ nvim_lsp.lua_ls.setup {
 nvim_lsp.ruff_lsp.setup {
     on_attach = on_attach,
     capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes['ruff-lsp'] },
 }
 
 
@@ -401,11 +403,7 @@ require 'nvim-tree'.setup {
     },
     view                = {
         width = 30,
-        side = 'left',
-        mappings = {
-            custom_only = false,
-            list = {}
-        }
+        side = 'left'
     }
 }
 

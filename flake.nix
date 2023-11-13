@@ -1,7 +1,5 @@
 # example https://github.com/DieracDelta/vimconf_talk/blob/5_ci/flake.nix
 {
-  description = "My neovim flake";
-
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "nixpkgs/nixos-unstable";

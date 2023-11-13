@@ -10,7 +10,7 @@ final: prev: {
           '';
         };
         myVimPlugins = {
-          vim-coverage-py = prev.vimUtils.buildVimPluginFrom2Nix {
+          vim-coverage-py = prev.vimUtils.buildVimPlugin {
             pname = "vim-coverage.py";
             version = "2021-08-01";
             src = prev.fetchFromGitHub {
@@ -20,7 +20,7 @@ final: prev: {
               sha256 = "sha256-9dpw+0UmuE9R8Lr+npJ9vQYwoSexsU/XJbhnOL+HulY=";
             };
           };
-          vim-qfreplace = prev.vimUtils.buildVimPluginFrom2Nix {
+          vim-qfreplace = prev.vimUtils.buildVimPlugin {
             pname = "vim-qfreplace";
             version = "2014-06-07";
             src = prev.fetchFromGitHub {
@@ -79,7 +79,8 @@ final: prev: {
             \ 'sql-formatter': '${sql-formatter}/bin/sql-formatter',
             \ 'shellcheck': '${final.shellcheck}/bin/shellcheck',
             \ 'nixpkgs-fmt': '${final.nixpkgs-fmt}/bin/nixpkgs-fmt',
-            \ 'lua_language_server': '${final.sumneko-lua-language-server}/bin/lua-language-server',
+            \ 'ruff-lsp': '${final.ruff-lsp}/bin/ruff-lsp',
+            \ 'lua-language-server': '${final.sumneko-lua-language-server}/bin/lua-language-server',
             \ 'volar': '${final.nodePackages.volar}/bin/vue-language-server',
             \}
             source ${../../vim/init.vim}
@@ -96,7 +97,7 @@ final: prev: {
               diffview-nvim
               gitsigns-nvim
               Ionide-vim
-              lspsaga-nvim-original
+              lspsaga-nvim
               lualine-nvim
               neodev-nvim
               nvim-cmp
