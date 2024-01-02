@@ -357,7 +357,7 @@ autocmd MyAutoCmd FileType javascript setlocal ts=2 sw=2 sta et sts=2 ai colorco
 autocmd MyAutoCmd FileType vue setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
 autocmd MyAutoCmd FileType json setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
 autocmd MyAutoCmd FileType typescript setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
-autocmd MyAutoCmd FileType typescript.tsx setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
+autocmd MyAutoCmd FileType typescriptreact setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
 autocmd MyAutoCmd FileType python let g:argwrap_tail_comma = 1
 
 " save on focus lost

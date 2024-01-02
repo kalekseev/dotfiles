@@ -154,8 +154,11 @@ final: prev: {
               vim-test
               vim-dispatch # recommended for vim-test
               vim-tmux-navigator
-              vim-tsx
+              # vim-tsx
+              vim-jsx-typescript
               vim-visual-star-search
+              octo-nvim
+              fidget-nvim
             ];
             opt = [ ];
           };

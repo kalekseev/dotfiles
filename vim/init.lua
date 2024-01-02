@@ -32,6 +32,7 @@ require('onedark').load()
 
 require('treesitter-context').setup {
     enable = true,
+    multiline_threshold = 1,
 }
 
 require 'nvim-treesitter.configs'.setup {
@@ -57,7 +58,11 @@ require 'nvim-treesitter.configs'.setup {
     }
 }
 
+require('octo').setup {}
+require("fidget").setup {}
 require('which-key').setup {}
+require('gitsigns').setup {}
+
 require 'lualine'.setup {
     options = {
         theme = 'onedark',
@@ -78,7 +83,6 @@ require 'lualine'.setup {
         lualine_z = { 'location' }
     },
 }
-require('gitsigns').setup {}
 
 local actions = require('telescope.actions')
 local trouble = require("trouble.providers.telescope")
@@ -191,7 +195,9 @@ local on_attach = function(client, bufnr)
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-    buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    -- buf_set_keymap('n', 'gd',
+    --     '<cmd>lua vim.lsp.buf.definition{ on_list = function (options) vim.fn.setqflist({}, " ", options); vim.api.nvim_command("cfirst") end}<CR>',
+    --     opts)
     -- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
     buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
@@ -407,8 +413,6 @@ require 'nvim-tree'.setup {
     }
 }
 
--- require "fidget".setup {}
-
 vim.diagnostic.config {
     signs = {
         severity = { min = vim.diagnostic.severity.INFO }
@@ -454,6 +458,7 @@ end, { silent = true })
 keymap("n", "]h", function()
     require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.HINT })
 end, { silent = true })
-keymap("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
+keymap("n", "gh", "<cmd>Lspsaga finder<CR>", { silent = true })
+keymap("n", "gd", "<cmd>Lspsaga goto_definition<CR>", { silent = true })
 keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
 keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", { silent = true })
