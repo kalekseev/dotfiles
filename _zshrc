@@ -63,7 +63,6 @@ plugins=(
     macos
     virtualenv
     pip
-    yarn
 )
 
 export EDITOR=nvim
@@ -81,4 +80,5 @@ complete -C 'aws_completer' aws
 # export DOTNET_ROOT=$(dirname $(dirname $(readlink $(which dotnet))))
 # eval "$(z --init zsh)"
 eval "$(direnv hook zsh)"
+eval "$(atuin init zsh)"
 eval "$(starship init zsh)"

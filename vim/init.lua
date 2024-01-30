@@ -223,7 +223,7 @@ local on_attach = function(client, bufnr)
                 vim.lsp.buf.format({
                     bufnr      = bufnr,
                     timeout_ms = 2000,
-                    filter     = function(sclient) return sclient.name ~= "volar" end
+                    filter     = function(sclient) return sclient.name ~= "volar" and sclient.name ~= 'tsserver' end
                 })
             end,
         })
@@ -255,7 +255,8 @@ nvim_lsp.pyright.setup {
                     reportUnusedVariable = "none",
                     reportGeneralTypeIssues = "none",
                     reportOptionalMemberAccess = "none",
-                    reportOptionalSubscript = "none"
+                    reportOptionalSubscript = "none",
+                    reportIncompatibleVariableOverride = "none"
                 }
             }
         }
