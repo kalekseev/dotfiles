@@ -49,6 +49,7 @@ final: prev: {
               nix
               python
               query
+              rust
               regex
               scss
               sql
@@ -82,6 +83,8 @@ final: prev: {
             \ 'ruff-lsp': '${final.ruff-lsp}/bin/ruff-lsp',
             \ 'lua-language-server': '${final.sumneko-lua-language-server}/bin/lua-language-server',
             \ 'volar': '${final.nodePackages.volar}/bin/vue-language-server',
+            \ 'fsautocomplete': '${final.fsautocomplete}/bin/fsautocomplete',
+            \ 'rust-analyzer': '${final.rust-analyzer}/bin/rust-analyzer',
             \}
             source ${../../vim/init.vim}
             source ${../../vim/init.lua}
@@ -114,6 +117,7 @@ final: prev: {
               vim-visual-multi
               vim-vsnip
               which-key-nvim
+              git-conflict-nvim
               # copilot-lua
               # copilot-cmp
               # -- vim
@@ -147,7 +151,6 @@ final: prev: {
               vim-niceblock
               vim-polyglot
               myVimPlugins.vim-qfreplace
-              vim-racer
               vim-repeat
               vim-rooter
               vim-surround

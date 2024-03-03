@@ -30,7 +30,7 @@
     lineNumber = true
 [merge]
     tool = vimdiff
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 [mergetool]
     prompt = false
     keepBackup = false
@@ -49,5 +49,13 @@
     defaultBranch = main
 [diff]
     external = difft --background light
+    algorithm = histogram
 [pager]
     difftool = true
+[rerere]
+    enabled = true
+[branch]
+    sort = -committerdate
+[rebase]
+    autosquash = true
+    autostash = true

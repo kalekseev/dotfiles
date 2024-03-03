@@ -325,14 +325,6 @@ let g:rooter_manual_only = 1
 " direnv
 let g:direnv_silent_load = 1
 
-" ionide-vim
-let g:fsharp#lsp_auto_setup = 0
-let g:fsharp#fsautocomplete_command =
-    \ [
-    \   'fsautocomplete',
-    \   '--adaptive-lsp-server-enabled'
-    \ ]
-
 " test
 let test#python#runner = 'pytest'
 let test#strategy = "asyncrun_background"
@@ -426,7 +418,7 @@ autocmd! User GoyoLeave Limelight!
 " formatter
 au FileType sql let &l:formatprg=g:nix_exes['sql-formatter']
 au FileType nix let &l:formatprg=g:nix_exes['nixpkgs-fmt']
-augroup fmt
+augroup neoformat
   autocmd!
   autocmd BufWritePre *.css,*.md,*.yaml,*.scss,*.json,*.html,*.js,*.ts,*.tsx,*.vue try | undojoin | Neoformat prettier | catch /E790/ | Neoformat prettier | endtry
   autocmd BufWritePre *.nix try | undojoin | Neoformat | catch /E790/ | Neoformat | endtry

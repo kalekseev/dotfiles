@@ -188,10 +188,16 @@ local augroupFormat = vim.api.nvim_create_augroup("LspFormatting", { clear = fal
 local on_attach = function(client, bufnr)
     local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
-    -- local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
     -- Mappings.
     local opts = { noremap = true, silent = true }
+    local nmap = function(keys, func, desc)
+        if desc then
+            desc = 'LSP: ' .. desc
+        end
+
+        vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+    end
+    nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
@@ -216,15 +222,48 @@ local on_attach = function(client, bufnr)
 
     if client.supports_method("textDocument/formatting") then
         vim.api.nvim_clear_autocmds({ group = augroupFormat, buffer = bufnr })
+        if client.name == 'eslint' then
+            -- callback will call neoformat as needed
+            vim.api.nvim_clear_autocmds({ group = 'neoformat', buffer = bufnr })
+        end
         vim.api.nvim_create_autocmd("BufWritePre", {
             group = augroupFormat,
             buffer = bufnr,
             callback = function()
+                local clients = vim.lsp.get_active_clients({ bufnr = bufnr });
+                local applyPrettier = false;
+                for _, _client in ipairs(clients) do
+                    if _client.name == 'ruff_lsp' then
+                        local params = vim.lsp.util.make_range_params()
+                        -- context taken from :LspLog with debug mode on: `:lua  vim.lsp.set_log_level 'debug'`
+                        params.context = { diagnostics = {}, only = { "source.fixAll" }, triggerKind = 1 }
+                        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 2000)
+                        for _, res in pairs(result or {}) do
+                            for _, r in pairs(res.result or {}) do
+                                if r.edit then
+                                    vim.lsp.util.apply_workspace_edit(r.edit, _client.offset_encoding)
+                                else
+                                    vim.lsp.buf.execute_command(r.command)
+                                end
+                            end
+                        end
+                    elseif _client.name == 'eslint' then
+                        vim.cmd('EslintFixAll')
+                        applyPrettier = true;
+                    end
+                end
+
                 vim.lsp.buf.format({
                     bufnr      = bufnr,
                     timeout_ms = 2000,
-                    filter     = function(sclient) return sclient.name ~= "volar" and sclient.name ~= 'tsserver' end
+                    filter     = function(sclient)
+                        return sclient.name ~= "volar" and sclient.name ~= 'tsserver' and
+                            sclient.name ~= 'cssls'
+                    end
                 })
+                if applyPrettier then
+                    vim.cmd("try | undojoin | Neoformat prettier | catch /E790/ | Neoformat prettier | endtry")
+                end
             end,
         })
     end
@@ -233,7 +272,7 @@ end
 -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
 require("neodev").setup {
     override = function(root_dir, library)
-        if require("neodev.util").has_file(root_dir, "~/dotfiles/vim") then
+        if root_dir:find("dotfiles") then
             library.enabled = true
             library.plugins = true
         end
@@ -249,15 +288,12 @@ nvim_lsp.pyright.setup {
 
     cmd = { vim.g.nix_exes.pyright, "--stdio" },
     settings = {
+        -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
         python = {
             analysis = {
-                diagnosticSeverityOverrides = {
-                    reportUnusedVariable = "none",
-                    reportGeneralTypeIssues = "none",
-                    reportOptionalMemberAccess = "none",
-                    reportOptionalSubscript = "none",
-                    reportIncompatibleVariableOverride = "none"
-                }
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = 'openFilesOnly',
             }
         }
     }
@@ -323,17 +359,8 @@ nvim_lsp.bashls.setup {
     }
 }
 
--- local augroupEslintFormat = vim.api.nvim_create_augroup("LspEslintFormatting", { clear = false })
 nvim_lsp.eslint.setup {
     on_attach = on_attach,
-    -- on_attach = function(_, bufnr)
-    --     vim.api.nvim_clear_autocmds({ group = augroupEslintFormat, buffer = bufnr })
-    --     vim.api.nvim_create_autocmd("BufWritePre", {
-    --         group = augroupEslintFormat,
-    --         buffer = bufnr,
-    --         command = 'EslintFixAll'
-    --     })
-    -- end,
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes['vscode-eslint-language-server'], "--stdio" },
@@ -370,14 +397,38 @@ nvim_lsp.ruff_lsp.setup {
     cmd = { vim.g.nix_exes['ruff-lsp'] },
 }
 
+nvim_lsp.rust_analyzer.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes['rust-analyzer'] },
+}
+
+nvim_lsp.ocamllsp.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
 
 if vim.fn.executable('rg') == 1 then
     vim.o.grepprg = 'rg --vimgrep'
 end
 
+vim.g['fsharp#lsp_auto_setup'] = 0;
+vim.g['fsharp#fsautocomplete_command'] = { vim.g.nix_exes['fsautocomplete'], '--adaptive-lsp-server-enabled' };
 require 'ionide'.setup {
     on_attach = on_attach,
     capabilities = capabilities,
+}
+require 'git-conflict'.setup {
+    default_mappings = true,
+    default_commands = true,
+    disable_diagnostics = false,
+    list_opener = 'copen',
+    highlights = {
+        incoming = 'DiffAdd',
+        current = 'DiffText',
+    },
+    debug = false
 }
 
 require 'nvim-tree'.setup {
@@ -460,6 +511,6 @@ keymap("n", "]h", function()
     require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.HINT })
 end, { silent = true })
 keymap("n", "gh", "<cmd>Lspsaga finder<CR>", { silent = true })
-keymap("n", "gd", "<cmd>Lspsaga goto_definition<CR>", { silent = true })
+-- keymap("n", "gd", "<cmd>Lspsaga goto_definition<CR>", { silent = true })
 keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
 keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", { silent = true })

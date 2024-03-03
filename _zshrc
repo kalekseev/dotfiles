@@ -77,8 +77,11 @@ source ~/dotfiles/aliases
 complete -C 'aws_completer' aws
 
 # export PATH="$PATH:$HOME/.dotnet/tools"
-# export DOTNET_ROOT=$(dirname $(dirname $(readlink $(which dotnet))))
+export DOTNET_ROOT=$(dirname $(dirname $(readlink $(which dotnet))))
 # eval "$(z --init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(atuin init zsh)"
 eval "$(starship init zsh)"
+
+# opam configuration
+[[ ! -r /Users/konstantin/.opam/opam-init/init.zsh ]] || source /Users/konstantin/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
