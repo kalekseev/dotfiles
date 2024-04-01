@@ -62,6 +62,9 @@ require('octo').setup {}
 require("fidget").setup {}
 require('which-key').setup {}
 require('gitsigns').setup {}
+require('gp').setup {
+    openai_api_key = { "cat", vim.fn.expand('$HOME/.oai_key') },
+}
 
 require 'lualine'.setup {
     options = {
@@ -494,6 +497,28 @@ require('lspsaga').setup({
     },
     symbol_in_winbar = {
         respect_root = true,
+    },
+})
+
+require("conform").setup({
+    formatters = {
+        sql_formatter = {
+            command = vim.g.nix_exes['sql-formatter']
+        },
+        injected = {
+            ignore_errors = false,
+            lang_to_ext = {
+                sql = "sql",
+            },
+        }
+    },
+    formatters_by_ft = {
+        sql = { "sql_formatter" },
+        python = { "injected" }
+    },
+    format_on_save = {
+        lsp_fallback = true,
+        timeout_ms = 500,
     },
 })
 

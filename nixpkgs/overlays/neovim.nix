@@ -30,6 +30,16 @@ final: prev: {
               sha256 = "sha256-Ttu9QqIRLf1o+DX0Un3quk4TcOgzRhnDidqY7iMvQGE=";
             };
           };
+          gp-nvim = prev.vimUtils.buildVimPlugin {
+            pname = "gp-nvim";
+            version = "2024-02-27";
+            src = prev.fetchFromGitHub {
+              owner = "Robitx";
+              repo = "gp.nvim";
+              rev = "d76be3d067b4e7352d1e744954327982cf1d24aa";
+              sha256 = "sha256-IIpbLDiC5Th/jbx7LDEPj+6D86eQQCZgPQHsfc8j8GY=";
+            };
+          };
 
           nvim-treesitter = prev.vimPlugins.nvim-treesitter.withPlugins
             (p: with p; [
@@ -93,6 +103,7 @@ final: prev: {
           packages.myVimPackages = with final.vimPlugins; {
             start = [
               # -- neovim
+              conform-nvim
               cmp-buffer
               cmp-nvim-lsp
               cmp-path
@@ -118,6 +129,7 @@ final: prev: {
               vim-vsnip
               which-key-nvim
               git-conflict-nvim
+              myVimPlugins.gp-nvim
               # copilot-lua
               # copilot-cmp
               # -- vim
