@@ -1,4 +1,4 @@
-final: prev:
+pkgs:
 
 let
   config = ''
@@ -63,25 +63,23 @@ let
     bind-key -T copy-mode-vi C-l select-pane -R
     # bind-key -T copy-mode-vi C-\\ select-pane -l
     # end nav
-    run-shell ${final.tmuxPlugins.sensible}
-    run-shell ${final.tmuxPlugins.yank}
-    run-shell ${final.tmuxPlugins.copycat}
-    run-shell ${final.tmuxPlugins.open}
-    run-shell ${final.tmuxPlugins.resurrect}
+    run-shell ${pkgs.tmuxPlugins.sensible}
+    run-shell ${pkgs.tmuxPlugins.yank}
+    run-shell ${pkgs.tmuxPlugins.copycat}
+    run-shell ${pkgs.tmuxPlugins.open}
+    run-shell ${pkgs.tmuxPlugins.resurrect}
   '';
 in
 {
-  userPackages = prev.userPackages or { } // {
-    tmux = prev.symlinkJoin {
-      name = prev.tmux.name;
-      paths = [
-        prev.tmux
-        prev.tmux.man
-      ];
-      buildInputs = [ prev.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/tmux --add-flags "-f ${prev.writeText ''tmux.conf'' config}"
-      '';
-    };
+  tmux = pkgs.symlinkJoin {
+    name = pkgs.tmux.name;
+    paths = [
+      pkgs.tmux
+      pkgs.tmux.man
+    ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/tmux --add-flags "-f ${pkgs.writeText ''tmux.conf'' config}"
+    '';
   };
 }

@@ -63,8 +63,8 @@
         };
         home-manager.users.konstantin = { pkgs, ... }: {
           home.packages = [
-            ((import ./nixpkgs/overlays/neovim.nix) pkgs pkgs).userPackages.neovim
-            ((import ./nixpkgs/overlays/tmux.nix) pkgs pkgs).userPackages.tmux
+            ((import ./packages/neovim/neovim.nix) pkgs).neovim
+            ((import ./packages/tmux.nix) pkgs).tmux
             pkgs.atuin
             pkgs.aws-vault
             pkgs.bat
@@ -120,7 +120,7 @@
       in
       {
         packages = {
-          neovim = ((import ./nixpkgs/overlays/neovim.nix) pkgs pkgs).userPackages.neovim;
+          neovim = ((import ./packages/neovim/neovim.nix) pkgs).neovim;
         };
       });
 }
