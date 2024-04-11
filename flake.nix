@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
+      # problems:
+      # https://github.com/NixOS/nix/issues/2982
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -14,7 +16,7 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, flake-utils }:
+  outputs = { self, nix-darwin, nixpkgs, home-manager, flake-utils }:
     let
       configuration = { pkgs, ... }: {
         # List packages installed in system profile. To search by name, run:
@@ -26,6 +28,8 @@
 
         # Necessary for using flakes on this system.
         nix.settings.experimental-features = "nix-command flakes";
+
+        nix.settings.trusted-users = [ "root" "konstantin" ];
 
         # Create /etc/zshrc that loads the nix-darwin environment.
         programs.zsh.enable = true; # default shell on catalina

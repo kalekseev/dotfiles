@@ -510,10 +510,18 @@ require("conform").setup({
             lang_to_ext = {
                 sql = "sql",
             },
+            lang_to_formatters = {
+                -- doesn't work for some reason
+                sql = { "sql_formatter", "add_new_line" },
+            },
+        },
+        add_new_line = {
+            command = "sed",
+            args = { "-e", "$a\\" },
         }
     },
     formatters_by_ft = {
-        sql = { "sql_formatter" },
+        sql = { "sql_formatter", "add_new_line" },
         python = { "injected" }
     },
     format_on_save = {
