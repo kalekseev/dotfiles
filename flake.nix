@@ -57,6 +57,31 @@
           ];
         };
 
+        homebrew = {
+          enable = true;
+          global.autoUpdate = true;
+          onActivation.cleanup = "zap";
+          casks = [
+            "chatbox"
+            "discord"
+            "firefox"
+            "google-chrome"
+            "iina"
+            "imazing"
+            "onedrive"
+            "orbstack"
+            "qlvideo"
+            "raycast"
+            "rectangle"
+            "skype"
+            "spotify"
+            "telegram"
+            "transmission"
+            "vmware-fusion"
+            "yubico-yubikey-manager"
+            "zoom"
+          ];
+        };
       };
       homeManagerConfig = {
         home-manager.useGlobalPkgs = true;
@@ -68,7 +93,7 @@
         home-manager.users.konstantin = { pkgs, ... }: {
           home.packages = [
             ((import ./packages/neovim/neovim.nix) pkgs).neovim
-            ((import ./packages/tmux.nix) pkgs).tmux
+            # ((import ./packages/tmux.nix) pkgs).tmux
             pkgs.atuin
             pkgs.aws-vault
             pkgs.bat
@@ -83,8 +108,6 @@
             pkgs.ffmpeg
             pkgs.geckodriver
             pkgs.gh
-            pkgs.git
-            pkgs.git-lfs
             pkgs.htop
             pkgs.jq
             pkgs.opam
@@ -98,10 +121,86 @@
             pkgs.watch
           ];
           home.stateVersion = "24.05";
+
+          home.sessionVariables = {
+            PIP_REQUIRE_VIRTUALENV = "true";
+            COMPOSE_DOCKER_CLI_BUILD = "true";
+            DOCKER_BUILDKIT = "true";
+            EDITOR = "nvim";
+            DIRENV_LOG_FORMAT = "`tput setaf 11`%s`tput sgr0`";
+          };
+
+          home.shellAliases = {
+            g = "git";
+            gs = "git status";
+            gd = "git diff";
+            vim = "nvim";
+            da = "django-admin";
+          };
+
+          home.file = {
+            ".psqlrc".source = ./_psqlrc;
+          };
+
+          programs.zsh = {
+            enable = true;
+            oh-my-zsh.enable = true;
+            oh-my-zsh.plugins = [
+              "macos"
+              "virtualenv"
+              "pip"
+            ];
+            initExtra = ''
+              portkill() { kill -15 $(lsof -ti :''${1:-8000} -sTCP:LISTEN) }
+              mkcd() { mkdir -p "$1" && cd "$1" }
+              cdsitepackages() {
+                  cd $(python -c 'import site; print(site.getsitepackages()[0])')
+              }
+            '';
+          };
+
+          programs.direnv.enable = true;
+          programs.direnv.config = {
+            hide_env_diff = true;
+          };
+          programs.atuin.enable = true;
+          programs.starship.enable = true;
+
+          programs.git = {
+            enable = true;
+            ignores = [
+              "*.local"
+              "*.pyc"
+              ".DS_Store"
+            ];
+            includes = [
+              { path = "~/.gitconfig.local"; }
+            ];
+            extraConfig = builtins.readFile ./_gitconfig;
+          };
           # https://nix-community.github.io/home-manager/options.xhtml
           programs.kitty = {
             enable = true;
             extraConfig = builtins.readFile ./kitty.conf;
+            shellIntegration.enableZshIntegration = false;
+          };
+
+          programs.tmux = {
+            enable = true;
+            baseIndex = 1;
+            escapeTime = 10;
+            historyLimit = 10000;
+            mouse = true;
+            prefix = "C-a";
+            extraConfig = builtins.readFile ./tmux.conf;
+            plugins = [
+              pkgs.tmuxPlugins.cpu
+              pkgs.tmuxPlugins.sensible
+              pkgs.tmuxPlugins.yank
+              pkgs.tmuxPlugins.copycat
+              pkgs.tmuxPlugins.open
+              pkgs.tmuxPlugins.resurrect
+            ];
           };
         };
       };

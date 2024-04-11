@@ -1,6 +1,5 @@
 [core]
     editor = nvim
-    excludesfile = ~/dotfiles/_gitignore
 [alias]
     co = checkout
     ci = commit
@@ -44,8 +43,6 @@
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
-[include]
-    path=.gitconfig.local
 [init]
     defaultBranch = main
 [diff]
