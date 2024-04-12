@@ -1,4 +1,4 @@
-pkgs: {
+{ pkgs, inputs }: {
   neovim =
     let
       sql-formatter = pkgs.nodePackages.sql-formatter.override {
@@ -8,36 +8,18 @@ pkgs: {
             '-l postgresql -c ${pkgs.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
         '';
       };
-      myVimPlugins = {
+      plugins = {
         vim-coverage-py = pkgs.vimUtils.buildVimPlugin {
-          pname = "vim-coverage.py";
-          version = "2021-08-01";
-          src = pkgs.fetchFromGitHub {
-            owner = "kalekseev";
-            repo = "vim-coverage.py";
-            rev = "0cabe076776640988c245a9eb640da2e6f4b2bc4";
-            sha256 = "sha256-9dpw+0UmuE9R8Lr+npJ9vQYwoSexsU/XJbhnOL+HulY=";
-          };
+          name = "vim-coverage.py";
+          src = inputs.vim-coverage-py;
         };
         vim-qfreplace = pkgs.vimUtils.buildVimPlugin {
-          pname = "vim-qfreplace";
-          version = "2014-06-07";
-          src = pkgs.fetchFromGitHub {
-            owner = "thinca";
-            repo = "vim-qfreplace";
-            rev = "89e64ae24fb4b8e2402ba6d84971c06606f4adf4";
-            sha256 = "sha256-Ttu9QqIRLf1o+DX0Un3quk4TcOgzRhnDidqY7iMvQGE=";
-          };
+          name = "vim-qfreplace";
+          src = inputs.vim-qfreplace;
         };
         gp-nvim = pkgs.vimUtils.buildVimPlugin {
-          pname = "gp-nvim";
-          version = "2024-02-27";
-          src = pkgs.fetchFromGitHub {
-            owner = "Robitx";
-            repo = "gp.nvim";
-            rev = "d76be3d067b4e7352d1e744954327982cf1d24aa";
-            sha256 = "sha256-IIpbLDiC5Th/jbx7LDEPj+6D86eQQCZgPQHsfc8j8GY=";
-          };
+          name = "gp-nvim";
+          src = inputs.gp-nvim;
         };
 
         nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins
@@ -114,7 +96,7 @@ pkgs: {
             nvim-cmp
             nvim-lspconfig
             nvim-tree-lua
-            myVimPlugins.nvim-treesitter
+            plugins.nvim-treesitter
             nvim-treesitter-context
             nvim-treesitter-textobjects
             nvim-web-devicons
@@ -126,13 +108,13 @@ pkgs: {
             vim-vsnip
             which-key-nvim
             git-conflict-nvim
-            myVimPlugins.gp-nvim
+            plugins.gp-nvim
             # copilot-lua
             # copilot-cmp
             # -- vim
             neoformat
             jdaddy-vim
-            myVimPlugins.vim-coverage-py
+            plugins.vim-coverage-py
             ReplaceWithRegister
             asyncrun-vim
             camelcasemotion
@@ -159,7 +141,7 @@ pkgs: {
             # vim-go
             vim-niceblock
             vim-polyglot
-            myVimPlugins.vim-qfreplace
+            plugins.vim-qfreplace
             vim-repeat
             vim-rooter
             vim-surround

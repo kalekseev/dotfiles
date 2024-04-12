@@ -14,9 +14,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    gp-nvim.url = "github:Robitx/gp.nvim/d76be3d067b4e7352d1e744954327982cf1d24aa";
+    gp-nvim.flake = false;
+    vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
+    vim-coverage-py.flake = false;
+    vim-qfreplace.url = "github:thinca/vim-qfreplace/db1c4b0161931c9a63942f4f562a0d0f4271ac14";
+    vim-qfreplace.flake = false;
   };
 
-  outputs = { self, nix-darwin, nixpkgs, home-manager, flake-utils }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, flake-utils, ... }:
     let
       configuration = { pkgs, ... }: {
         # List packages installed in system profile. To search by name, run:
@@ -92,7 +98,7 @@
         };
         home-manager.users.konstantin = { pkgs, ... }: {
           home.packages = [
-            ((import ./packages/neovim/neovim.nix) pkgs).neovim
+            ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; }).neovim
             pkgs.aws-vault
             pkgs.cachix
             pkgs.chromedriver
@@ -266,7 +272,7 @@
       in
       {
         packages = {
-          neovim = ((import ./packages/neovim/neovim.nix) pkgs).neovim;
+          neovim = ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; }).neovim;
         };
       });
 }
