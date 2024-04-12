@@ -93,9 +93,7 @@
         home-manager.users.konstantin = { pkgs, ... }: {
           home.packages = [
             ((import ./packages/neovim/neovim.nix) pkgs).neovim
-            pkgs.atuin
             pkgs.aws-vault
-            pkgs.bat
             pkgs.cachix
             pkgs.chromedriver
             pkgs.devenv
@@ -103,11 +101,6 @@
             pkgs.fd
             pkgs.ffmpeg
             pkgs.geckodriver
-            pkgs.gh
-            pkgs.htop
-            pkgs.jq
-            pkgs.opam
-            pkgs.ripgrep
             pkgs.rustup
             pkgs.sd
             pkgs.sox
@@ -123,11 +116,14 @@
             DOCKER_BUILDKIT = "true";
             EDITOR = "nvim";
             DIRENV_LOG_FORMAT = "`tput setaf 11`%s`tput sgr0`";
+            DOTNET_ROOT = "${pkgs.dotnet-sdk_8}";
           };
 
           home.shellAliases = {
             g = "git";
             gs = "git status";
+            gp = "git push";
+            gl = "git pull";
             gd = "git diff";
             vim = "nvim";
             da = "django-admin";
@@ -155,11 +151,14 @@
           };
 
           programs.direnv.enable = true;
-          programs.direnv.config = {
-            hide_env_diff = true;
-          };
+          programs.direnv.config = { hide_env_diff = true; };
           programs.atuin.enable = true;
+          programs.bat.enable = true;
+          programs.gh.enable = true;
+          programs.htop.enable = true;
+          programs.jq.enable = true;
           programs.starship.enable = true;
+          programs.ripgrep.enable = true;
 
           programs.git = {
             enable = true;
