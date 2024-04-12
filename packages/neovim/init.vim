@@ -3,16 +3,6 @@ if has('vim_starting')
     scriptencoding utf-8
 endif
 
-if !has('nvim')
-    set nocompatible
-    " disable visual bell
-    set visualbell t_vb=
-    " fast terminal connection
-    set ttyfast
-    set ttymouse=xterm2
-    set viminfo+=n$HOME/.vim/.viminfo
-endif
-
 " reset my autocmd group
 augroup MyAutoCmd
     autocmd!
@@ -22,51 +12,6 @@ augroup END
 "* * * * * * * * * * * * * * * * * SETUP * * * * * * * * * * * * * * * * * * *
 " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-
-" turn on syntax highlighting
-" syntax on
-
-" load local rc files
-" set exrc
-" set secure
-
-" set regexpengine=1  "work faster on macos
-" allow backspacing over everything in INS mode
-" set backspace=indent,eol,start
-
-" store lots of :cmdline history
-" set history=1000
-
-" show incomplete cmds down the bottom
-" set showcmd
-
-" show current mode down the bottom
-" set showmode
-
-" add line numbers
-" set number
-
-" start wrapped lines with the string
-" set showbreak=↪..
-
-" wrap lines
-" set wrap
-
-" don't break words
-" set linebreak
-
-" listchars
-" set list listchars=tab:»·
-
-" add some line space for easy reading
-" set linespace=4
-
-" always show statusline
-" set laststatus=3
-
-" hide buffers when not displayed
-" set hidden
-
 " remap leader
 let g:mapleader = "\<Space>"
 let g:maplocalleader = "\<Space>"
@@ -75,31 +20,12 @@ nnoremap <Space> <Nop>
 " russian keymap
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz,№;#
 
-" turn off needless toolbar on gvim/mvim
-set guioptions-=T
-set guioptions-=m
-" off scrollbar
-set guioptions-=rL
-" no guitablabel
-set guioptions-=e
-set guioptions+=c
-
-
 " indent settings
 set shiftwidth=4
 set softtabstop=4
 set shiftround
 set expandtab
 set autoindent
-
-" fold based on indent
-set foldmethod=indent
-
-" deepest fold is 3 levels
-set foldnestmax=3
-
-" dont fold by default
-set nofoldenable
 
 " make cmdline tab completion similar to bash
 set wildmode=longest,list,full
@@ -118,37 +44,6 @@ set sidescroll=1
 
 " some stuff to get the mouse going in term
 set mouse=n
-
-" BACKUP
-" https://begriffs.com/posts/2019-07-19-history-use-vim.html
-" Protect changes between writes. Default values of
-" updatecount (200 keystrokes) and updatetime
-" (4 seconds) are fine
-set swapfile
-
-set directory^=~/.vim/swap//
-
-" protect against crash-during-write
-set writebackup
-" but do not persist backup after successful write
-set nobackup
-" use rename-and-write-new method whenever safe
-set backupcopy=auto
-" patch required to honor double slash at end
-" consolidate the writebackups -- not a big
-" deal either way, since they usually get deleted
-set backupdir^=~/.vim/backup//
-
-" persist the undo tree for each file
-set undofile
-set undodir^=~/.vim/undo//
-" END BACKUP
-
-" store undo
-if has('persistent_undo')
-    set undodir=$HOME/.vim/undo,.
-    set undofile
-endif
 
 " split to right
 set splitright
@@ -177,15 +72,9 @@ set wrapscan
 " don't redraw while macro execution
 set lazyredraw
 
-" for echodoc
-set noshowmode
-
 " theme
 set background=dark
-if has("termguicolors")
-    set termguicolors
-endif
-
+set termguicolors
 set colorcolumn=80
 
 "* * * * * * * * * * * * * * * * * MAPPING * * * * * * * * * * * * * * * * * *

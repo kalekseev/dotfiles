@@ -93,16 +93,12 @@
         home-manager.users.konstantin = { pkgs, ... }: {
           home.packages = [
             ((import ./packages/neovim/neovim.nix) pkgs).neovim
-            # ((import ./packages/tmux.nix) pkgs).tmux
             pkgs.atuin
             pkgs.aws-vault
-            pkgs.bat
             pkgs.bat
             pkgs.cachix
             pkgs.chromedriver
             pkgs.devenv
-            pkgs.difftastic
-            pkgs.direnv
             pkgs.dotnet-sdk_8
             pkgs.fd
             pkgs.ffmpeg
@@ -115,7 +111,6 @@
             pkgs.rustup
             pkgs.sd
             pkgs.sox
-            pkgs.starship
             pkgs.timewarrior
             pkgs.tree
             pkgs.watch
@@ -173,10 +168,59 @@
               "*.pyc"
               ".DS_Store"
             ];
+            aliases = {
+              co = "checkout";
+              fomo = "!git fetch && git rebase origin/master";
+              hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
+              up = "!git remote update -p && git merge --ff-only @{u}";
+              # Show branches, verbosely, sorted by last touch, with commit messages.
+              brv = "!f() { git branch --sort=-creatordate --color=always --format='%(color:reset)%(creatordate:short) %(color:bold white)%(align:2,right)%(upstream:trackshort)%(end)%(color:nobold) %(align:40,left)%(color:yellow)%(refname:short)%(end) %(color:reset)%(contents:subject)'; }; f";
+            };
+            difftastic = {
+              enable = true;
+              background = "light";
+            };
             includes = [
               { path = "~/.gitconfig.local"; }
             ];
-            extraConfig = builtins.readFile ./_gitconfig;
+            extraConfig = {
+
+              core.editor = "nvim";
+              github.user = "kalekseev";
+              color.ui = "auto";
+              color.status = {
+                added = "green";
+                changed = "yellow";
+                untracked = "cyan";
+              };
+              push.default = "current";
+              pull.ff = "only";
+              grep = {
+                extendRegexp = true;
+                lineNumber = true;
+              };
+              merge = {
+                tool = "vimdiff";
+                conflictstyle = "zdiff3";
+              };
+              mergetool = {
+                prompt = false;
+                keepBackup = false;
+                vimdiff.cmd = "nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'";
+                p4merge.cmd = "p4merge $BASE $LOCAL $REMOTE $MERGED";
+              };
+              init.defaultBranch = "main";
+              diff.algorithm = "histogram";
+              pager.difftool = true;
+              rerere.enabled = true;
+              branch.sort = "-committerdate";
+              rebase = {
+                autosquash = true;
+                autostash = true;
+              };
+            };
+            lfs.enable = true;
+            lfs.skipSmudge = true;
           };
           # https://nix-community.github.io/home-manager/options.xhtml
           programs.kitty = {

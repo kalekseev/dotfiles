@@ -13,7 +13,28 @@ vim.o.laststatus = 3
 vim.g.loaded_perl_provider = 0
 
 vim.o.inccommand = 'nosplit'
-vim.o.shada = "!,'100,<50,s10,h,n~/.vim/.viminfo.shada"
+
+-- fold based on indent
+vim.o.foldmethod = 'indent';
+-- deepest fold is 3 levels
+vim.o.foldnestmax = 3;
+-- dont fold by default
+vim.o.foldenable = false;
+
+-- BACKUP
+-- https://begriffs.com/posts/2019-07-19-history-use-vim.html
+-- Protect changes between writes. Default values of
+-- updatecount (200 keystrokes) and updatetime
+-- (4 seconds) are fine
+vim.o.swapfile = true;
+-- protect against crash-during-write
+vim.o.writebackup = true;
+-- but do not persist backup after successful write
+vim.o.backup = false;
+-- use rename-and-write-new method whenever safe
+vim.o.backupcopy = "auto"
+-- store undo
+vim.o.undofile = true
 
 local keymap = vim.keymap.set
 

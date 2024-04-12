@@ -65,14 +65,12 @@ pkgs: {
             toml
             tsx
             typescript
-            vim
             vue
             yaml
           ]);
       };
     in
     pkgs.neovim.override {
-      extraPython3Packages = (ps: [ ps.pythonPackages.jedi ]);
       withNodeJs = true;
       withRuby = false;
       configure = {
