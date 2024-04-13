@@ -163,7 +163,34 @@
           programs.gh.enable = true;
           programs.htop.enable = true;
           programs.jq.enable = true;
-          programs.starship.enable = true;
+          programs.starship = {
+            enable = true;
+            settings = {
+              format = "$all$timew";
+
+              python = {
+                format = ''via [''${symbol}''${pyenv_prefix}(''${version} )]($style)'';
+                disabled = true;
+              };
+
+              nodejs = {
+                disabled = true;
+              };
+
+              package = {
+                disabled = true;
+              };
+
+              custom = {
+                timew = {
+                  command = "echo $(timew|head -1|cut -d ' ' -f2-)";
+                  when = " timew ";
+                  format = "tracking [$output]($style) ";
+                  style = "yellow";
+                };
+              };
+            };
+          };
           programs.ripgrep.enable = true;
 
           programs.git = {
