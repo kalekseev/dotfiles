@@ -48,6 +48,32 @@
         # $ darwin-rebuild changelog
         system.stateVersion = 4;
 
+        system.defaults.NSGlobalDomain.AppleKeyboardUIMode = 3;
+        system.defaults.NSGlobalDomain.ApplePressAndHoldEnabled = false;
+        system.defaults.NSGlobalDomain.InitialKeyRepeat = 15;
+        system.defaults.NSGlobalDomain.KeyRepeat = 2;
+        system.defaults.NSGlobalDomain.NSAutomaticCapitalizationEnabled = false;
+        system.defaults.NSGlobalDomain.NSAutomaticDashSubstitutionEnabled = false;
+        system.defaults.NSGlobalDomain.NSAutomaticPeriodSubstitutionEnabled = false;
+        system.defaults.NSGlobalDomain.NSAutomaticQuoteSubstitutionEnabled = false;
+        system.defaults.NSGlobalDomain.NSAutomaticSpellingCorrectionEnabled = false;
+        system.defaults.NSGlobalDomain.NSNavPanelExpandedStateForSaveMode = true;
+        system.defaults.NSGlobalDomain.NSNavPanelExpandedStateForSaveMode2 = true;
+
+        system.defaults.dock.autohide = true;
+        system.defaults.dock.orientation = "left";
+        system.defaults.dock.showhidden = true;
+
+        system.defaults.finder.AppleShowAllExtensions = true;
+        system.defaults.finder.QuitMenuItem = true;
+        system.defaults.finder.FXEnableExtensionChangeWarning = false;
+
+        system.defaults.trackpad.Clicking = true;
+        # system.defaults.trackpad.TrackpadThreeFingerDrag = true;
+
+        system.keyboard.enableKeyMapping = true;
+        system.keyboard.remapCapsLockToControl = true;
+
         # The platform the configuration will be used on.
         nixpkgs.hostPlatform = "aarch64-darwin";
 
@@ -89,6 +115,7 @@
           ];
         };
       };
+
       homeManagerConfig = {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
@@ -107,6 +134,7 @@
             pkgs.fd
             pkgs.ffmpeg
             pkgs.geckodriver
+            pkgs.ollama
             pkgs.rustup
             pkgs.sd
             pkgs.sox
@@ -136,28 +164,28 @@
           };
 
           home.file = {
-            ".psqlrc".source = ./_psqlrc;
+            ".psqlrc".source = ./configs/psqlrc;
           };
 
           programs.zsh = {
             enable = true;
-            oh-my-zsh.enable = true;
-            oh-my-zsh.plugins = [
-              "macos"
-              "virtualenv"
-              "pip"
-            ];
             initExtra = ''
               portkill() { kill -15 $(lsof -ti :''${1:-8000} -sTCP:LISTEN) }
               mkcd() { mkdir -p "$1" && cd "$1" }
               cdsitepackages() {
                   cd $(python -c 'import site; print(site.getsitepackages()[0])')
               }
+              bindkey "^[[1;3C" forward-word
+              bindkey "^[[1;3D" backward-word
             '';
           };
 
-          programs.direnv.enable = true;
-          programs.direnv.config = { hide_env_diff = true; };
+          programs.direnv = {
+            enable = true;
+            enableZshIntegration = true;
+            config = { hide_env_diff = true; };
+            nix-direnv.enable = true;
+          };
           programs.atuin.enable = true;
           programs.bat.enable = true;
           programs.gh.enable = true;
@@ -199,6 +227,7 @@
               "*.local"
               "*.pyc"
               ".DS_Store"
+              ".direnv"
             ];
             aliases = {
               co = "checkout";
@@ -257,7 +286,7 @@
           # https://nix-community.github.io/home-manager/options.xhtml
           programs.kitty = {
             enable = true;
-            extraConfig = builtins.readFile ./kitty.conf;
+            extraConfig = builtins.readFile ./configs/kitty.conf;
             shellIntegration.enableZshIntegration = false;
           };
 
@@ -268,7 +297,7 @@
             historyLimit = 10000;
             mouse = true;
             prefix = "C-a";
-            extraConfig = builtins.readFile ./tmux.conf;
+            extraConfig = builtins.readFile ./configs/tmux.conf;
             plugins = [
               pkgs.tmuxPlugins.cpu
               pkgs.tmuxPlugins.sensible
@@ -287,7 +316,6 @@
       darwinConfigurations."macbook-pro-m1" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
-
           home-manager.darwinModules.home-manager
           homeManagerConfig
         ];
