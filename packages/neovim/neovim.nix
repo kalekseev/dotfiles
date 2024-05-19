@@ -1,4 +1,5 @@
-{ pkgs, inputs }: {
+{ pkgs, inputs }:
+{
   neovim =
     let
       sql-formatter = pkgs.nodePackages.sql-formatter.override {
@@ -22,34 +23,63 @@
           src = inputs.gp-nvim;
         };
 
-        nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins
-          (p: with p; [
+        # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix
+        nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (
+          p: with p; [
             bash
+            c
+            c_sharp
+            cmake
             comment
+            cpp
             css
+            csv
             diff
             dockerfile
+            git_config
+            git_rebase
+            gitattributes
+            gitcommit
+            gitignore
             html
             htmldjango
             javascript
+            jq
+            jsdoc
             json
+            jsonc
+            latex
             lua
+            luadoc
             make
             markdown
             markdown_inline
+            mermaid
             nix
+            ocaml
+            po
             python
             query
-            rust
             regex
+            requirements
+            rust
             scss
             sql
+            ssh_config
+            strace
+            tmux
             toml
+            tsv
             tsx
             typescript
+            typst
+            vim
+            vimdoc
             vue
+            xml
             yaml
-          ]);
+          ]
+        );
       };
     in
     pkgs.neovim.override {
@@ -65,6 +95,9 @@
           \ 'nil_ls': '${pkgs.nil}/bin/nil',
           \ 'tsserver': '${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server',
           \ 'prettier': '${pkgs.nodePackages.prettier}/bin/prettier',
+          \ 'biome': '${pkgs.biome}/bin/biome',
+          \ 'eslint_d': '${pkgs.nodePackages.eslint_d}/bin/eslint_d',
+          \ 'nixfmt': '${pkgs.nixfmt-rfc-style}/bin/nixfmt',
           \ 'pg_format': '${pkgs.pgformatter}/bin/pg_format',
           \ 'sql-formatter': '${sql-formatter}/bin/sql-formatter',
           \ 'shellcheck': '${pkgs.shellcheck}/bin/shellcheck',
@@ -109,10 +142,11 @@
             which-key-nvim
             git-conflict-nvim
             plugins.gp-nvim
+            fidget-nvim
+            # octo-nvim
             # copilot-lua
             # copilot-cmp
             # -- vim
-            neoformat
             jdaddy-vim
             plugins.vim-coverage-py
             ReplaceWithRegister
@@ -128,7 +162,6 @@
             smartpairs-vim
             splitjoin-vim
             targets-vim
-            tcomment_vim
             undotree
             vim-abolish
             vim-argwrap
@@ -138,9 +171,7 @@
             vim-eunuch
             vim-fugitive
             vim-rhubarb
-            # vim-go
             vim-niceblock
-            vim-polyglot
             plugins.vim-qfreplace
             vim-repeat
             vim-rooter
@@ -148,11 +179,7 @@
             vim-test
             vim-dispatch # recommended for vim-test
             vim-tmux-navigator
-            # vim-tsx
-            vim-jsx-typescript
             vim-visual-star-search
-            octo-nvim
-            fidget-nvim
           ];
           opt = [ ];
         };

@@ -157,16 +157,9 @@ nmap <silent> B <Plug>CamelCaseMotion_b
 xmap <silent> B <Plug>CamelCaseMotion_b
 omap <silent> B <Plug>CamelCaseMotion_b
 
-
-" vim-javascript
 "==============================================================================
-let g:javascript_enable_domhtmlcss = 1
-let g:javascript_conceal = 1
-
-
-" tComment
-"==============================================================================
-map <Space>/ :TComment<CR>
+nmap <Space>/ gcc
+vmap <Space>/ gc
 
 
 " vim-niceblock
@@ -303,15 +296,3 @@ let g:db_ui_env_variable_url = 'DATABASE_URL'
 
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
-
-" formatter
-au FileType sql let &l:formatprg=g:nix_exes['sql-formatter']
-au FileType nix let &l:formatprg=g:nix_exes['nixpkgs-fmt']
-augroup neoformat
-  autocmd!
-  autocmd BufWritePre *.css,*.md,*.yaml,*.scss,*.json,*.html,*.js,*.ts,*.tsx,*.vue try | undojoin | Neoformat prettier | catch /E790/ | Neoformat prettier | endtry
-  autocmd BufWritePre *.nix try | undojoin | Neoformat | catch /E790/ | Neoformat | endtry
-augroup END
-let g:neoformat_try_node_exe = 1
-let g:neoformat_only_msg_on_error = 1
-let g:neoformat_try_formatprg = 1

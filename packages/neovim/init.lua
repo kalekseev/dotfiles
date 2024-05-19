@@ -36,6 +36,8 @@ vim.o.backupcopy = "auto"
 -- store undo
 vim.o.undofile = true
 
+vim.o.smartindent = false;
+
 local keymap = vim.keymap.set
 
 require('onedark').setup {
@@ -57,9 +59,19 @@ require('treesitter-context').setup {
 }
 
 require 'nvim-treesitter.configs'.setup {
+    modules = {},
+    ensure_installed = {},
+    ignore_install = {},
+    sync_install = false,
+    auto_install = false,
     highlight = { enable = true },
     incremental_selection = { enable = true },
-    indent = { enable = true, disable = { 'python', } },
+    indent = { enable = true, disable = { 'tsx' } },
+    query_linter = {
+        enable = true,
+        use_virtual_text = true,
+        lint_events = { "BufWrite", "CursorHold" },
+    },
     textobjects = {
         select = {
             enable = true,
@@ -79,7 +91,7 @@ require 'nvim-treesitter.configs'.setup {
     }
 }
 
-require('octo').setup {}
+-- require('octo').setup {}
 require("fidget").setup {}
 require('which-key').setup {}
 require('gitsigns').setup {}
@@ -198,15 +210,7 @@ cmp.setup {
         },
     },
 }
--- cmp.setup.filetype({ 'sql', 'mysql,plsql' }, {
---     sources = cmp.config.sources({
---         { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
---     }, {
---         { name = 'buffer' },
---     })
--- })
---
-local augroupFormat = vim.api.nvim_create_augroup("LspFormatting", { clear = false })
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -243,54 +247,6 @@ local on_attach = function(client, bufnr)
     -- buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
     buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
-
-    if client.supports_method("textDocument/formatting") then
-        vim.api.nvim_clear_autocmds({ group = augroupFormat, buffer = bufnr })
-        if client.name == 'eslint' then
-            -- callback will call neoformat as needed
-            vim.api.nvim_clear_autocmds({ group = 'neoformat', buffer = bufnr })
-        end
-        vim.api.nvim_create_autocmd("BufWritePre", {
-            group = augroupFormat,
-            buffer = bufnr,
-            callback = function()
-                local clients = vim.lsp.get_active_clients({ bufnr = bufnr });
-                local applyPrettier = false;
-                for _, _client in ipairs(clients) do
-                    if _client.name == 'ruff_lsp' then
-                        local params = vim.lsp.util.make_range_params()
-                        -- context taken from :LspLog with debug mode on: `:lua  vim.lsp.set_log_level 'debug'`
-                        params.context = { diagnostics = {}, only = { "source.fixAll" }, triggerKind = 1 }
-                        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 2000)
-                        for _, res in pairs(result or {}) do
-                            for _, r in pairs(res.result or {}) do
-                                if r.edit then
-                                    vim.lsp.util.apply_workspace_edit(r.edit, _client.offset_encoding)
-                                else
-                                    vim.lsp.buf.execute_command(r.command)
-                                end
-                            end
-                        end
-                    elseif _client.name == 'eslint' then
-                        vim.cmd('EslintFixAll')
-                        applyPrettier = true;
-                    end
-                end
-
-                vim.lsp.buf.format({
-                    bufnr      = bufnr,
-                    timeout_ms = 2000,
-                    filter     = function(sclient)
-                        return sclient.name ~= "volar" and sclient.name ~= 'tsserver' and
-                            sclient.name ~= 'cssls'
-                    end
-                })
-                if applyPrettier then
-                    vim.cmd("try | undojoin | Neoformat prettier | catch /E790/ | Neoformat prettier | endtry")
-                end
-            end,
-        })
-    end
 end
 
 -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
@@ -521,10 +477,28 @@ require('lspsaga').setup({
     },
 })
 
+local select_exe = function(name)
+    return function()
+        if vim.fn.executable(name) then
+            return name
+        end
+        return vim.g.nix_exes[name]
+    end
+end
+
 require("conform").setup({
     formatters = {
         sql_formatter = {
             command = vim.g.nix_exes['sql-formatter']
+        },
+        nixfmt = {
+            command = vim.g.nix_exes['nixfmt']
+        },
+        biome = {
+            command = select_exe('biome'),
+        },
+        eslint_d = {
+            command = vim.g.nix_exes.eslint_d
         },
         injected = {
             ignore_errors = false,
@@ -543,7 +517,12 @@ require("conform").setup({
     },
     formatters_by_ft = {
         sql = { "sql_formatter", "add_new_line" },
-        python = { "injected" }
+        python = { "ruff_fix", "ruff_format", "injected" },
+        javascript = { "eslint_d", { "prettier", "biome" } },
+        typescriptreact = { "eslint_d", { "prettier", "biome" } },
+        typescript = { "eslint_d", { "prettier", "biome" } },
+        vue = { "eslint_d", "prettier" },
+        nix = { "nixfmt" },
     },
     format_on_save = {
         lsp_fallback = true,
