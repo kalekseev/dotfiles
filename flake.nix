@@ -326,8 +326,8 @@
     in
     {
       # Build darwin flake using:
-      # $ darwin-rebuild build --flake .#macbook-pro-m1
-      darwinConfigurations."macbook-pro-m1" = nix-darwin.lib.darwinSystem {
+      # $ darwin-rebuild build --flake .#macbook-pro-m3
+      darwinConfigurations."macbook-pro-m3" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
           home-manager.darwinModules.home-manager

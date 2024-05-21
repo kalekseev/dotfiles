@@ -7,15 +7,14 @@ Setup steps:
 
 - Install Nix https://github.com/DeterminateSystems/nix-installer
 - Install Homebrew https://brew.sh
-- `nix --experimental-features nix-command run nix-darwin -- switch --flake github:kalekseev/dotfiles#macbook-pro-m1`
+- Setup home manager `nix --experimental-features "nix-command flakes" run nix-darwin -- switch --flake github:kalekseev/dotfiles#macbook-pro-m3`
 
 
 Applying changes:
 
-    cd
     git clone https://github.com/kalekseev/dotfiles.git
-    # edit ~/dotfiles/
-    darwin-rebuild switch --flake ~/dotfiles#macbook-pro-m1
+    # edit dotfiles/
+    darwin-rebuild switch --flake dotfiles#macbook-pro-m3
 
 Updating deps (flake.lock):
 
