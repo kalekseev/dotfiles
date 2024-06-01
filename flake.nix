@@ -106,7 +106,10 @@
             global.autoUpdate = true;
             onActivation.cleanup = "zap";
             casks = [
+              # "samsung-portable-ssd-t7"
+              "bitwarden"
               "chatbox"
+              "cryptomator"
               "discord"
               "firefox"
               "google-chrome"
@@ -130,6 +133,7 @@
 
       homeManagerConfig = {
         home-manager.useGlobalPkgs = true;
+        home-manager.backupFileExtension = "hmb";
         home-manager.useUserPackages = true;
         users.users.konstantin = {
           name = "konstantin";
@@ -142,6 +146,7 @@
               ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; }).neovim
               pkgs.aws-vault
               pkgs.cachix
+              pkgs.uv
               pkgs.chromedriver
               pkgs.devenv
               pkgs.dotnet-sdk_8
@@ -203,6 +208,13 @@
               nix-direnv.enable = true;
             };
             programs.atuin.enable = true;
+            programs.atuin.settings = {
+              sync = {
+                records = true;
+              };
+              enter_accept = true;
+              auto_sync = true;
+            };
             programs.bat.enable = true;
             programs.gh.enable = true;
             programs.htop.enable = true;
