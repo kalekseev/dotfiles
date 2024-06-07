@@ -94,7 +94,6 @@
           \ 'vscode-eslint-language-server': '${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-eslint-language-server',
           \ 'nil_ls': '${pkgs.nil}/bin/nil',
           \ 'tsserver': '${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server',
-          \ 'prettier': '${pkgs.nodePackages.prettier}/bin/prettier',
           \ 'biome': '${pkgs.biome}/bin/biome',
           \ 'eslint_d': '${pkgs.nodePackages.eslint_d}/bin/eslint_d',
           \ 'nixfmt': '${pkgs.nixfmt-rfc-style}/bin/nixfmt',
@@ -107,6 +106,7 @@
           \ 'volar': '${pkgs.nodePackages.volar}/bin/vue-language-server',
           \ 'fsautocomplete': '${pkgs.fsautocomplete}/bin/fsautocomplete',
           \ 'rust-analyzer': '${pkgs.rust-analyzer}/bin/rust-analyzer',
+          \ 'tinymist': '${pkgs.tinymist}/bin/tinymist',
           \}
           source ${./init.vim}
           source ${./init.lua}

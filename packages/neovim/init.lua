@@ -384,6 +384,13 @@ nvim_lsp.rust_analyzer.setup {
     cmd = { vim.g.nix_exes['rust-analyzer'] },
 }
 
+nvim_lsp.tinymist.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+
+    cmd = { vim.g.nix_exes['tinymist'] },
+}
+
 nvim_lsp.ocamllsp.setup {
     on_attach = on_attach,
     capabilities = capabilities,
@@ -518,11 +525,13 @@ require("conform").setup({
     formatters_by_ft = {
         sql = { "sql_formatter", "add_new_line" },
         python = { "ruff_fix", "ruff_format", "injected" },
-        javascript = { "eslint_d", { "prettier", "biome" } },
-        typescriptreact = { "eslint_d", { "prettier", "biome" } },
-        typescript = { "eslint_d", { "prettier", "biome" } },
+        javascript = { { "eslint_d", "biome" }, { "prettier", "biome" } },
+        typescriptreact = { { "eslint_d", "biome" }, { "prettier", "biome" } },
+        typescript = { { "eslint_d", "biome" }, { "prettier", "biome" } },
         vue = { "eslint_d", "prettier" },
         nix = { "nixfmt" },
+        json = { "biome" },
+        typst = { "typstyle" },
     },
     format_on_save = function(bufnr)
         -- Disable with a global or buffer-local variable
