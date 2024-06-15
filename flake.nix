@@ -96,10 +96,7 @@
           # macos
           security.pam.enableSudoTouchIdAuth = true;
 
-          fonts = {
-            fontDir.enable = true;
-            fonts = [ (pkgs.nerdfonts.override { fonts = [ "Hack" ]; }) ];
-          };
+          fonts.packages = [ (pkgs.nerdfonts.override { fonts = [ "Hack" ]; }) ];
 
           homebrew = {
             enable = true;
@@ -214,6 +211,8 @@
               };
               enter_accept = true;
               auto_sync = true;
+              search_mode_shell_up_key_binding = "prefix";
+              history_filter = [ "chamber write " ];
             };
             programs.bat.enable = true;
             programs.gh.enable = true;

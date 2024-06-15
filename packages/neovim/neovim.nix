@@ -89,7 +89,7 @@
         customRC = ''
           let g:nix_exes = {
           \ 'pyright': '${pkgs.pyright}/bin/pyright-langserver',
-          \ 'bash-language-server': '${pkgs.nodePackages.bash-language-server}/bin/bash-language-server',
+          \ 'bash-language-server': '${pkgs.bash-language-server}/bin/bash-language-server',
           \ 'vscode-css-language-server': '${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-css-language-server',
           \ 'vscode-eslint-language-server': '${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-eslint-language-server',
           \ 'nil_ls': '${pkgs.nil}/bin/nil',

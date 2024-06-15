@@ -259,7 +259,7 @@ require("neodev").setup {
     end,
 }
 local nvim_lsp = require('lspconfig')
-local util = require('lspconfig/util')
+local lsp_util = require('lspconfig/util')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 nvim_lsp.pyright.setup {
@@ -292,9 +292,14 @@ nvim_lsp.volar.setup {
     },
     cmd = { vim.g.nix_exes.volar, "--stdio" },
     root_dir = function(fname)
-        return util.root_pattern '.env.vue' (fname)
+        return lsp_util.root_pattern '.env.vue' (fname)
     end,
     single_file_support = false,
+}
+
+nvim_lsp.biome.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
 }
 
 nvim_lsp.csharp_ls.setup {
@@ -315,13 +320,13 @@ nvim_lsp.tsserver.setup {
 
     cmd = { vim.g.nix_exes.tsserver, "--stdio" },
     root_dir = function(fname)
-        if (util.root_pattern '.env.vue' (fname)) then
+        if (lsp_util.root_pattern '.env.vue' (fname)) then
             -- volar will start it on its own
             -- single_file_support = false is required for this to work
             return nil;
         end
-        return util.root_pattern 'tsconfig.json' (fname)
-            or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
+        return lsp_util.root_pattern 'tsconfig.json' (fname)
+            or lsp_util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
     end,
     single_file_support = false,
 }
@@ -493,6 +498,7 @@ local select_exe = function(name)
     end
 end
 
+local jsformatters = { { "biome", "eslint_d" }, { "biome", "prettier" } };
 require("conform").setup({
     formatters = {
         sql_formatter = {
@@ -502,10 +508,13 @@ require("conform").setup({
             command = vim.g.nix_exes['nixfmt']
         },
         biome = {
-            command = select_exe('biome'),
+            -- command = select_exe('biome'),
+            require_cwd = true
         },
         eslint_d = {
-            command = vim.g.nix_exes.eslint_d
+            command = vim.g.nix_exes.eslint_d,
+            cwd = require("conform.util").root_file({ ".eslintrc.js" }),
+            require_cwd = true
         },
         injected = {
             ignore_errors = false,
@@ -513,7 +522,6 @@ require("conform").setup({
                 sql = "sql",
             },
             lang_to_formatters = {
-                -- doesn't work for some reason
                 sql = { "sql_formatter", "add_new_line" },
             },
         },
@@ -525,9 +533,9 @@ require("conform").setup({
     formatters_by_ft = {
         sql = { "sql_formatter", "add_new_line" },
         python = { "ruff_fix", "ruff_format", "injected" },
-        javascript = { { "eslint_d", "biome" }, { "prettier", "biome" } },
-        typescriptreact = { { "eslint_d", "biome" }, { "prettier", "biome" } },
-        typescript = { { "eslint_d", "biome" }, { "prettier", "biome" } },
+        javascript = jsformatters,
+        typescriptreact = jsformatters,
+        typescript = jsformatters,
         vue = { "eslint_d", "prettier" },
         nix = { "nixfmt" },
         json = { "biome" },
