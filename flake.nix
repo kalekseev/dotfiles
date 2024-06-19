@@ -144,7 +144,6 @@
               pkgs.aws-vault
               pkgs.cachix
               pkgs.uv
-              pkgs.chromedriver
               pkgs.devenv
               pkgs.dotnet-sdk_8
               pkgs.fd

@@ -58,6 +58,17 @@ require('treesitter-context').setup {
     multiline_threshold = 1,
 }
 
+require('ts_context_commentstring').setup {
+    enable_autocmd = false,
+}
+vim.g.skip_ts_context_commentstring_module = true
+local _get_option = vim.filetype.get_option
+vim.filetype.get_option = function(filetype, option)
+    return option == "commentstring"
+        and require("ts_context_commentstring.internal").calculate_commentstring()
+        or _get_option(filetype, option)
+end
+
 require 'nvim-treesitter.configs'.setup {
     modules = {},
     ensure_installed = {},
@@ -121,7 +132,7 @@ require 'lualine'.setup {
 }
 
 local actions = require('telescope.actions')
-local trouble = require("trouble.providers.telescope")
+local trouble = require("trouble.sources.telescope")
 keymap("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
     { silent = true, noremap = true }
 )
@@ -130,13 +141,13 @@ require('telescope').setup {
         mappings = {
             n = {
                 ["q"] = actions.close,
-                ["<c-t>"] = trouble.open_with_trouble
+                ["<c-t>"] = trouble.open
             },
             i = {
                 ["<C-u>"] = function()
                     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>cc", true, false, true), "t", true)
                 end,
-                ["<c-t>"] = trouble.open_with_trouble
+                ["<c-t>"] = trouble.open
             },
         },
     }
@@ -210,6 +221,12 @@ cmp.setup {
         },
     },
 }
+cmp.setup.filetype({ 'sql', 'mysql', 'plsql' }, {
+    sources = {
+        { name = 'vim-dadbod-completion' },
+        { name = 'buffer' }
+    }
+})
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -262,11 +279,21 @@ local nvim_lsp = require('lspconfig')
 local lsp_util = require('lspconfig/util')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
+local select_exe = function(name)
+    return function()
+        if vim.fn.executable(name) == 1 then
+            return name
+        end
+        return vim.g.nix_exes[name]
+    end
+end
+
 nvim_lsp.pyright.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 
-    cmd = { vim.g.nix_exes.pyright, "--stdio" },
+    cmd = { select_exe('pyright-langserver')(), "--stdio" },
+
     settings = {
         -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
         python = {
@@ -488,15 +515,6 @@ require('lspsaga').setup({
         respect_root = true,
     },
 })
-
-local select_exe = function(name)
-    return function()
-        if vim.fn.executable(name) then
-            return name
-        end
-        return vim.g.nix_exes[name]
-    end
-end
 
 local jsformatters = { { "biome", "eslint_d" }, { "biome", "prettier" } };
 require("conform").setup({
