@@ -46,7 +46,7 @@ require('onedark').setup {
     toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }
 }
 require('onedark').load()
-
+require("oil").setup()
 -- require("copilot").setup({
 --     suggestion = { enabled = false },
 --     panel = { enabled = false },
@@ -201,9 +201,11 @@ cmp.setup {
     },
     sources = {
         -- { name = "copilot",  group_index = 1 },
-        { name = 'nvim_lsp', group_index = 1 },
-        { name = 'vsnip',    group_index = 1 },
-        { name = 'path',     group_index = 1 },
+        { name = 'nvim_lsp',                group_index = 1 },
+        { name = 'vsnip',                   group_index = 1 },
+        { name = 'path',                    group_index = 1 },
+        { name = 'nvim_lsp_signature_help', group_index = 1 },
+        { name = 'calc',                    group_index = 1 },
         {
             name = 'buffer',
             group_index = 2,
@@ -226,6 +228,22 @@ cmp.setup.filetype({ 'sql', 'mysql', 'plsql' }, {
         { name = 'vim-dadbod-completion' },
         { name = 'buffer' }
     }
+})
+cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+        { name = 'nvim_lsp_document_symbol' },
+        { name = 'buffer' }
+    }
+})
+cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+        { name = 'path' }
+    }, {
+        { name = 'cmdline' }
+    }),
+    matching = { disallow_symbol_nonprefix_matching = false }
 })
 
 -- Use an on_attach function to only map the following keys

@@ -103,7 +103,7 @@
           \ 'nixpkgs-fmt': '${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt',
           \ 'ruff-lsp': '${pkgs.ruff-lsp}/bin/ruff-lsp',
           \ 'lua-language-server': '${pkgs.sumneko-lua-language-server}/bin/lua-language-server',
-          \ 'volar': '${pkgs.nodePackages.volar}/bin/vue-language-server',
+          \ 'volar': '${pkgs.nodePackages."@volar/vue-language-server"}/bin/vue-language-server',
           \ 'fsautocomplete': '${pkgs.fsautocomplete}/bin/fsautocomplete',
           \ 'rust-analyzer': '${pkgs.rust-analyzer}/bin/rust-analyzer',
           \ 'tinymist': '${pkgs.tinymist}/bin/tinymist',
@@ -120,6 +120,10 @@
             cmp-nvim-lsp
             cmp-path
             cmp-vsnip
+            cmp-cmdline
+            cmp-nvim-lsp-document-symbol
+            cmp-nvim-lsp-signature-help
+            cmp-calc
             diffview-nvim
             gitsigns-nvim
             Ionide-vim
@@ -134,6 +138,7 @@
             nvim-treesitter-textobjects
             nvim-web-devicons
             nvim-ts-context-commentstring
+            oil-nvim
             onedark-nvim
             playground
             telescope-nvim
