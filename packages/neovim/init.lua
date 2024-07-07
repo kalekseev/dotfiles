@@ -325,20 +325,16 @@ nvim_lsp.pyright.setup {
 }
 
 nvim_lsp.volar.setup {
+    -- packages required
+    -- @vue/typescript-plugin
+    -- @vue/language-server
     on_attach = on_attach,
     capabilities = capabilities,
-    filetypes = {
-        'typescript',
-        'javascript',
-        'javascriptreact',
-        'typescriptreact',
-        'vue',
-        'json'
-    },
     root_dir = function(fname)
-        return lsp_util.root_pattern '.env.vue' (fname)
+        if vim.fn.executable('vue-language-server') == 1 then
+            return lsp_util.root_pattern 'package.json' (fname)
+        end
     end,
-    single_file_support = false,
 }
 
 nvim_lsp.biome.setup {

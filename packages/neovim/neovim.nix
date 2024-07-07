@@ -9,40 +9,6 @@
             '-l postgresql -c ${pkgs.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
         '';
       };
-      # vue-typescript-plugin = pkgs.stdenv.mkDerivation (finalAttrs: {
-      #   pname = "@vue/typescript-plugin";
-      #   version = "2.0.21";
-      #   src = pkgs.fetchFromGitHub {
-      #     owner = "vuejs";
-      #     repo = "language-tools";
-      #     rev = "v2.0.21";
-      #     hash = "sha256-+ArcCgFd7/R2M8vPy+oCL3mwN4pGRL7Sb4rG0VDVl4I=";
-      #   };
-      #
-      #   pnpmDeps = pkgs.pnpm_9.fetchDeps {
-      #     inherit (finalAttrs) pname version src;
-      #     hash = "sha256-7jwalSMMwlP+50+cfZ74NgpZQ+1DraOX98aGieu+CJI=";
-      #   };
-      #
-      #   nativeBuildInputs = [
-      #     pkgs.nodejs
-      #     pkgs.pnpm.configHook
-      #   ];
-      #
-      #   doCheck = true;
-      #
-      #   postBuild = ''
-      #     pnpm run build
-      #   '';
-      #
-      #   checkPhase = ''
-      #     pnpm run test
-      #   '';
-      #
-      #   installPhase = ''
-      #     cp -r packages/typescript-plugin $out
-      #   '';
-      # });
       plugins = {
         vim-coverage-py = pkgs.vimUtils.buildVimPlugin {
           name = "vim-coverage.py";
