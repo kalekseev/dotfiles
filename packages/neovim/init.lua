@@ -335,7 +335,6 @@ nvim_lsp.volar.setup {
         'vue',
         'json'
     },
-    cmd = { vim.g.nix_exes.volar, "--stdio" },
     root_dir = function(fname)
         return lsp_util.root_pattern '.env.vue' (fname)
     end,
@@ -364,16 +363,16 @@ nvim_lsp.tsserver.setup {
     capabilities = capabilities,
 
     cmd = { vim.g.nix_exes.tsserver, "--stdio" },
-    root_dir = function(fname)
-        if (lsp_util.root_pattern '.env.vue' (fname)) then
-            -- volar will start it on its own
-            -- single_file_support = false is required for this to work
-            return nil;
-        end
-        return lsp_util.root_pattern 'tsconfig.json' (fname)
-            or lsp_util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)
-    end,
-    single_file_support = false,
+    init_options = {
+        plugins = {
+            {
+                name = '@vue/typescript-plugin',
+                location = '',
+                languages = { 'vue' },
+            },
+        },
+    },
+    filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
 }
 
 nvim_lsp.bashls.setup {
@@ -420,11 +419,11 @@ nvim_lsp.lua_ls.setup {
     }
 }
 
-nvim_lsp.ruff_lsp.setup {
+nvim_lsp.ruff.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 
-    cmd = { vim.g.nix_exes['ruff-lsp'] },
+    cmd = { select_exe('ruff')(), "server", "--preview" },
 }
 
 nvim_lsp.rust_analyzer.setup {
@@ -621,3 +620,13 @@ keymap("n", "gh", "<cmd>Lspsaga finder<CR>", { silent = true })
 -- keymap("n", "gd", "<cmd>Lspsaga goto_definition<CR>", { silent = true })
 keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
 keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", { silent = true })
+
+
+-- fugitive :GBrowse require netrw but oil.nvim disables it
+vim.api.nvim_create_user_command(
+    'Browse',
+    function(opts)
+        vim.fn.system { 'open', opts.fargs[1] }
+    end,
+    { nargs = 1 }
+)
