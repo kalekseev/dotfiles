@@ -47,6 +47,10 @@ require('onedark').setup {
 }
 require('onedark').load()
 require("oil").setup()
+require('mini.ai').setup()
+require('mini.surround').setup()
+require('mini.operators').setup()
+require('mini.pairs').setup()
 -- require("copilot").setup({
 --     suggestion = { enabled = false },
 --     panel = { enabled = false },
@@ -58,11 +62,13 @@ require('treesitter-context').setup {
     multiline_threshold = 1,
 }
 
+---@diagnostic disable-next-line: missing-fields
 require('ts_context_commentstring').setup {
     enable_autocmd = false,
 }
 vim.g.skip_ts_context_commentstring_module = true
 local _get_option = vim.filetype.get_option
+---@diagnostic disable-next-line: duplicate-set-field
 vim.filetype.get_option = function(filetype, option)
     return option == "commentstring"
         and require("ts_context_commentstring.internal").calculate_commentstring()
@@ -164,6 +170,9 @@ local feedkey = function(key, mode)
 end
 local cmp = require 'cmp'
 cmp.setup {
+    completion = {
+        keyword_length = 3
+    },
     snippet = {
         expand = function(args)
             vim.fn["vsnip#anonymous"](args.body)
@@ -201,7 +210,7 @@ cmp.setup {
     },
     sources = {
         -- { name = "copilot",  group_index = 1 },
-        { name = 'nvim_lsp',                group_index = 1 },
+        { name = 'nvim_lsp',                group_index = 1, keyword_length = 1 },
         { name = 'vsnip',                   group_index = 1 },
         { name = 'path',                    group_index = 1 },
         { name = 'nvim_lsp_signature_help', group_index = 1 },
@@ -243,6 +252,7 @@ cmp.setup.cmdline(':', {
     }, {
         { name = 'cmdline' }
     }),
+    ---@diagnostic disable-next-line: missing-fields
     matching = { disallow_symbol_nonprefix_matching = false }
 })
 
@@ -617,6 +627,7 @@ keymap("n", "gh", "<cmd>Lspsaga finder<CR>", { silent = true })
 keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
 keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", { silent = true })
 
+keymap("n", "<leader>o", "<cmd>Oil<CR>", { silent = true, noremap = true })
 
 -- fugitive :GBrowse require netrw but oil.nvim disables it
 vim.api.nvim_create_user_command(

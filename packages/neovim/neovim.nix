@@ -25,7 +25,9 @@
 
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix
         nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (
-          p: with p; [
+          p:
+          with p;
+          [
             bash
             c
             c_sharp
@@ -79,6 +81,18 @@
             xml
             yaml
           ]
+          ++ [
+            (pkgs.tree-sitter.buildGrammar {
+              language = "fsharp";
+              version = "996ea99";
+              src = pkgs.fetchFromGitHub {
+                owner = "ionide";
+                repo = "tree-sitter-fsharp";
+                rev = "996ea9982bd4e490029f84682016b6793940113b";
+                sha256 = "sha256-HgHVIU67h9WXfj+yx7ukCSqucRvo16jugFhxWYY1kyk=";
+              };
+            })
+          ]
         );
       };
     in
@@ -128,6 +142,7 @@
             Ionide-vim
             lspsaga-nvim
             lualine-nvim
+            mini-nvim
             neodev-nvim
             nvim-cmp
             nvim-lspconfig
@@ -154,19 +169,15 @@
             # -- vim
             jdaddy-vim
             plugins.vim-coverage-py
-            ReplaceWithRegister
             asyncrun-vim
             camelcasemotion
-            delimitMate
             direnv-vim
             emmet-vim
             goyo-vim
             indentLine
             limelight-vim
-            matchit-zip
             smartpairs-vim
             splitjoin-vim
-            targets-vim
             undotree
             vim-abolish
             vim-argwrap
@@ -178,9 +189,7 @@
             vim-rhubarb
             vim-niceblock
             plugins.vim-qfreplace
-            vim-repeat
             vim-rooter
-            vim-surround
             vim-test
             vim-dispatch # recommended for vim-test
             vim-tmux-navigator

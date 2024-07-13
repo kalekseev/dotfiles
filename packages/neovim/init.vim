@@ -177,12 +177,6 @@ map <Leader>2 :diffget BASE<CR>
 map <Leader>3 :diffget REMOTE<CR>
 set diffopt+=internal,algorithm:patience
 
-" delimitMate
-"==============================================================================
-"<CR> remaped for neocomplete, don't forget add delimitMateCr
-let g:delimitMate_expand_cr = 1
-let g:delimitMate_expand_space = 1
-
 
 " telescope
 nmap <leader>f :<C-U>Telescope live_grep theme=get_dropdown<CR>
@@ -227,12 +221,9 @@ nmap <silent> <leader>tq :autocmd! BufWritePost *<CR>
 
 " filetype specific settings
 autocmd MyAutoCmd FileType html setlocal ts=2 sw=2 sta et sts=2 ai
-autocmd MyAutoCmd FileType javascript setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
 autocmd MyAutoCmd FileType vue setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
 autocmd MyAutoCmd FileType json setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
-autocmd MyAutoCmd FileType typescript setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
 autocmd MyAutoCmd FileType typescriptreact setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
-autocmd MyAutoCmd FileType python let g:argwrap_tail_comma = 1
 
 " save on focus lost
 autocmd MyAutoCmd FocusLost * :silent! wall

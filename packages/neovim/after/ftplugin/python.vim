@@ -14,3 +14,4 @@ EOL
 
 vnoremap <silent> <buffer> <F5> :py3 EvaluateCurrentRange()<CR>
 nnoremap <silent> <buffer> <F7> :call BreakpointToggle(line('.'), "breakpoint()  # XXX BREAKPOINT")<CR>
+let g:argwrap_tail_comma = 1
