@@ -103,11 +103,9 @@
             global.autoUpdate = true;
             onActivation.cleanup = "zap";
             casks = [
-              # "samsung-portable-ssd-t7"
+              "samsung-portable-ssd-t7"
               "bitwarden"
-              "chatbox"
-              "cryptomator"
-              "discord"
+              "obsidian"
               "firefox"
               "google-chrome"
               "iina"
@@ -117,12 +115,10 @@
               "qlvideo"
               "raycast"
               "rectangle"
-              "skype"
               "spotify"
               "telegram"
               "transmission"
               "vmware-fusion"
-              "yubico-yubikey-manager"
               "zoom"
             ];
           };
@@ -156,6 +152,7 @@
               pkgs.timewarrior
               pkgs.tree
               pkgs.watch
+              pkgs.yubikey-manager
             ];
             home.stateVersion = "24.05";
 
