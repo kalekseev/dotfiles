@@ -17,73 +17,21 @@ let g:mapleader = "\<Space>"
 let g:maplocalleader = "\<Space>"
 nnoremap <Space> <Nop>
 
-" russian keymap
-set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz,№;#
-
-" indent settings
-set shiftwidth=4
-set softtabstop=4
-set shiftround
-set expandtab
-set autoindent
-
 " make cmdline tab completion similar to bash
-set wildmode=longest,list,full
-
-" enable ctrl-n and ctrl-p to scroll thru matches
-set wildmenu
-set wildignore=*.module.scss.d.ts,*.aux,*.log,*.class,*.o,*.obj,*~,.git,*.pyc,*/.hg/*
+" set wildmode=longest,list,full
+"
+" " enable ctrl-n and ctrl-p to scroll thru matches
+" set wildmenu
+" set wildignore=*.module.scss.d.ts,*.aux,*.log,*.class,*.o,*.obj,*~,.git,*.pyc,*/.hg/*
 
 " don't continue comments when pushing o/O
 set formatoptions-=o
 
-" vertical/horizontal scroll off settings
-set scrolloff=3
-set sidescrolloff=7
-set sidescroll=1
-
-" some stuff to get the mouse going in term
-set mouse=n
-
-" split to right
-set splitright
-set splitbelow
-
 " reload when files modified outside of vim
 " set autoread
 
-
-" yank use system clipboard
-set clipboard=unnamed
-
-" ignore case only if contains upper case
-set ignorecase
-set smartcase
-
-" incremental search
-set incsearch
-
-" match highlight
-set hlsearch
-
-" search from the top at the end
-set wrapscan
-
-" don't redraw while macro execution
-set lazyredraw
-
-" theme
-set background=dark
-set termguicolors
-set colorcolumn=80
-
 "* * * * * * * * * * * * * * * * * MAPPING * * * * * * * * * * * * * * * * * *
 " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-" edit vimrc
-" nnoremap <Leader>ev :<C-u>edit ~/dotfiles/nixpkgs/vimrc<CR>
-
-" imap jj <Esc>
 
 " switch between two files
 map <Leader><Leader> <C-^>
@@ -235,9 +183,6 @@ autocmd MyAutoCmd InsertLeave * :set listchars+=trail:·
 " js, jsx
 autocmd MyAutoCmd BufRead,BufNewFile *.js call s:FTjs()
 
-" django
-autocmd MyAutoCmd BufRead,BufNewFile */backend/*/templates/*.html set filetype=htmldjango
-
 " jump to last cursor position when opening a file
 " don't do it when writing a commit log entry
 autocmd MyAutoCmd BufReadPost * call SetCursorPosition()
@@ -284,6 +229,3 @@ endfunc
 nnoremap <c-w>z <C-W>\| <C-W>_
 
 let g:db_ui_env_variable_url = 'DATABASE_URL'
-
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!

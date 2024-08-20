@@ -103,6 +103,8 @@
             global.autoUpdate = true;
             onActivation.cleanup = "zap";
             casks = [
+              "nordvpn"
+              "outline-manager"
               "samsung-portable-ssd-t7"
               "bitwarden"
               "obsidian"
@@ -151,6 +153,7 @@
               pkgs.sox
               pkgs.timewarrior
               pkgs.tree
+              # pkgs.testdisk
               pkgs.watch
               pkgs.yubikey-manager
             ];
