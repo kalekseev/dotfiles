@@ -205,7 +205,7 @@ function! BreakpointToggle(lnum, cmd)
     if &modifiable && &modified | write | endif
 endfunction
 
-nnoremap <leader>uu :call GenUUID()<CR>
+nnoremap <leader>gu :call GenUUID()<CR>
 func! GenUUID()
   let cmd = 'uuidgen | tr "[:upper:]" "[:lower:]" | tr -d "[:cntrl:]"'
   silent exec ":normal a" . system(cmd)

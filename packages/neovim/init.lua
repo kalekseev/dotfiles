@@ -58,7 +58,6 @@ require('onedark').load()
 require("oil").setup()
 require('mini.ai').setup()
 require('mini.surround').setup()
-require('mini.operators').setup()
 require('mini.pairs').setup()
 -- require("copilot").setup({
 --     suggestion = { enabled = false },
@@ -119,6 +118,18 @@ require 'nvim-treesitter.configs'.setup {
 
 -- require('octo').setup {}
 require("fidget").setup {}
+require("avante").setup {
+  hints = { enabled = false },
+  mappings = {
+    ask = "<leader>ga",
+    edit = "<leader>ge",
+    refresh = "<leader>gr",
+    toggle = {
+      debug = "<leader>gd",
+      hint = "<leader>gh",
+    },
+  },
+}
 require('which-key').setup {}
 require('gitsigns').setup {}
 require('gp').setup {
@@ -359,6 +370,52 @@ nvim_lsp.pyright.setup {
   }
 }
 
+nvim_lsp.efm.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+
+  cmd = { select_exe('efm-langserver')() },
+  filetypes = { "python" },
+  root_dir = lsp_util.root_pattern('.env.mypy'),
+  single_file_support = false,
+
+  settings = {
+    rootMarkers = { '.env.mypy' },
+    languages = {
+      python = { require('efmls-configs.linters.mypy') },
+    },
+  },
+}
+
+-- nvim_lsp.pylsp.setup {
+--   -- settings = {
+--   --   pylsp = {
+--   --     plugins = {
+--   --       pylsp_mypy = {
+--   --         live_mode = false,
+--   --         dmypy = true,
+--   --         strict = true,
+--   --       }
+--   --     }
+--   --   }
+--   -- },
+--   root_dir = function(fname)
+--     if vim.fn.executable('pylsp') == 1 then
+--       local root_files = {
+--         'pyproject.toml',
+--         'setup.py',
+--         'setup.cfg',
+--         'requirements.txt',
+--         'Pipfile',
+--       }
+--       return lsp_util.root_pattern(unpack(root_files))(fname) or lsp_util.find_git_ancestor(fname)
+--     end
+--     return nil
+--   end,
+--
+--   single_file_support = false,
+-- }
+
 nvim_lsp.volar.setup {
   -- packages required
   -- @vue/typescript-plugin
@@ -389,11 +446,11 @@ nvim_lsp.nil_ls.setup {
   cmd = { vim.g.nix_exes.nil_ls },
 }
 
-nvim_lsp.tsserver.setup {
+nvim_lsp.ts_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
 
-  cmd = { vim.g.nix_exes.tsserver, "--stdio" },
+  cmd = { vim.g.nix_exes['typescript-language-server'], "--stdio" },
   root_dir = lsp_util.root_pattern('tsconfig.json', '.git'),
   init_options = {
     plugins = {
@@ -487,17 +544,17 @@ require 'ionide'.setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
-require 'git-conflict'.setup {
-  default_mappings = true,
-  default_commands = true,
-  disable_diagnostics = false,
-  list_opener = 'copen',
-  highlights = {
-    incoming = 'DiffAdd',
-    current = 'DiffText',
-  },
-  debug = false
-}
+-- require 'git-conflict'.setup {
+--   default_mappings = true,
+--   default_commands = true,
+--   disable_diagnostics = false,
+--   list_opener = 'copen',
+--   highlights = {
+--     incoming = 'DiffAdd',
+--     current = 'DiffText',
+--   },
+--   debug = false
+-- }
 
 require 'nvim-tree'.setup {
   disable_netrw       = false,

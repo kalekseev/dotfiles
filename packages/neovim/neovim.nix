@@ -22,6 +22,10 @@
           name = "gp-nvim";
           src = inputs.gp-nvim;
         };
+        avante-nvim = pkgs.vimUtils.buildVimPlugin {
+          name = "avante-nvim";
+          src = inputs.avante-nvim;
+        };
 
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix
         nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (
@@ -112,12 +116,13 @@
       configure = {
         customRC = ''
           let g:nix_exes = {
+          \ 'efm-langserver': '${pkgs.efm-langserver}/bin/efm-langserver',
           \ 'pyright-langserver': '${pkgs.pyright}/bin/pyright-langserver',
           \ 'bash-language-server': '${pkgs.bash-language-server}/bin/bash-language-server',
           \ 'vscode-css-language-server': '${pkgs.vscode-langservers-extracted}/bin/vscode-css-language-server',
           \ 'vscode-eslint-language-server': '${pkgs.vscode-langservers-extracted}/bin/vscode-eslint-language-server',
           \ 'nil_ls': '${pkgs.nil}/bin/nil',
-          \ 'tsserver': '${pkgs.typescript-language-server}/bin/typescript-language-server',
+          \ 'typescript-language-server': '${pkgs.typescript-language-server}/bin/typescript-language-server',
           \ 'biome': '${pkgs.biome}/bin/biome',
           \ 'eslint_d': '${pkgs.eslint_d}/bin/eslint_d',
           \ 'nixfmt': '${pkgs.nixfmt-rfc-style}/bin/nixfmt',
@@ -137,6 +142,11 @@
         '';
         packages.myVimPackages = with pkgs.vimPlugins; {
           start = [
+            nui-nvim # avante
+            dressing-nvim # avante
+            plenary-nvim # avante
+            plugins.avante-nvim
+            efmls-configs-nvim
             supermaven-nvim
             # -- neovim
             conform-nvim

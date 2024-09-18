@@ -20,6 +20,8 @@
     vim-coverage-py.flake = false;
     vim-qfreplace.url = "github:thinca/vim-qfreplace/db1c4b0161931c9a63942f4f562a0d0f4271ac14";
     vim-qfreplace.flake = false;
+    avante-nvim.url = "github:yetone/avante.nvim/03b4cb71157873219f6708cd9d069282044fa030";
+    avante-nvim.flake = false;
   };
 
   outputs =
@@ -103,24 +105,26 @@
             global.autoUpdate = true;
             onActivation.cleanup = "zap";
             casks = [
-              "nordvpn"
-              "outline-manager"
-              "samsung-portable-ssd-t7"
               "bitwarden"
-              "obsidian"
               "firefox"
               "google-chrome"
               "iina"
               "imazing"
+              "nordvpn"
+              "obsidian"
               "onedrive"
               "orbstack"
+              "outline-manager"
               "qlvideo"
               "raycast"
               "rectangle"
+              "samsung-portable-ssd-t7"
               "spotify"
+              "tailscale"
               "telegram"
               "transmission"
               "vmware-fusion"
+              "zed"
               "zoom"
             ];
           };
