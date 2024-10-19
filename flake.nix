@@ -22,6 +22,8 @@
     vim-qfreplace.flake = false;
     avante-nvim.url = "github:yetone/avante.nvim/03b4cb71157873219f6708cd9d069282044fa030";
     avante-nvim.flake = false;
+    webster-dictionary.url = "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip";
+    webster-dictionary.flake = false;
   };
 
   outputs =
@@ -42,7 +44,27 @@
 
           # Auto upgrade nix package and the daemon service.
           services.nix-daemon.enable = true;
-          # nix.package = pkgs.nix;
+          nix = {
+            package = pkgs.nix;
+            settings = {
+              "extra-experimental-features" = [
+                "nix-command"
+                "flakes"
+              ];
+            };
+          };
+
+          system.activationScripts.postUserActivation.text = ''
+            printf >&2 'setting up dictionaries...\n'
+            mkdir -p ~/Library/Dictionaries
+            ${pkgs.rsync}/bin/rsync \
+              --archive \
+              --copy-links \
+              --delete-during \
+              --delete-missing-args \
+              ${inputs.webster-dictionary}/* \
+              ~/Library/Dictionaries/"Webster's Unabridged Dictionary (1913).dictionary"
+          '';
 
           # Necessary for using flakes on this system.
           nix.settings.experimental-features = "nix-command flakes";
@@ -315,20 +337,23 @@
             programs.kitty = {
               enable = true;
               extraConfig = builtins.readFile ./configs/kitty.conf;
-              shellIntegration.enableZshIntegration = false;
             };
 
             programs.tmux = {
               enable = true;
+              sensibleOnTop = false;
               baseIndex = 1;
               escapeTime = 10;
               historyLimit = 10000;
               mouse = true;
+              keyMode = "vi";
+              customPaneNavigationAndResize = true;
               prefix = "C-a";
+              terminal = "screen-256color";
+              aggressiveResize = true;
               extraConfig = builtins.readFile ./configs/tmux.conf;
               plugins = [
                 pkgs.tmuxPlugins.cpu
-                pkgs.tmuxPlugins.sensible
                 pkgs.tmuxPlugins.yank
                 pkgs.tmuxPlugins.copycat
                 pkgs.tmuxPlugins.open

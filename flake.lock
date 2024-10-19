@@ -59,11 +59,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726611255,
-        "narHash": "sha256-/bxaYvIK6/d3zqpW26QFS0rqfd0cO4qreSNWvYLTl/w=",
+        "lastModified": 1729321331,
+        "narHash": "sha256-KVyQq+ez/oB30/WbdNgVD8g/bda34z8NiU187QKQb74=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d2493de5cd1da06b6a4c3e97f4e7d5dd791df457",
+        "rev": "122f70545b29ccb922e655b08acfe05bfb44ec68",
         "type": "github"
       },
       "original": {
@@ -80,11 +80,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726616680,
-        "narHash": "sha256-i0h300W3t7Q7PltJPmucj+ub45SE/bNQ+pf83tasYAQ=",
+        "lastModified": 1728901530,
+        "narHash": "sha256-I9Qd0LnAsEGHtKE9+uVR0iDFmsijWSy7GT0g3jihG4Q=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "6374cd7e50aa057a688142eed2345083047ad884",
+        "rev": "a60ac02f9466f85f092e576fd8364dfc4406b5a6",
         "type": "github"
       },
       "original": {
@@ -95,11 +95,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1726583932,
-        "narHash": "sha256-zACxiQx8knB3F8+Ze+1BpiYrI+CbhxyWpcSID9kVhkQ=",
+        "lastModified": 1729265718,
+        "narHash": "sha256-4HQI+6LsO3kpWTYuVGIzhJs1cetFcwT7quWCk/6rqeo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "658e7223191d2598641d50ee4e898126768fe847",
+        "rev": "ccc0c2126893dd20963580b6478d1a10a4512185",
         "type": "github"
       },
       "original": {
@@ -118,7 +118,8 @@
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
         "vim-coverage-py": "vim-coverage-py",
-        "vim-qfreplace": "vim-qfreplace"
+        "vim-qfreplace": "vim-qfreplace",
+        "webster-dictionary": "webster-dictionary"
       }
     },
     "systems": {
@@ -168,6 +169,19 @@
         "repo": "vim-qfreplace",
         "rev": "db1c4b0161931c9a63942f4f562a0d0f4271ac14",
         "type": "github"
+      }
+    },
+    "webster-dictionary": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1719196073,
+        "narHash": "sha256-UaYKAC/7bYAT4B8cgHt+l1gfu1vif+jrPep+vU5guZU=",
+        "type": "tarball",
+        "url": "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip"
       }
     }
   },

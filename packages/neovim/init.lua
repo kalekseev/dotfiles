@@ -123,7 +123,7 @@ require("avante").setup {
   mappings = {
     ask = "<leader>ga",
     edit = "<leader>ge",
-    refresh = "<leader>gr",
+    refresh = "<leader>gz",
     toggle = {
       debug = "<leader>gd",
       hint = "<leader>gh",

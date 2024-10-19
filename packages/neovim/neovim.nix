@@ -2,13 +2,14 @@
 {
   neovim =
     let
-      sql-formatter = pkgs.nodePackages.sql-formatter.override {
-        buildInputs = [ pkgs.makeWrapper ];
-        preFixup = ''
-          wrapProgram $out/bin/sql-formatter --add-flags \
-            '-l postgresql -c ${pkgs.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
-        '';
-      };
+      pg-sql-formatter =
+        pkgs.runCommand "pg-sql-formatter" { nativeBuildInputs = [ pkgs.makeWrapper ]; }
+          ''
+            mkdir -p $out/bin
+            ln -s ${pkgs.sql-formatter}/bin/sql-formatter $out/bin/sql-formatter
+            wrapProgram $out/bin/sql-formatter --add-flags \
+              '-l postgresql -c ${pkgs.writeText "sql-formatter-config" ''{ "expressionWidth": 80, "keywordCase": "upper" }''}'
+          '';
       plugins = {
         vim-coverage-py = pkgs.vimUtils.buildVimPlugin {
           name = "vim-coverage.py";
@@ -86,25 +87,16 @@
             yaml
           ]
           ++ [
-            # (pkgs.tree-sitter.buildGrammar {
-            #   language = "sql";
-            #   version = "b817500";
-            #   src = pkgs.fetchFromGitHub {
-            #     owner = "derekstride";
-            #     repo = "tree-sitter-sql";
-            #     rev = "b8175006d9c8120d41cf40a4ef3711bbbbc08973";
-            #     hash = "sha256-ZURUEd7TokBIVVejRoBiXMQ1XwUEgMnzOhQiV+Tdpk0=";
-            #   };
-            # })
             (pkgs.tree-sitter.buildGrammar {
               language = "fsharp";
-              version = "996ea99";
+              version = "0.0.0+rev=971da5f";
               src = pkgs.fetchFromGitHub {
                 owner = "ionide";
                 repo = "tree-sitter-fsharp";
-                rev = "996ea9982bd4e490029f84682016b6793940113b";
-                sha256 = "sha256-HgHVIU67h9WXfj+yx7ukCSqucRvo16jugFhxWYY1kyk=";
+                rev = "971da5ff0266bfe4a6ecfb94616548032d6d1ba0";
+                sha256 = "sha256-0jrbznAXcjXrbJ5jnxWMzPKxRopxKCtoQXGl80R1M0M=";
               };
+              location = "fsharp";
             })
           ]
         );
@@ -127,7 +119,7 @@
           \ 'eslint_d': '${pkgs.eslint_d}/bin/eslint_d',
           \ 'nixfmt': '${pkgs.nixfmt-rfc-style}/bin/nixfmt',
           \ 'pg_format': '${pkgs.pgformatter}/bin/pg_format',
-          \ 'sql-formatter': '${sql-formatter}/bin/sql-formatter',
+          \ 'sql-formatter': '${pg-sql-formatter}/bin/sql-formatter',
           \ 'shellcheck': '${pkgs.shellcheck}/bin/shellcheck',
           \ 'nixpkgs-fmt': '${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt',
           \ 'ruff': '${pkgs.lib.getExe pkgs.ruff}',
@@ -211,7 +203,7 @@
             vim-rooter
             vim-test
             vim-dispatch # recommended for vim-test
-            vim-tmux-navigator
+            # vim-tmux-navigator
             vim-visual-star-search
           ];
           opt = [ ];
