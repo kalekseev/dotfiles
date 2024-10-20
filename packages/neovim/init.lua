@@ -125,10 +125,14 @@ require("avante").setup {
   mappings = {
     ask = "<leader>ga",
     edit = "<leader>ge",
-    refresh = "<leader>gz",
+    refresh = "<leader>zr",
+    focus = "<leader>zf",
     toggle = {
-      debug = "<leader>gd",
-      hint = "<leader>gh",
+      default = "<leader>zt",
+      debug = "<leader>zd",
+      hint = "<leader>zh",
+      suggestion = "<leader>zs",
+      repomap = "<leader>zr",
     },
   },
 }
