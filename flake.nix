@@ -14,14 +14,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
-    gp-nvim.url = "github:Robitx/gp.nvim/d76be3d067b4e7352d1e744954327982cf1d24aa";
-    gp-nvim.flake = false;
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
     vim-coverage-py.flake = false;
     vim-qfreplace.url = "github:thinca/vim-qfreplace/db1c4b0161931c9a63942f4f562a0d0f4271ac14";
     vim-qfreplace.flake = false;
-    avante-nvim.url = "github:yetone/avante.nvim/03b4cb71157873219f6708cd9d069282044fa030";
-    avante-nvim.flake = false;
     webster-dictionary.url = "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip";
     webster-dictionary.flake = false;
   };
@@ -176,7 +172,6 @@
               pkgs.ollama
               pkgs.rustup
               pkgs.sd
-              pkgs.sox
               pkgs.timewarrior
               pkgs.tree
               # pkgs.testdisk

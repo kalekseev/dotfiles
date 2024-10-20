@@ -118,6 +118,8 @@ require 'nvim-treesitter.configs'.setup {
 
 -- require('octo').setup {}
 require("fidget").setup {}
+-- https://github.com/yetone/avante.nvim/issues/665#issuecomment-2412440939
+require('avante_lib').load()
 require("avante").setup {
   hints = { enabled = false },
   mappings = {
@@ -132,9 +134,6 @@ require("avante").setup {
 }
 require('which-key').setup {}
 require('gitsigns').setup {}
-require('gp').setup {
-  openai_api_key = { "cat", vim.fn.expand('$HOME/.oai_key') },
-}
 
 require 'lualine'.setup {
   options = {
@@ -489,6 +488,44 @@ nvim_lsp.cssls.setup {
   capabilities = capabilities,
 
   cmd = { vim.g.nix_exes['vscode-css-language-server'], "--stdio" },
+}
+
+nvim_lsp.html.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+
+  filetypes = { 'html', 'templ', 'htmldjango' },
+  cmd = { vim.g.nix_exes['vscode-html-language-server'], "--stdio" },
+}
+
+nvim_lsp.jsonls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+
+  cmd = { vim.g.nix_exes['vscode-json-language-server'], "--stdio" },
+  settings = {
+    json = {
+      schemas = require('schemastore').json.schemas(),
+      validate = { enable = true },
+    },
+  },
+}
+
+nvim_lsp.yamlls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+
+  cmd = { vim.g.nix_exes['yaml-language-server'], '--stdio' },
+  settings = {
+    redhat = { telemetry = { enabled = false } },
+    yaml = {
+      schemaStore = {
+        enable = false,
+        url = "",
+      },
+      schemas = require('schemastore').yaml.schemas(),
+    },
+  },
 }
 
 nvim_lsp.lua_ls.setup {

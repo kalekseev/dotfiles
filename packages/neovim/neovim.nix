@@ -19,15 +19,6 @@
           name = "vim-qfreplace";
           src = inputs.vim-qfreplace;
         };
-        gp-nvim = pkgs.vimUtils.buildVimPlugin {
-          name = "gp-nvim";
-          src = inputs.gp-nvim;
-        };
-        avante-nvim = pkgs.vimUtils.buildVimPlugin {
-          name = "avante-nvim";
-          src = inputs.avante-nvim;
-        };
-
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix
         nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (
           p:
@@ -110,9 +101,12 @@
           let g:nix_exes = {
           \ 'efm-langserver': '${pkgs.efm-langserver}/bin/efm-langserver',
           \ 'pyright-langserver': '${pkgs.pyright}/bin/pyright-langserver',
+          \ 'yaml-language-server': '${pkgs.yaml-language-server}/bin/yaml-language-server',
           \ 'bash-language-server': '${pkgs.bash-language-server}/bin/bash-language-server',
           \ 'vscode-css-language-server': '${pkgs.vscode-langservers-extracted}/bin/vscode-css-language-server',
           \ 'vscode-eslint-language-server': '${pkgs.vscode-langservers-extracted}/bin/vscode-eslint-language-server',
+          \ 'vscode-json-language-server': '${pkgs.vscode-langservers-extracted}/bin/vscode-json-language-server',
+          \ 'vscode-html-language-server': '${pkgs.vscode-langservers-extracted}/bin/vscode-html-language-server',
           \ 'nil_ls': '${pkgs.nil}/bin/nil',
           \ 'typescript-language-server': '${pkgs.typescript-language-server}/bin/typescript-language-server',
           \ 'biome': '${pkgs.biome}/bin/biome',
@@ -134,10 +128,11 @@
         '';
         packages.myVimPackages = with pkgs.vimPlugins; {
           start = [
+            SchemaStore-nvim
             nui-nvim # avante
             dressing-nvim # avante
             plenary-nvim # avante
-            plugins.avante-nvim
+            avante-nvim
             efmls-configs-nvim
             supermaven-nvim
             # -- neovim
@@ -174,7 +169,6 @@
             vim-vsnip
             which-key-nvim
             git-conflict-nvim
-            plugins.gp-nvim
             fidget-nvim
             # octo-nvim
             # copilot-lua
