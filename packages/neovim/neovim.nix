@@ -21,9 +21,7 @@
         };
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix
         nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withPlugins (
-          p:
-          with p;
-          [
+          p: with p; [
             bash
             c
             c_sharp
@@ -34,6 +32,7 @@
             csv
             diff
             dockerfile
+            fsharp
             git_config
             git_rebase
             gitattributes
@@ -77,19 +76,6 @@
             xml
             yaml
           ]
-          ++ [
-            (pkgs.tree-sitter.buildGrammar {
-              language = "fsharp";
-              version = "0.0.0+rev=971da5f";
-              src = pkgs.fetchFromGitHub {
-                owner = "ionide";
-                repo = "tree-sitter-fsharp";
-                rev = "971da5ff0266bfe4a6ecfb94616548032d6d1ba0";
-                sha256 = "sha256-0jrbznAXcjXrbJ5jnxWMzPKxRopxKCtoQXGl80R1M0M=";
-              };
-              location = "fsharp";
-            })
-          ]
         );
       };
     in
@@ -128,6 +114,8 @@
         '';
         packages.myVimPackages = with pkgs.vimPlugins; {
           start = [
+            toggleterm-nvim
+            fileline-nvim
             SchemaStore-nvim
             nui-nvim # avante
             dressing-nvim # avante
@@ -197,7 +185,6 @@
             vim-rooter
             vim-test
             vim-dispatch # recommended for vim-test
-            # vim-tmux-navigator
             vim-visual-star-search
           ];
           opt = [ ];

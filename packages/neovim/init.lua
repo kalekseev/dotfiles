@@ -28,6 +28,7 @@ vim.o.foldenable    = false;
 vim.o.background    = 'dark'
 vim.o.termguicolors = true
 vim.o.colorcolumn   = '80'
+vim.o.cmdheight     = 0
 
 
 -- BACKUP
@@ -48,6 +49,11 @@ vim.o.undofile = true
 
 vim.g.loaded_perl_provider = 0
 local keymap = vim.keymap.set
+-- move between panes
+keymap('n', '<C-h>', '<C-w>h', { silent = true })
+keymap('n', '<C-j>', '<C-w>j', { silent = true })
+keymap('n', '<C-k>', '<C-w>k', { silent = true })
+keymap('n', '<C-l>', '<C-w>l', { silent = true })
 
 require('onedark').setup {
   style = 'dark',
@@ -64,6 +70,23 @@ require('mini.pairs').setup()
 --     panel = { enabled = false },
 -- })
 -- require("copilot_cmp").setup()
+
+require("toggleterm").setup {
+  open_mapping = [[<c-\>]]
+}
+
+function _G.set_terminal_keymaps()
+  local opts = { buffer = 0 }
+  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+  -- vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+  vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+  vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+  vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+end
+
+vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
 require('treesitter-context').setup {
   enable = true,
