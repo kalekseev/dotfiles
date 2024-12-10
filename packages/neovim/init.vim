@@ -151,14 +151,17 @@ let g:direnv_silent_load = 1
 
 " test
 let test#python#runner = 'pytest'
-let test#strategy = "asyncrun_background"
+let test#strategy = "neovim_sticky"
 " let g:test#preserve_screen = 1
-let test#neovim#term_position = "vert"
+let test#neovim#term_position = "horizontal botright 20"
+let test#neovim_sticky#kill_previous = 2
+let test#neovim_sticky#reopen_window = 1
 
-nmap <silent> <leader>tt :TestNearest<CR>
-nmap <silent> <leader>tf :TestFile<CR>
-nmap <silent> <leader>ts :TestSuite<CR>
-nmap <silent> <leader>tl :TestLast<CR>
+
+nmap <silent> <leader>tt :TestNearest -s -vv<CR>
+nmap <silent> <leader>tf :TestFile -s -vv<CR>
+nmap <silent> <leader>ts :TestSuite -s --lf -vv<CR>
+nmap <silent> <leader>tl :TestLast -s -vv<CR>
 nmap <silent> <leader>tg :TestVisit<CR>
 nmap <silent> <leader>tT :autocmd BufWritePost * TestNearest<CR>
 nmap <silent> <leader>tF :autocmd BufWritePost * TestFile<CR>

@@ -123,6 +123,7 @@
             avante-nvim
             efmls-configs-nvim
             supermaven-nvim
+            markview-nvim
             # -- neovim
             conform-nvim
             cmp-buffer
@@ -157,7 +158,7 @@
             vim-vsnip
             which-key-nvim
             git-conflict-nvim
-            fidget-nvim
+            # fidget-nvim
             # octo-nvim
             # copilot-lua
             # copilot-cmp

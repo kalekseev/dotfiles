@@ -116,7 +116,7 @@
           # macos
           security.pam.enableSudoTouchIdAuth = true;
 
-          fonts.packages = [ (pkgs.nerdfonts.override { fonts = [ "Hack" ]; }) ];
+          fonts.packages = [ pkgs.nerd-fonts.hack ];
 
           homebrew = {
             enable = true;
@@ -144,6 +144,7 @@
               "vmware-fusion"
               "zed"
               "zoom"
+              "microsoft-teams"
             ];
           };
         };
@@ -234,7 +235,10 @@
               search_mode_shell_up_key_binding = "prefix";
               history_filter = [ "chamber write " ];
             };
-            programs.bat.enable = true;
+            programs.bat = {
+              enable = true;
+              config.theme = "TwoDark";
+            };
             programs.gh.enable = true;
             programs.htop.enable = true;
             programs.jq.enable = true;

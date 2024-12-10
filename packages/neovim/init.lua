@@ -140,7 +140,7 @@ require 'nvim-treesitter.configs'.setup {
 }
 
 -- require('octo').setup {}
-require("fidget").setup {}
+-- require("fidget").setup {}
 -- https://github.com/yetone/avante.nvim/issues/665#issuecomment-2412440939
 require('avante_lib').load()
 require("avante").setup {
@@ -159,6 +159,13 @@ require("avante").setup {
     },
   },
 }
+
+require('markview').setup {
+  filetypes = { "markdown", "Avante" },
+  buf_ignore = {},
+  max_length = 2000
+}
+
 require('which-key').setup {}
 require('gitsigns').setup {}
 
