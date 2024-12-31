@@ -86,6 +86,7 @@
         customRC = ''
           let g:nix_exes = {
           \ 'efm-langserver': '${pkgs.efm-langserver}/bin/efm-langserver',
+          \ 'lemminx': '${pkgs.lib.getExe pkgs.lemminx}',
           \ 'pyright-langserver': '${pkgs.pyright}/bin/pyright-langserver',
           \ 'yaml-language-server': '${pkgs.yaml-language-server}/bin/yaml-language-server',
           \ 'bash-language-server': '${pkgs.bash-language-server}/bin/bash-language-server',
@@ -117,9 +118,6 @@
             toggleterm-nvim
             fileline-nvim
             SchemaStore-nvim
-            nui-nvim # avante
-            dressing-nvim # avante
-            plenary-nvim # avante
             avante-nvim
             efmls-configs-nvim
             supermaven-nvim
@@ -140,7 +138,7 @@
             lspsaga-nvim
             lualine-nvim
             mini-nvim
-            neodev-nvim
+            lazydev-nvim
             nvim-cmp
             nvim-lspconfig
             nvim-tree-lua

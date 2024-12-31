@@ -1,0 +1,8 @@
+theme = "Sublette"
+font-family = "Hack Nerd Font Mono"
+macos-non-native-fullscreen = true
+macos-titlebar-style = tabs
+font-size = 16
+font-thicken = true
+auto-update-channel = stable
+window-save-state = always

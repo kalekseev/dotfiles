@@ -163,13 +163,11 @@
             home.packages = [
               ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; }).neovim
               pkgs.aws-vault
-              pkgs.cachix
+              pkgs.aider-chat
               pkgs.uv
-              pkgs.devenv
               pkgs.dotnet-sdk_8
               pkgs.fd
               pkgs.ffmpeg
-              pkgs.geckodriver
               pkgs.ollama
               pkgs.rustup
               pkgs.sd
@@ -202,6 +200,7 @@
 
             home.file = {
               ".psqlrc".source = ./configs/psqlrc;
+              ".config/ghostty/config".source = ./configs/ghostty.toml;
             };
 
             programs.zsh = {
@@ -333,10 +332,10 @@
               lfs.skipSmudge = true;
             };
             # https://nix-community.github.io/home-manager/options.xhtml
-            programs.kitty = {
-              enable = true;
-              extraConfig = builtins.readFile ./configs/kitty.conf;
-            };
+            # programs.kitty = {
+            #   enable = true;
+            #   extraConfig = builtins.readFile ./configs/kitty.conf;
+            # };
 
             programs.tmux = {
               enable = true;

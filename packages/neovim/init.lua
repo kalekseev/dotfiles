@@ -363,15 +363,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 end
 
--- IMPORTANT: make sure to setup neodev BEFORE lspconfig
-require("neodev").setup {
-  override = function(root_dir, library)
-    if root_dir:find("dotfiles") then
-      library.enabled = true
-      library.plugins = true
-    end
-  end,
-}
+require("lazydev").setup()
 local nvim_lsp = require('lspconfig')
 local lsp_util = require('lspconfig/util')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -477,6 +469,13 @@ nvim_lsp.nil_ls.setup {
   capabilities = capabilities,
 
   cmd = { vim.g.nix_exes.nil_ls },
+}
+
+nvim_lsp.lemminx.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+
+  cmd = { vim.g.nix_exes.lemminx },
 }
 
 nvim_lsp.ts_ls.setup {
