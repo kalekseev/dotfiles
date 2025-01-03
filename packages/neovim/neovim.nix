@@ -140,6 +140,8 @@
             mini-nvim
             lazydev-nvim
             nvim-cmp
+            nvim-dap
+            nvim-dap-python
             nvim-lspconfig
             nvim-tree-lua
             plugins.nvim-treesitter
@@ -151,6 +153,7 @@
             onedark-nvim
             playground
             telescope-nvim
+            telescope-dap-nvim
             trouble-nvim
             vim-visual-multi
             vim-vsnip

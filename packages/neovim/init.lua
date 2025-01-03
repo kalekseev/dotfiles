@@ -139,6 +139,16 @@ require 'nvim-treesitter.configs'.setup {
   }
 }
 
+require("dap-python").setup("python")
+local dap = require('dap')
+dap.configurations.python = {
+  {
+    type = 'python',
+    request = 'attach',
+    name = 'attach',
+    connect = { host = '127.0.0.1', port = vim.env.PYTHON_DEBUG_PORT or 5678 },
+  },
+}
 -- require('octo').setup {}
 -- require("fidget").setup {}
 -- https://github.com/yetone/avante.nvim/issues/665#issuecomment-2412440939
@@ -212,6 +222,7 @@ require('telescope').setup {
     },
   }
 }
+require('telescope').load_extension('dap')
 
 -- nvim-cmp setup
 local has_words_before = function()
