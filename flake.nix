@@ -124,6 +124,7 @@
             onActivation.cleanup = "zap";
             casks = [
               "bitwarden"
+              "cursor"
               "firefox"
               "google-chrome"
               "iina"
@@ -278,6 +279,7 @@
                 "*.pyc"
                 ".DS_Store"
                 ".direnv"
+                ".aider.*"
               ];
               aliases = {
                 co = "checkout";

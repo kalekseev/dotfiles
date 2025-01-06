@@ -141,6 +141,7 @@
             lazydev-nvim
             nvim-cmp
             nvim-dap
+            nvim-dap-ui
             nvim-dap-python
             nvim-lspconfig
             nvim-tree-lua
@@ -155,7 +156,7 @@
             telescope-nvim
             telescope-dap-nvim
             trouble-nvim
-            vim-visual-multi
+            # vim-visual-multi
             vim-vsnip
             which-key-nvim
             git-conflict-nvim

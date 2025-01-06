@@ -77,13 +77,13 @@ require("toggleterm").setup {
 
 function _G.set_terminal_keymaps()
   local opts = { buffer = 0 }
-  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
-  vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
-  vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-  -- vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-  vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-  vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
-  vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+  keymap('t', '<esc>', [[<C-\><C-n>]], opts)
+  keymap('t', 'jk', [[<C-\><C-n>]], opts)
+  keymap('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+  -- keymap('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+  keymap('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+  keymap('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+  keymap('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
 end
 
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
@@ -149,6 +149,24 @@ dap.configurations.python = {
     connect = { host = '127.0.0.1', port = vim.env.PYTHON_DEBUG_PORT or 5678 },
   },
 }
+vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
+
+keymap('n', '<Leader>b', function() dap.toggle_breakpoint() end)
+keymap('n', '<Leader>dc', function() dap.continue() end)
+keymap('n', '<Leader>dd', function() dap.disconnect() end)
+keymap('n', '<C-n>', function() require('dap').step_over() end)
+keymap('n', '<Leader>di', function() require('dap').step_into() end)
+keymap('n', '<Leader>do', function() require('dap').step_out() end)
+keymap('n', '<Leader>ds', function()
+  local widgets = require('dap.ui.widgets')
+  widgets.centered_float(widgets.scopes)
+end)
+keymap('n', '<Leader>df', function() require('telescope').extensions.dap.frames({}) end)
+keymap('n', '<Leader>dp', function() require("dap.ui.widgets").preview() end)
+
+
+-- local dapui = require("dapui")
+-- dapui.setup()
 -- require('octo').setup {}
 -- require("fidget").setup {}
 -- https://github.com/yetone/avante.nvim/issues/665#issuecomment-2412440939
@@ -348,7 +366,7 @@ local on_attach = function(client, bufnr)
       desc = 'LSP: ' .. desc
     end
 
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+    keymap('n', keys, func, { buffer = bufnr, desc = desc })
   end
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
