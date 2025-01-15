@@ -93,10 +93,9 @@ require('treesitter-context').setup {
   multiline_threshold = 1,
 }
 
----@diagnostic disable-next-line: missing-fields
-require('ts_context_commentstring').setup {
+require('ts_context_commentstring').setup({
   enable_autocmd = false,
-}
+})
 vim.g.skip_ts_context_commentstring_module = true
 local _get_option = vim.filetype.get_option
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -139,6 +138,15 @@ require 'nvim-treesitter.configs'.setup {
   }
 }
 
+---@diagnostic disable-next-line: missing-fields
+require("neotest").setup({
+  adapters = {
+    require("neotest-python")({
+      dap = { justMyCode = false },
+    }),
+  },
+})
+
 require("dap-python").setup("python")
 local dap = require('dap')
 dap.configurations.python = {
@@ -151,18 +159,18 @@ dap.configurations.python = {
 }
 vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
 
-keymap('n', '<Leader>b', function() dap.toggle_breakpoint() end)
-keymap('n', '<Leader>dc', function() dap.continue() end)
-keymap('n', '<Leader>dd', function() dap.disconnect() end)
-keymap('n', '<C-n>', function() require('dap').step_over() end)
-keymap('n', '<Leader>di', function() require('dap').step_into() end)
-keymap('n', '<Leader>do', function() require('dap').step_out() end)
+keymap('n', '<Leader>b', function() dap.toggle_breakpoint() end, { desc = 'toggle breakpoint' })
+keymap('n', '<Leader>dc', function() dap.continue() end, { desc = 'continue' })
+keymap('n', '<Leader>dd', function() dap.disconnect() end, { desc = 'disconnect' })
+keymap('n', '<C-n>', function() require('dap').step_over() end, { desc = 'step over' })
+keymap('n', '<Leader>di', function() require('dap').step_into() end, { desc = 'step into' })
+keymap('n', '<Leader>do', function() require('dap').step_out() end, { desc = 'step out' })
 keymap('n', '<Leader>ds', function()
   local widgets = require('dap.ui.widgets')
   widgets.centered_float(widgets.scopes)
-end)
-keymap('n', '<Leader>df', function() require('telescope').extensions.dap.frames({}) end)
-keymap('n', '<Leader>dp', function() require("dap.ui.widgets").preview() end)
+end, { desc = 'show scopes' })
+keymap('n', '<Leader>df', function() require('telescope').extensions.dap.frames({}) end, { desc = 'show frames' })
+keymap('n', '<Leader>dp', function() require("dap.ui.widgets").preview() end, { desc = 'show preview' })
 
 
 -- local dapui = require("dapui")
@@ -194,7 +202,7 @@ require('markview').setup {
   max_length = 2000
 }
 
-require('which-key').setup {}
+require('which-key').setup()
 require('gitsigns').setup {}
 
 require 'lualine'.setup {
@@ -505,6 +513,24 @@ nvim_lsp.lemminx.setup {
   capabilities = capabilities,
 
   cmd = { vim.g.nix_exes.lemminx },
+  init_options = {
+    settings = {
+      xml = {
+        format = {
+          enabled = true,
+          splitAttributes = "preserve",
+          maxLineWidth = 280,
+        },
+      },
+      xslt = {
+        format = {
+          enabled = true,
+          splitAttributes = "preserve",
+          maxLineWidth = 280,
+        },
+      },
+    }
+  }
 }
 
 nvim_lsp.ts_ls.setup {

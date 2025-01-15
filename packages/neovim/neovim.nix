@@ -122,6 +122,8 @@
             efmls-configs-nvim
             supermaven-nvim
             markview-nvim
+            FixCursorHold-nvim
+            neotest-python
             # -- neovim
             conform-nvim
             cmp-buffer
