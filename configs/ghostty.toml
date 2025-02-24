@@ -6,3 +6,4 @@ font-size = 16
 font-thicken = true
 auto-update-channel = stable
 window-save-state = always
+shell-integration-features = sudo

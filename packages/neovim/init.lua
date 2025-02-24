@@ -155,6 +155,8 @@ dap.configurations.python = {
     request = 'attach',
     name = 'attach',
     connect = { host = '127.0.0.1', port = vim.env.PYTHON_DEBUG_PORT or 5678 },
+    justMyCode = false,
+
   },
 }
 vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
@@ -197,8 +199,10 @@ require("avante").setup {
 }
 
 require('markview').setup {
-  filetypes = { "markdown", "Avante" },
-  buf_ignore = {},
+  preview = {
+    filetypes = { "markdown", "Avante" },
+    buf_ignore = {},
+  },
   max_length = 2000
 }
 
@@ -362,6 +366,155 @@ require("supermaven-nvim").setup({
   disable_inline_completion = false, -- disables inline completion for use with cmp
   disable_keymaps = false            -- disables built in keymaps for more manual control
 })
+
+local lsp_util = require('lspconfig/util')
+local lsp_servers = {
+  biome         = {},
+  csharp_ls     = {},
+  nil_ls        = {},
+  bashls        = {},
+  eslint        = {},
+  cssls         = {},
+  ruff          = {},
+  rust_analyzer = {},
+  tinymist      = {},
+  ocamllsp      = {},
+  html          = {
+    filetypes = { 'html', 'templ', 'htmldjango' },
+  },
+
+  pyright       = {
+    settings = {
+      -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
+      python = {
+        analysis = {
+          autoSearchPaths = true,
+          useLibraryCodeForTypes = true,
+          diagnosticMode = 'openFilesOnly',
+        }
+      }
+    }
+  },
+
+  efm           = {
+    filetypes = { "python" },
+    root_dir = lsp_util.root_pattern('.env.mypy'),
+    single_file_support = false,
+
+    settings = {
+      rootMarkers = { '.env.mypy' },
+      languages = {
+        python = { require('efmls-configs.linters.mypy') },
+      }
+    }
+  },
+
+  volar         = {
+    -- packages required
+    -- @vue/typescript-plugin
+    -- @vue/language-server
+    root_dir = function(fname)
+      if vim.fn.executable('vue-language-server') == 1 then
+        return lsp_util.root_pattern 'package.json' (fname)
+      end
+    end,
+  },
+
+  harper_ls     = {
+    settings = {
+      ["harper-ls"] = {
+        linters = {
+          sentence_capitalization = false,
+        }
+      }
+    }
+  },
+
+  lemminx       = {
+    init_options = {
+      settings = {
+        xml = {
+          format = {
+            enabled = true,
+            splitAttributes = "preserve",
+            maxLineWidth = 280,
+          },
+        },
+        xslt = {
+          format = {
+            enabled = true,
+            splitAttributes = "preserve",
+            maxLineWidth = 280,
+          },
+        },
+      }
+    }
+  },
+
+  ts_ls         = {
+    root_dir = lsp_util.root_pattern('tsconfig.json', '.git'),
+    init_options = {
+      plugins = {
+        {
+          name = '@vue/typescript-plugin',
+          location = '',
+          languages = { 'vue' },
+        },
+      },
+    },
+    filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+  },
+
+  jsonls        = {
+    settings = {
+      json = {
+        schemas = require('schemastore').json.schemas(),
+        validate = { enable = true },
+      },
+    },
+  },
+
+  yamlls        = {
+    settings = {
+      redhat = { telemetry = { enabled = false } },
+      yaml = {
+        schemaStore = {
+          enable = false,
+          url = "",
+        },
+        schemas = require('schemastore').yaml.schemas(),
+      },
+    },
+  },
+
+  lua_ls        = {
+    settings = {
+      Lua = {
+        diagnostics = {
+          globals = { 'vim' }
+        },
+        telemetry = {
+          enable = false,
+        },
+      }
+    }
+  },
+}
+
+require("lazydev").setup()
+require('ionide').setup({})
+require("lsp_lines").setup()
+vim.diagnostic.config { virtual_text = true, virtual_lines = false }
+
+vim.api.nvim_create_user_command("LspLinesToggle", function()
+  local config = vim.diagnostic.config() or {}
+  if config.virtual_text then
+    vim.diagnostic.config { virtual_text = false, virtual_lines = true }
+  else
+    vim.diagnostic.config { virtual_text = true, virtual_lines = false }
+  end
+end, { desc = "Toggle lsp_lines" })
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -399,276 +552,16 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 end
-
-require("lazydev").setup()
-local nvim_lsp = require('lspconfig')
-local lsp_util = require('lspconfig/util')
+local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-local select_exe = function(name)
-  return function()
-    if vim.fn.executable(name) == 1 then
-      return name
-    end
-    return vim.g.nix_exes[name]
-  end
+for name, config in pairs(lsp_servers) do
+  config = vim.tbl_deep_extend("force", {}, {
+    capabilities = capabilities,
+    on_attach = on_attach,
+  }, config)
+  lspconfig[name].setup(config)
 end
 
-nvim_lsp.pyright.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { select_exe('pyright-langserver')(), "--stdio" },
-
-  settings = {
-    -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-        diagnosticMode = 'openFilesOnly',
-      }
-    }
-  }
-}
-
-nvim_lsp.efm.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { select_exe('efm-langserver')() },
-  filetypes = { "python" },
-  root_dir = lsp_util.root_pattern('.env.mypy'),
-  single_file_support = false,
-
-  settings = {
-    rootMarkers = { '.env.mypy' },
-    languages = {
-      python = { require('efmls-configs.linters.mypy') },
-    },
-  },
-}
-
--- nvim_lsp.pylsp.setup {
---   -- settings = {
---   --   pylsp = {
---   --     plugins = {
---   --       pylsp_mypy = {
---   --         live_mode = false,
---   --         dmypy = true,
---   --         strict = true,
---   --       }
---   --     }
---   --   }
---   -- },
---   root_dir = function(fname)
---     if vim.fn.executable('pylsp') == 1 then
---       local root_files = {
---         'pyproject.toml',
---         'setup.py',
---         'setup.cfg',
---         'requirements.txt',
---         'Pipfile',
---       }
---       return lsp_util.root_pattern(unpack(root_files))(fname) or lsp_util.find_git_ancestor(fname)
---     end
---     return nil
---   end,
---
---   single_file_support = false,
--- }
-
-nvim_lsp.volar.setup {
-  -- packages required
-  -- @vue/typescript-plugin
-  -- @vue/language-server
-  on_attach = on_attach,
-  capabilities = capabilities,
-  root_dir = function(fname)
-    if vim.fn.executable('vue-language-server') == 1 then
-      return lsp_util.root_pattern 'package.json' (fname)
-    end
-  end,
-}
-
-nvim_lsp.biome.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
-
-nvim_lsp.csharp_ls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
-
-nvim_lsp.nil_ls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes.nil_ls },
-}
-
-nvim_lsp.lemminx.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes.lemminx },
-  init_options = {
-    settings = {
-      xml = {
-        format = {
-          enabled = true,
-          splitAttributes = "preserve",
-          maxLineWidth = 280,
-        },
-      },
-      xslt = {
-        format = {
-          enabled = true,
-          splitAttributes = "preserve",
-          maxLineWidth = 280,
-        },
-      },
-    }
-  }
-}
-
-nvim_lsp.ts_ls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['typescript-language-server'], "--stdio" },
-  root_dir = lsp_util.root_pattern('tsconfig.json', '.git'),
-  init_options = {
-    plugins = {
-      {
-        name = '@vue/typescript-plugin',
-        location = '',
-        languages = { 'vue' },
-      },
-    },
-  },
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
-}
-
-nvim_lsp.bashls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['bash-language-server'], "start" },
-  settings = {
-    bashIde = {
-      globPattern = vim.env.GLOB_PATTERN or '*@(.sh|.inc|.bash|.command)',
-      shellcheckPath = vim.g.nix_exes.shellcheck,
-    }
-  }
-}
-
-nvim_lsp.eslint.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['vscode-eslint-language-server'], "--stdio" },
-}
-
-nvim_lsp.cssls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['vscode-css-language-server'], "--stdio" },
-}
-
-nvim_lsp.html.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  filetypes = { 'html', 'templ', 'htmldjango' },
-  cmd = { vim.g.nix_exes['vscode-html-language-server'], "--stdio" },
-}
-
-nvim_lsp.jsonls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['vscode-json-language-server'], "--stdio" },
-  settings = {
-    json = {
-      schemas = require('schemastore').json.schemas(),
-      validate = { enable = true },
-    },
-  },
-}
-
-nvim_lsp.yamlls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['yaml-language-server'], '--stdio' },
-  settings = {
-    redhat = { telemetry = { enabled = false } },
-    yaml = {
-      schemaStore = {
-        enable = false,
-        url = "",
-      },
-      schemas = require('schemastore').yaml.schemas(),
-    },
-  },
-}
-
-nvim_lsp.lua_ls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['lua-language-server'], "--stdio" },
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { 'vim' }
-      },
-      telemetry = {
-        enable = false,
-      },
-    }
-  }
-}
-
-nvim_lsp.ruff.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { select_exe('ruff')(), "server" },
-}
-
-nvim_lsp.rust_analyzer.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['rust-analyzer'] },
-}
-
-nvim_lsp.tinymist.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-
-  cmd = { vim.g.nix_exes['tinymist'] },
-}
-
-nvim_lsp.ocamllsp.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
-
-if vim.fn.executable('rg') == 1 then
-  vim.o.grepprg = 'rg --vimgrep'
-end
-
-vim.g['fsharp#lsp_auto_setup'] = 0;
-vim.g['fsharp#fsautocomplete_command'] = { vim.g.nix_exes['fsautocomplete'], '--adaptive-lsp-server-enabled' };
-require 'ionide'.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
 -- require 'git-conflict'.setup {
 --   default_mappings = true,
 --   default_commands = true,
@@ -750,18 +643,10 @@ require('lspsaga').setup({
 local jsformatters = { "eslint_d", "biome", "prettier" };
 require("conform").setup({
   formatters = {
-    sql_formatter = {
-      command = vim.g.nix_exes['sql-formatter']
-    },
-    nixfmt = {
-      command = vim.g.nix_exes['nixfmt']
-    },
     biome = {
-      -- command = select_exe('biome'),
       require_cwd = true
     },
     eslint_d = {
-      command = vim.g.nix_exes.eslint_d,
       cwd = require("conform.util").root_file({ ".eslintrc.js" }),
       require_cwd = true
     },

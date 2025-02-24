@@ -20,6 +20,8 @@
     vim-qfreplace.flake = false;
     webster-dictionary.url = "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip";
     webster-dictionary.flake = false;
+    llama-vim.url = "github:ggml-org/llama.vim/master";
+    llama-vim.flake = false;
   };
 
   outputs =
@@ -38,8 +40,6 @@
           # List packages installed in system profile. To search by name, run:
           # $ nix-env -qaP | grep wget
 
-          # Auto upgrade nix package and the daemon service.
-          services.nix-daemon.enable = true;
           nix = {
             package = pkgs.nix;
             settings = {
@@ -162,9 +162,11 @@
           { pkgs, ... }:
           {
             home.packages = [
-              ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; }).neovim
+              ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
               pkgs.aws-vault
               pkgs.aider-chat
+              pkgs.devenv
+              pkgs.llama-cpp
               pkgs.uv
               pkgs.dotnet-sdk_8
               pkgs.fd
@@ -187,6 +189,7 @@
               EDITOR = "nvim";
               DIRENV_LOG_FORMAT = "`tput setaf 11`%s`tput sgr0`";
               DOTNET_ROOT = "${pkgs.dotnet-sdk_8}";
+              DO_NOT_TRACK = "1";
             };
 
             home.shellAliases = {
@@ -381,7 +384,7 @@
       in
       {
         packages = {
-          neovim = ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; }).neovim;
+          neovim = ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; });
         };
       }
     );
