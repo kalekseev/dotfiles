@@ -55,10 +55,6 @@ command! -bang Qa q<bang>
 " make Y consistent with C and D
 nmap Y y$
 
-" key mapping for saving file
-inoremap <C-s> <Esc>:w<CR>
-nnoremap <C-s> :w<CR>
-
 " write with sudo
 cmap w!! %!sudo tee > /dev/null %
 

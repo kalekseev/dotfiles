@@ -28,7 +28,7 @@ vim.o.foldenable    = false;
 vim.o.background    = 'dark'
 vim.o.termguicolors = true
 vim.o.colorcolumn   = '80'
-vim.o.cmdheight     = 0
+-- vim.o.cmdheight     = 0
 
 
 -- BACKUP
@@ -180,6 +180,8 @@ keymap('n', '<Leader>dp', function() require("dap.ui.widgets").preview() end, { 
 -- require('octo').setup {}
 -- require("fidget").setup {}
 -- https://github.com/yetone/avante.nvim/issues/665#issuecomment-2412440939
+require('flash').setup({ modes = { search = { enabled = true } } })
+
 require('avante_lib').load()
 require("avante").setup {
   hints = { enabled = false },
@@ -188,6 +190,7 @@ require("avante").setup {
     edit = "<leader>ge",
     refresh = "<leader>zr",
     focus = "<leader>zf",
+    select_model = "<leader>z?",
     toggle = {
       default = "<leader>zt",
       debug = "<leader>zd",
@@ -334,23 +337,6 @@ cmp.setup.filetype({ 'sql', 'mysql', 'plsql' }, {
     { name = 'buffer' }
   }
 })
-cmp.setup.cmdline({ '/', '?' }, {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'nvim_lsp_document_symbol' },
-    { name = 'buffer' }
-  }
-})
-cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = 'path' }
-  }, {
-    { name = 'cmdline' }
-  }),
-  ---@diagnostic disable-next-line: missing-fields
-  matching = { disallow_symbol_nonprefix_matching = false }
-})
 require("supermaven-nvim").setup({
   keymaps = {
     accept_suggestion = "<C-y>",
@@ -367,33 +353,26 @@ require("supermaven-nvim").setup({
   disable_keymaps = false            -- disables built in keymaps for more manual control
 })
 
+vim.lsp.enable({
+  'ruff',
+  'pyright',
+  'jsonls',
+  'yamlls',
+  'biome',
+})
+
 local lsp_util = require('lspconfig/util')
 local lsp_servers = {
-  biome         = {},
   csharp_ls     = {},
   nil_ls        = {},
   bashls        = {},
   eslint        = {},
   cssls         = {},
-  ruff          = {},
   rust_analyzer = {},
   tinymist      = {},
   ocamllsp      = {},
   html          = {
     filetypes = { 'html', 'templ', 'htmldjango' },
-  },
-
-  pyright       = {
-    settings = {
-      -- https://github.com/microsoft/pyright/blob/main/docs/settings.md
-      python = {
-        analysis = {
-          autoSearchPaths = true,
-          useLibraryCodeForTypes = true,
-          diagnosticMode = 'openFilesOnly',
-        }
-      }
-    }
   },
 
   efm           = {
@@ -465,28 +444,6 @@ local lsp_servers = {
     filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
   },
 
-  jsonls        = {
-    settings = {
-      json = {
-        schemas = require('schemastore').json.schemas(),
-        validate = { enable = true },
-      },
-    },
-  },
-
-  yamlls        = {
-    settings = {
-      redhat = { telemetry = { enabled = false } },
-      yaml = {
-        schemaStore = {
-          enable = false,
-          url = "",
-        },
-        schemas = require('schemastore').yaml.schemas(),
-      },
-    },
-  },
-
   lua_ls        = {
     settings = {
       Lua = {
@@ -503,7 +460,6 @@ local lsp_servers = {
 
 require("lazydev").setup()
 require('ionide').setup({})
-require("lsp_lines").setup()
 vim.diagnostic.config { virtual_text = true, virtual_lines = false }
 
 vim.api.nvim_create_user_command("LspLinesToggle", function()
@@ -545,7 +501,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
   -- buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   -- buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
@@ -631,15 +587,6 @@ vim.diagnostic.config {
 }
 
 
-require('lspsaga').setup({
-  lightbulb = {
-    enable = false,
-  },
-  symbol_in_winbar = {
-    respect_root = true,
-  },
-})
-
 local jsformatters = { "eslint_d", "biome", "prettier" };
 require("conform").setup({
   formatters = {
@@ -702,23 +649,18 @@ end, {
   desc = "Re-enable autoformat-on-save",
 })
 
-keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
 keymap("n", "[d", function()
-  require("lspsaga.diagnostic"):goto_prev({ severity = { min = vim.diagnostic.severity.INFO } })
+  vim.diagnostic.jump({ count = -1, severity = { min = vim.diagnostic.severity.INFO }, float = true })
 end, { silent = true })
 keymap("n", "]d", function()
-  require("lspsaga.diagnostic"):goto_next({ severity = { min = vim.diagnostic.severity.INFO } })
+  vim.diagnostic.jump({ count = 1, severity = { min = vim.diagnostic.severity.INFO }, float = true })
 end, { silent = true })
 keymap("n", "[h", function()
-  require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.HINT })
+  vim.diagnostic.jump({ count = -1, severity = { min = vim.diagnostic.severity.HINT }, float = true })
 end, { silent = true })
 keymap("n", "]h", function()
-  require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.HINT })
+  vim.diagnostic.jump({ count = 1, severity = { min = vim.diagnostic.severity.HINT }, float = true })
 end, { silent = true })
-keymap("n", "gh", "<cmd>Lspsaga finder<CR>", { silent = true })
--- keymap("n", "gd", "<cmd>Lspsaga goto_definition<CR>", { silent = true })
-keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
-keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", { silent = true })
 
 keymap("n", "<leader>o", "<cmd>Oil<CR>", { silent = true, noremap = true })
 

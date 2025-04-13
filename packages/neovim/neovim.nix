@@ -98,28 +98,26 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     FixCursorHold-nvim
     neotest-python
     # -- neovim
+    flash-nvim
     conform-nvim
     cmp-buffer
     cmp-nvim-lsp
     cmp-path
     cmp-vsnip
-    cmp-cmdline
-    cmp-nvim-lsp-document-symbol
     cmp-nvim-lsp-signature-help
     cmp-calc
     diffview-nvim
     gitsigns-nvim
     Ionide-vim
-    lspsaga-nvim
     lualine-nvim
     mini-nvim
-    lazydev-nvim
     nvim-cmp
     nvim-dap
     nvim-dap-ui
     nvim-dap-python
+    nvim-lspconfig
     {
-      plugin = nvim-lspconfig.overrideAttrs (finalAttrs: {
+      plugin = lazydev-nvim.overrideAttrs (finalAttrs: {
         runtimeDeps = [
           pkgs.typescript-language-server
           pkgs.harper
@@ -144,7 +142,6 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
         ];
       });
     }
-    lsp_lines-nvim
     nvim-tree-lua
     plugins.nvim-treesitter
     nvim-treesitter-context
