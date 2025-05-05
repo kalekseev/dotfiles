@@ -1,5 +1,8 @@
-{ darwin, inputs }:
+{ inputs }:
 { pkgs, ... }:
+let
+  isLinux = pkgs.stdenv.isLinux;
+in
 {
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "hmb";
@@ -9,11 +12,7 @@
       name = "konstantin";
     }
     // (
-      if darwin then
-        {
-          home = "/Users/konstantin";
-        }
-      else
+      if isLinux then
         {
           home = "/home/konstantin";
           isNormalUser = true;
@@ -28,41 +27,74 @@
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM5YD9sWEjZTxjZEiSE62Qk8SHYiVKrIRy/GCcMF0m8H kalekseev"
           ];
         }
+      else
+        {
+          home = "/Users/konstantin";
+        }
+
     );
   home-manager.users.konstantin =
-    { pkgs, ... }:
-    {
-      home.packages = [
-        ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
-        pkgs.aws-vault
-        pkgs.aider-chat
-        pkgs.devenv
-        pkgs.llama-cpp
-        pkgs.uv
-        pkgs.dotnet-sdk_8
-        pkgs.fd
-        pkgs.ffmpeg
-        pkgs.ollama
-        pkgs.rustup
-        pkgs.sd
-        pkgs.timewarrior
-        pkgs.tree
-        pkgs.claude-code
-        # pkgs.testdisk
-        pkgs.watch
-        pkgs.yubikey-manager
-      ];
+    { pkgs, lib, ... }:
+    (
+      if isLinux then
+        {
+          # gpg --generate-key
+          # pass init <key-id>
+          programs.gpg = {
+            enable = true;
+          };
+          services.gpg-agent = {
+            enable = true;
+            extraConfig = ''
+              pinentry-program ${lib.getExe pkgs.pinentry-curses}
+            '';
+          };
+        }
+      else
+        { }
+    )
+    // {
+
+      home.packages =
+        [
+          ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
+          pkgs.aws-vault
+          pkgs.aider-chat
+          pkgs.devenv
+          pkgs.llama-cpp
+          pkgs.uv
+          pkgs.dotnet-sdk_8
+          pkgs.fd
+          pkgs.ffmpeg
+          pkgs.ollama
+          pkgs.rustup
+          pkgs.sd
+          pkgs.timewarrior
+          pkgs.tree
+          pkgs.claude-code
+          # pkgs.testdisk
+          pkgs.watch
+          pkgs.yubikey-manager
+        ]
+        ++ lib.optionals (isLinux) [
+          pkgs.chromium
+          pkgs.chromedriver
+        ];
       home.stateVersion = "24.05";
 
-      home.sessionVariables = {
-        PIP_REQUIRE_VIRTUALENV = "true";
-        COMPOSE_DOCKER_CLI_BUILD = "true";
-        DOCKER_BUILDKIT = "true";
-        EDITOR = "nvim";
-        DIRENV_LOG_FORMAT = "`tput setaf 11`%s`tput sgr0`";
-        DOTNET_ROOT = "${pkgs.dotnet-sdk_8}";
-        DO_NOT_TRACK = "1";
-      };
+      home.sessionVariables =
+        {
+          PIP_REQUIRE_VIRTUALENV = "true";
+          COMPOSE_DOCKER_CLI_BUILD = "true";
+          DOCKER_BUILDKIT = "true";
+          EDITOR = "nvim";
+          DIRENV_LOG_FORMAT = "`tput setaf 11`%s`tput sgr0`";
+          DOTNET_ROOT = "${pkgs.dotnet-sdk_8}";
+          DO_NOT_TRACK = "1";
+        }
+        // lib.optionalAttrs (isLinux) {
+          AWS_VAULT_BACKEND = "pass";
+        };
 
       home.shellAliases = {
         g = "git";
@@ -81,7 +113,7 @@
 
       programs.zsh = {
         enable = true;
-        initExtra = ''
+        initContent = ''
           portkill() { kill -15 $(lsof -ti :''${1:-8000} -sTCP:LISTEN) }
           mkcd() { mkdir -p "$1" && cd "$1" }
           cdsitepackages() {
@@ -217,14 +249,14 @@
 
       programs.ghostty = {
         enable = true;
-        package = if darwin then null else pkgs.ghostty;
+        package = if isLinux then pkgs.ghostty else null;
         enableZshIntegration = true;
         settings = {
           theme = "Sublette";
           font-family = "Hack Nerd Font Mono";
           macos-non-native-fullscreen = true;
           macos-titlebar-style = "tabs";
-          font-size = if darwin then 16 else 14;
+          font-size = if isLinux then 14 else 16;
           font-thicken = true;
           auto-update-channel = "stable";
           window-save-state = "always";

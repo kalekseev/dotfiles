@@ -1,6 +1,7 @@
 # Based on https://github.com/mitchellh/nixos-config
 {
   pkgs,
+  lib,
   ...
 }:
 {
@@ -63,6 +64,7 @@
   security.sudo.wheelNeedsPassword = false;
 
   programs.zsh.enable = true; # default shell on catalina
+  programs.ssh.startAgent = true;
   # Virtualization settings
   virtualisation.docker.enable = true;
   virtualisation.lxd = {
@@ -95,6 +97,7 @@
     gnumake
     killall
     xclip
+    pass
   ];
 
   # Our default non-specialised desktop environment.
@@ -103,6 +106,10 @@
     xkb.layout = "us";
     desktopManager.gnome.enable = true;
     displayManager.gdm.enable = true;
+    updateDbusEnvironment = true;
+    # displayManager.sessionCommands = ''
+    #   ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
+    # '';
   };
   # programs.dconf.profiles.gdm.databases = [
   #   {
@@ -116,6 +123,7 @@
   services.openssh.settings.PermitRootLogin = "no";
 
   services.gnome.gnome-keyring.enable = true;
+  security.pam.services.gdm.enableGnomeKeyring = true;
   # Disable the firewall since we're in a VM and we want to make it
   # easy to visit stuff in here. We only use NAT networking anyways.
   networking.firewall.enable = false;

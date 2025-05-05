@@ -34,14 +34,12 @@
       ...
     }:
     {
+      # nixos-rebuild switch --flake .#vm-aarch64
       nixosConfigurations.vm-aarch64 = nixpkgs.lib.nixosSystem {
         modules = [
           ./machines/vm-aarch64.nix
           home-manager.nixosModules.home-manager
-          (import ./hm.nix {
-            darwin = false;
-            inherit inputs;
-          })
+          (import ./hm.nix { inherit inputs; })
         ];
       };
       # Build darwin flake using:
@@ -50,10 +48,7 @@
         modules = [
           (import ./machines/macbook-pro-m3.nix { inherit inputs; })
           home-manager.darwinModules.home-manager
-          (import ./hm.nix {
-            darwin = true;
-            inherit inputs;
-          })
+          (import ./hm.nix { inherit inputs; })
         ];
       };
     }
@@ -61,6 +56,7 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        vmip = "192.168.234.132";
       in
       {
         packages = {
@@ -71,7 +67,7 @@
               pkgs.rsync
             ];
             text = ''
-              	rsync -av --exclude='.git/' . konstantin@192.168.234.132:/tmp/dotfiles
+              	rsync -av --exclude='.git/' . konstantin@${vmip}:/tmp/dotfiles
             '';
           };
           vm-secrets = pkgs.writeShellApplication {
@@ -80,8 +76,8 @@
               pkgs.rsync
             ];
             text = ''
-              	rsync -av ~/.aws/ konstantin@192.168.234.132:~/.aws
-              	rsync -av ~/.ssh/ konstantin@192.168.234.132:~/.ssh
+              	rsync -av ~/.aws/ konstantin@${vmip}:~/.aws
+              	rsync -av ~/.ssh/ konstantin@${vmip}:~/.ssh
             '';
           };
           vm-switch = pkgs.writeShellApplication {
@@ -90,7 +86,7 @@
               pkgs.rsync
             ];
             text = ''
-              ssh -o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no konstantin@192.168.234.132 " \
+              ssh -o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no konstantin@${vmip} " \
                 sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake \"/tmp/dotfiles#vm-aarch64\" \
                "
             '';
@@ -101,7 +97,7 @@
               pkgs.rsync
             ];
             text = ''
-              ssh -o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.234.132 " \
+              ssh -o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${vmip} " \
                 parted /dev/nvme0n1 -- mklabel gpt; \
                 parted /dev/nvme0n1 -- mkpart primary 512MB -8GB; \
                 parted /dev/nvme0n1 -- mkpart primary linux-swap -8GB 100\%; \
