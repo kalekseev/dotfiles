@@ -14,16 +14,17 @@
     };
   };
 
-  system.activationScripts.postUserActivation.text = ''
+  system.primaryUser = "konstantin";
+  system.activationScripts.postActivation.text = ''
     printf >&2 'setting up dictionaries...\n'
-    mkdir -p ~/Library/Dictionaries
-    ${pkgs.rsync}/bin/rsync \
+    sudo --user konstantin mkdir -p /Users/konstantin/Library/Dictionaries
+    sudo --user konstantin ${pkgs.rsync}/bin/rsync \
       --archive \
       --copy-links \
       --delete-during \
       --delete-missing-args \
       ${inputs.webster-dictionary}/* \
-      ~/Library/Dictionaries/"Webster's Unabridged Dictionary (1913).dictionary"
+      /Users/konstantin/Library/Dictionaries/"Webster's Unabridged Dictionary (1913).dictionary"
   '';
 
   # Necessary for using flakes on this system.
@@ -84,9 +85,13 @@
 
   homebrew = {
     enable = true;
-    global.autoUpdate = true;
-    onActivation.cleanup = "zap";
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "zap";
+      upgrade = true;
+    };
     casks = [
+      "superwhisper"
       "bitwarden"
       "cursor"
       "firefox"
@@ -101,7 +106,7 @@
       "qlvideo"
       "raycast"
       "rectangle"
-      "samsung-portable-ssd-t7"
+      "samsung-magician"
       "spotify"
       "tailscale"
       "telegram"

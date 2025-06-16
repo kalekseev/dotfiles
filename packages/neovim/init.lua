@@ -182,24 +182,24 @@ keymap('n', '<Leader>dp', function() require("dap.ui.widgets").preview() end, { 
 -- https://github.com/yetone/avante.nvim/issues/665#issuecomment-2412440939
 require('flash').setup({ modes = { search = { enabled = true } } })
 
-require('avante_lib').load()
-require("avante").setup {
-  hints = { enabled = false },
-  mappings = {
-    ask = "<leader>ga",
-    edit = "<leader>ge",
-    refresh = "<leader>zr",
-    focus = "<leader>zf",
-    select_model = "<leader>z?",
-    toggle = {
-      default = "<leader>zt",
-      debug = "<leader>zd",
-      hint = "<leader>zh",
-      suggestion = "<leader>zs",
-      repomap = "<leader>zr",
-    },
-  },
-}
+-- require('avante_lib').load()
+-- require("avante").setup {
+--   hints = { enabled = false },
+--   mappings = {
+--     ask = "<leader>ga",
+--     edit = "<leader>ge",
+--     refresh = "<leader>zr",
+--     focus = "<leader>zf",
+--     select_model = "<leader>z?",
+--     toggle = {
+--       default = "<leader>zt",
+--       debug = "<leader>zd",
+--       hint = "<leader>zh",
+--       suggestion = "<leader>zs",
+--       repomap = "<leader>zr",
+--     },
+--   },
+-- }
 
 require('markview').setup {
   preview = {
@@ -388,17 +388,6 @@ local lsp_servers = {
     }
   },
 
-  volar         = {
-    -- packages required
-    -- @vue/typescript-plugin
-    -- @vue/language-server
-    root_dir = function(fname)
-      if vim.fn.executable('vue-language-server') == 1 then
-        return lsp_util.root_pattern 'package.json' (fname)
-      end
-    end,
-  },
-
   harper_ls     = {
     settings = {
       ["harper-ls"] = {
@@ -459,7 +448,6 @@ local lsp_servers = {
 }
 
 require("lazydev").setup()
-require('ionide').setup({})
 vim.diagnostic.config { virtual_text = true, virtual_lines = false }
 
 vim.api.nvim_create_user_command("LspLinesToggle", function()
@@ -517,6 +505,14 @@ for name, config in pairs(lsp_servers) do
   }, config)
   lspconfig[name].setup(config)
 end
+
+vim.g['fsharp#lsp_auto_setup'] = 0
+vim.g['fsharp#exclude_project_directories'] = { 'paket-files' }
+
+require('ionide').setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
 
 -- require 'git-conflict'.setup {
 --   default_mappings = true,
