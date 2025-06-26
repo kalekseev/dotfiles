@@ -101,7 +101,8 @@
         "nixpkgs": "nixpkgs",
         "vim-coverage-py": "vim-coverage-py",
         "vim-qfreplace": "vim-qfreplace",
-        "webster-dictionary": "webster-dictionary"
+        "webster-dictionary": "webster-dictionary",
+        "yank-for-claude-nvim": "yank-for-claude-nvim"
       }
     },
     "systems": {
@@ -164,6 +165,23 @@
       "original": {
         "type": "tarball",
         "url": "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip"
+      }
+    },
+    "yank-for-claude-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1750384209,
+        "narHash": "sha256-q5aYPTlFpBA6kBvht/NqNKBtj2dQf88nxsXzUXtq6Sg=",
+        "owner": "wasabeef",
+        "repo": "yank-for-claude.nvim",
+        "rev": "5879059decfd16c2f983c0d27e0247fede5dff4d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wasabeef",
+        "repo": "yank-for-claude.nvim",
+        "rev": "5879059decfd16c2f983c0d27e0247fede5dff4d",
+        "type": "github"
       }
     }
   },

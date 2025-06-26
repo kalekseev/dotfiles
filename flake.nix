@@ -16,6 +16,8 @@
     flake-utils.url = "github:numtide/flake-utils";
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
     vim-coverage-py.flake = false;
+    yank-for-claude-nvim.url = "github:wasabeef/yank-for-claude.nvim/5879059decfd16c2f983c0d27e0247fede5dff4d";
+    yank-for-claude-nvim.flake = false;
     vim-qfreplace.url = "github:thinca/vim-qfreplace/db1c4b0161931c9a63942f4f562a0d0f4271ac14";
     vim-qfreplace.flake = false;
     webster-dictionary.url = "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip";

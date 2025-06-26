@@ -13,6 +13,10 @@ let
       name = "vim-coverage.py";
       src = inputs.vim-coverage-py;
     };
+    yank-for-claude-nvim = pkgs.vimUtils.buildVimPlugin {
+      name = "yank-for-claude.nvim";
+      src = inputs.yank-for-claude-nvim;
+    };
     # llama-vim = pkgs.vimUtils.buildVimPlugin {
     #   name = "llama-vim";
     #   src = inputs.llama-vim;
@@ -165,6 +169,7 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     # -- vim
     jdaddy-vim
     plugins.vim-coverage-py
+    plugins.yank-for-claude-nvim
     asyncrun-vim
     camelcasemotion
     direnv-vim

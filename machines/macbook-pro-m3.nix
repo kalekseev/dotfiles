@@ -108,7 +108,7 @@
       "rectangle"
       "samsung-magician"
       "spotify"
-      "tailscale"
+      "tailscale-app"
       "telegram"
       "transmission"
       "vmware-fusion"

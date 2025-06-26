@@ -1,7 +1,6 @@
 # Based on https://github.com/mitchellh/nixos-config
 {
   pkgs,
-  lib,
   ...
 }:
 {
@@ -64,7 +63,7 @@
   security.sudo.wheelNeedsPassword = false;
 
   programs.zsh.enable = true; # default shell on catalina
-  programs.ssh.startAgent = true;
+  # programs.ssh.startAgent = true;
   # Virtualization settings
   virtualisation.docker.enable = true;
   virtualisation.lxd = {
@@ -100,12 +99,12 @@
     pass
   ];
 
+  services.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
   # Our default non-specialised desktop environment.
   services.xserver = {
     enable = true;
     xkb.layout = "us";
-    desktopManager.gnome.enable = true;
-    displayManager.gdm.enable = true;
     updateDbusEnvironment = true;
     # displayManager.sessionCommands = ''
     #   ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all

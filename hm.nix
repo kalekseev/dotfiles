@@ -134,6 +134,7 @@ in
         nix-direnv.enable = true;
       };
       programs.atuin.enable = true;
+      programs.atuin.daemon.enable = isLinux;
       programs.atuin.settings = {
         sync = {
           records = true;

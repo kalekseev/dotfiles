@@ -201,13 +201,14 @@ require('flash').setup({ modes = { search = { enabled = true } } })
 --   },
 -- }
 
-require('markview').setup {
-  preview = {
-    filetypes = { "markdown", "Avante" },
-    buf_ignore = {},
-  },
-  max_length = 2000
-}
+require('yank-for-claude').setup()
+-- require('markview').setup {
+--   preview = {
+--     filetypes = { "markdown", "Avante" },
+--     buf_ignore = {},
+--   },
+--   max_length = 2000
+-- }
 
 require('which-key').setup()
 require('gitsigns').setup {}
