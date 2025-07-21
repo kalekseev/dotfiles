@@ -92,10 +92,11 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     set rtp+=${./after}
   '';
   plugins = with pkgs.vimPlugins; [
+    blink-cmp
+    friendly-snippets
     toggleterm-nvim
     fileline-nvim
     SchemaStore-nvim
-    avante-nvim
     efmls-configs-nvim
     supermaven-nvim
     markview-nvim
@@ -104,18 +105,18 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     # -- neovim
     flash-nvim
     conform-nvim
-    cmp-buffer
-    cmp-nvim-lsp
-    cmp-path
-    cmp-vsnip
-    cmp-nvim-lsp-signature-help
-    cmp-calc
+    # cmp-buffer
+    # cmp-nvim-lsp
+    # cmp-path
+    # cmp-vsnip
+    # cmp-nvim-lsp-signature-help
+    # cmp-calc
     diffview-nvim
     gitsigns-nvim
     Ionide-vim
     lualine-nvim
     mini-nvim
-    nvim-cmp
+    # nvim-cmp
     nvim-dap
     nvim-dap-ui
     nvim-dap-python

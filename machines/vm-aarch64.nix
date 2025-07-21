@@ -97,6 +97,7 @@
     killall
     xclip
     pass
+    ghostty.terminfo
   ];
 
   services.desktopManager.gnome.enable = true;
@@ -116,6 +117,9 @@
   #   }
   # ];
 
+  programs.chromium = {
+    enable = true;
+  };
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = true;

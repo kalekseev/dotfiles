@@ -258,86 +258,51 @@ require('telescope').setup {
 }
 require('telescope').load_extension('dap')
 
--- nvim-cmp setup
-local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
+require('blink.cmp').setup({
+  -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+  -- 'super-tab' for mappings similar to vscode (tab to accept)
+  -- 'enter' for enter to accept
+  -- 'none' for no mappings
+  --
+  -- All presets have the following mappings:
+  -- C-space: Open menu or open docs if already open
+  -- C-n/C-p or Up/Down: Select next/previous item
+  -- C-e: Hide menu
+  -- C-k: Toggle signature help (if signature.enabled = true)
+  --
+  -- See :h blink-cmp-config-keymap for defining your own keymap
+  keymap = { preset = 'super-tab' },
 
-local feedkey = function(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
-local cmp = require 'cmp'
-cmp.setup {
-  completion = {
-    keyword_length = 3
+  appearance = {
+    -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+    -- Adjusts spacing to ensure icons are aligned
+    nerd_font_variant = 'mono'
   },
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  mapping = {
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-Space>'] = cmp.mapping.complete({}),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif vim.fn["vsnip#available"](1) == 1 then
-        feedkey("<Plug>(vsnip-expand-or-jump)", "")
-      elseif has_words_before() then
-        cmp.complete()
-      else
-        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
-      end
-    end, { "i", "s" }),
-    ["<S-Tab>"] = cmp.mapping(function()
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-        feedkey("<Plug>(vsnip-jump-prev)", "")
-      end
-    end, { "i", "s" }),
-  },
+
+  signature = { enabled = true },
+  -- (Default) Only show the documentation popup when manually triggered
+  -- completion = { documentation = { auto_show = false } },
+
+  -- Default list of enabled providers defined so that you can extend it
+  -- elsewhere in your config, without redefining it, due to `opts_extend`
   sources = {
-    -- { name = "copilot",  group_index = 1 },
-    { name = "supermaven",              group_index = 1 },
-    { name = 'nvim_lsp',                group_index = 2, keyword_length = 1 },
-    { name = 'vsnip',                   group_index = 2 },
-    { name = 'path',                    group_index = 2 },
-    { name = 'nvim_lsp_signature_help', group_index = 2 },
-    { name = 'calc',                    group_index = 2 },
-    {
-      name = 'buffer',
-      group_index = 3,
-      option = {
-        get_bufnrs = function()
-          local bufs = {}
-          for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-            if vim.api.nvim_buf_is_loaded(buf) then
-              bufs[buf] = true
-            end
-          end
-          return vim.tbl_keys(bufs)
-        end
-      }
+    default = { 'lsp', 'path', 'snippets', 'buffer' },
+    per_filetype = {
+      sql = { 'dadbod' },
     },
+    providers = {
+      dadbod = { module = "vim_dadbod_completion.blink" },
+    }
   },
-}
-cmp.setup.filetype({ 'sql', 'mysql', 'plsql' }, {
-  sources = {
-    { name = 'vim-dadbod-completion' },
-    { name = 'buffer' }
-  }
+
+  -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+  -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+  -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+  --
+  -- See the fuzzy documentation for more information
+  fuzzy = { implementation = "prefer_rust_with_warning" }
 })
+
 require("supermaven-nvim").setup({
   keymaps = {
     accept_suggestion = "<C-y>",
@@ -498,7 +463,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 end
 local lspconfig = require('lspconfig')
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local capabilities = require('blink.cmp').get_lsp_capabilities()
 for name, config in pairs(lsp_servers) do
   config = vim.tbl_deep_extend("force", {}, {
     capabilities = capabilities,

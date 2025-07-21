@@ -40,8 +40,38 @@
       nixosConfigurations.vm-aarch64 = nixpkgs.lib.nixosSystem {
         modules = [
           ./machines/vm-aarch64.nix
+          (
+            { pkgs, ... }:
+            {
+
+              users.users.konstantin = {
+                home = "/home/konstantin";
+                isNormalUser = true;
+                extraGroups = [
+                  "docker"
+                  "lxd"
+                  "wheel"
+                ];
+                shell = pkgs.zsh;
+                hashedPassword = "$y$j9T$UIMF2LshkToIJfrHjvez//$J4uKw8olt5mReBll0EG5dVKEv6c..gitDtBhFnfjN33";
+                openssh.authorizedKeys.keys = [
+                  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM5YD9sWEjZTxjZEiSE62Qk8SHYiVKrIRy/GCcMF0m8H kalekseev"
+                ];
+              };
+            }
+          )
           home-manager.nixosModules.home-manager
-          (import ./hm.nix { inherit inputs; })
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.backupFileExtension = "hmb";
+            home-manager.useUserPackages = true;
+            home-manager.users.konstantin = (
+              import ./hm.nix {
+                inherit inputs;
+                withUI = true;
+              }
+            );
+          }
         ];
       };
       # Build darwin flake using:
@@ -49,8 +79,24 @@
       darwinConfigurations."macbook-pro-m3" = nix-darwin.lib.darwinSystem {
         modules = [
           (import ./machines/macbook-pro-m3.nix { inherit inputs; })
+          {
+            users.users.konstantin = {
+              name = "konstantin";
+              home = "/Users/konstantin";
+            };
+          }
           home-manager.darwinModules.home-manager
-          (import ./hm.nix { inherit inputs; })
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.backupFileExtension = "hmb";
+            home-manager.useUserPackages = true;
+            home-manager.users.konstantin = (
+              import ./hm.nix {
+                inherit inputs;
+                withUI = true;
+              }
+            );
+          }
         ];
       };
     }
