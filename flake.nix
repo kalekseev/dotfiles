@@ -24,6 +24,8 @@
     webster-dictionary.flake = false;
     llama-vim.url = "github:ggml-org/llama.vim/master";
     llama-vim.flake = false;
+    fold-imports-nvim.url = "github:kalekseev/fold-imports.nvim";
+    fold-imports-nvim.flake = false;
   };
 
   outputs =
@@ -68,7 +70,7 @@
             home-manager.users.konstantin = (
               import ./hm.nix {
                 inherit inputs;
-                withUI = true;
+                isNFS = true;
               }
             );
           }
@@ -93,7 +95,6 @@
             home-manager.users.konstantin = (
               import ./hm.nix {
                 inherit inputs;
-                withUI = true;
               }
             );
           }
@@ -104,7 +105,7 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        vmip = "192.168.234.132";
+        vmip = "192.168.234.133";
       in
       {
         packages = {

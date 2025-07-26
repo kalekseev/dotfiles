@@ -83,6 +83,11 @@
 
   fonts.packages = [ pkgs.nerd-fonts.hack ];
 
+  environment.defaultPackages = [
+    pkgs.watch
+    pkgs.tree
+  ];
+
   homebrew = {
     enable = true;
     onActivation = {
@@ -108,13 +113,15 @@
       "rectangle"
       "samsung-magician"
       "spotify"
-      "tailscale-app"
+      # "tailscale-app"
+      "amneziavpn"
       "telegram"
       "transmission"
       "vmware-fusion"
       "zed"
       "zoom"
       "microsoft-teams"
+      "android-platform-tools"
     ];
   };
 }

@@ -19,6 +19,7 @@
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 16;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # VMware, Parallels both only support this being 0 otherwise you see
@@ -31,12 +32,7 @@
   # Set your timezone.
   time.timeZone = "Asia/Nicosia";
 
-  # Interface is this on M1
-  networking.interfaces.ens160.useDHCP = true;
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behavior.
-  networking.useDHCP = false;
+  # DHCP is controlled by NetworkManager
 
   # Lots of stuff that uses aarch64 that claims doesn't work, but actually works.
   nixpkgs.config.allowUnfree = true;
@@ -62,15 +58,15 @@
   # Don't require password for sudo
   security.sudo.wheelNeedsPassword = false;
 
-  programs.zsh.enable = true; # default shell on catalina
-  # programs.ssh.startAgent = true;
+  programs.zsh.enable = true;
+  programs.ssh.startAgent = true;
   # Virtualization settings
   virtualisation.docker.enable = true;
   virtualisation.lxd = {
     enable = true;
   };
 
-  # Select internationalisation properties.
+  # Select internationalization properties.
   i18n = {
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
@@ -102,7 +98,7 @@
 
   services.desktopManager.gnome.enable = true;
   services.displayManager.gdm.enable = true;
-  # Our default non-specialised desktop environment.
+  # Our default non-specialized desktop environment.
   services.xserver = {
     enable = true;
     xkb.layout = "us";
@@ -126,6 +122,7 @@
   services.openssh.settings.PermitRootLogin = "no";
 
   services.gnome.gnome-keyring.enable = true;
+  services.gnome.gcr-ssh-agent.enable = false;
   security.pam.services.gdm.enableGnomeKeyring = true;
   # Disable the firewall since we're in a VM and we want to make it
   # easy to visit stuff in here. We only use NAT networking anyways.

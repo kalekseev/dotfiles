@@ -1,12 +1,13 @@
-{ inputs, withUI }:
+{
+  inputs,
+  isNFS ? false, # Is on Network File System i.e. VM disk
+}:
 { pkgs, lib, ... }:
 {
 
   home.packages = [
     ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
     pkgs.aws-vault
-    # pkgs.aider-chat
-    # pkgs.devenv
     pkgs.llama-cpp
     pkgs.uv
     pkgs.dotnet-sdk_8
@@ -16,10 +17,11 @@
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
-    pkgs.tree
     pkgs.claude-code
+    # pkgs.gemini-cli
+    pkgs.codex
+    # pkgs.devenv
     # pkgs.testdisk
-    pkgs.watch
     # pkgs.yubikey-manager
   ];
   home.stateVersion = "24.05";
@@ -35,6 +37,9 @@
   }
   // lib.optionalAttrs (pkgs.stdenv.isLinux) {
     AWS_VAULT_BACKEND = "pass";
+  }
+  // lib.optionalAttrs (pkgs.stdenv.isDarwin) {
+    SSH_AUTH_SOCK = "/Users/konstantin/.bitwarden-ssh-agent.sock";
   };
 
   home.shellAliases = {
@@ -49,7 +54,6 @@
 
   home.file = {
     ".psqlrc".source = ./configs/psqlrc;
-    # ".config/ghostty/config".source = ./configs/ghostty.toml;
   };
 
   programs.zsh = {
@@ -75,7 +79,7 @@
     nix-direnv.enable = true;
   };
   programs.atuin.enable = true;
-  programs.atuin.daemon.enable = pkgs.stdenv.isLinux;
+  programs.atuin.daemon.enable = isNFS;
   programs.atuin.settings = {
     sync = {
       records = true;
@@ -96,6 +100,7 @@
     enable = true;
     settings = {
       format = "$all$timew";
+      follow_symlinks = !isNFS;
 
       python = {
         format = ''via [''${symbol}''${pyenv_prefix}(''${version} )]($style)'';
@@ -183,14 +188,8 @@
     lfs.enable = true;
     lfs.skipSmudge = true;
   };
-  # https://nix-community.github.io/home-manager/options.xhtml
-  # programs.kitty = {
-  #   enable = true;
-  #   extraConfig = builtins.readFile ./configs/kitty.conf;
-  # };
-
   programs.ghostty = {
-    enable = !withUI;
+    enable = true;
     package = if pkgs.stdenv.isLinux then pkgs.ghostty else null;
     enableZshIntegration = true;
     settings = {

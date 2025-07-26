@@ -12,7 +12,6 @@ vim.o.langmap       =
 "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz,№;#"
 vim.o.splitright    = true
 vim.o.splitbelow    = true
-vim.o.clipboard     = 'unnamed'
 
 vim.o.inccommand    = 'nosplit'
 vim.o.ignorecase    = true
@@ -21,14 +20,30 @@ vim.o.incsearch     = true
 vim.o.hlsearch      = true
 vim.o.wrapscan      = true
 
-vim.o.foldmethod    = 'indent';
+vim.o.foldmethod    = 'expr';
 vim.o.foldnestmax   = 3;
-vim.o.foldenable    = false;
+vim.o.foldenable    = true;
 
 vim.o.background    = 'dark'
 vim.o.termguicolors = true
 vim.o.colorcolumn   = '80'
 -- vim.o.cmdheight     = 0
+
+vim.o.clipboard     = 'unnamedplus'
+-- Use OSC 52 clipboard for SSH sessions, normal clipboard otherwise
+if vim.env.SSH_TTY then
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+    },
+  }
+end
 
 
 -- BACKUP
@@ -62,6 +77,10 @@ require('onedark').setup {
 }
 require('onedark').load()
 require("oil").setup()
+require("fold_imports").setup({
+  auto_fold = true,
+  fold_level = 3,
+})
 require('mini.ai').setup()
 require('mini.surround').setup()
 require('mini.pairs').setup()
