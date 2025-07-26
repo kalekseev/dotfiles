@@ -83,6 +83,11 @@
 
   fonts.packages = [ pkgs.nerd-fonts.hack ];
 
+  environment.defaultPackages = [
+    pkgs.watch
+    pkgs.tree
+  ];
+
   homebrew = {
     enable = true;
     onActivation = {
@@ -115,6 +120,7 @@
       "zed"
       "zoom"
       "microsoft-teams"
+      "android-platform-tools"
     ];
   };
 }

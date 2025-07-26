@@ -19,6 +19,7 @@
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 16;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # VMware, Parallels both only support this being 0 otherwise you see
@@ -63,7 +64,7 @@
   security.sudo.wheelNeedsPassword = false;
 
   programs.zsh.enable = true; # default shell on catalina
-  # programs.ssh.startAgent = true;
+  programs.ssh.startAgent = true;
   # Virtualization settings
   virtualisation.docker.enable = true;
   virtualisation.lxd = {
@@ -126,6 +127,7 @@
   services.openssh.settings.PermitRootLogin = "no";
 
   services.gnome.gnome-keyring.enable = true;
+  services.gnome.gcr-ssh-agent.enable = false;
   security.pam.services.gdm.enableGnomeKeyring = true;
   # Disable the firewall since we're in a VM and we want to make it
   # easy to visit stuff in here. We only use NAT networking anyways.

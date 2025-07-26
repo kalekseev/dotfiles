@@ -5,8 +5,6 @@
   home.packages = [
     ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
     pkgs.aws-vault
-    # pkgs.aider-chat
-    # pkgs.devenv
     pkgs.llama-cpp
     pkgs.uv
     pkgs.dotnet-sdk_8
@@ -16,10 +14,10 @@
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
-    pkgs.tree
     pkgs.claude-code
+    pkgs.gemini-cli
+    # pkgs.devenv
     # pkgs.testdisk
-    pkgs.watch
     # pkgs.yubikey-manager
   ];
   home.stateVersion = "24.05";
@@ -49,7 +47,6 @@
 
   home.file = {
     ".psqlrc".source = ./configs/psqlrc;
-    # ".config/ghostty/config".source = ./configs/ghostty.toml;
   };
 
   programs.zsh = {
@@ -183,12 +180,6 @@
     lfs.enable = true;
     lfs.skipSmudge = true;
   };
-  # https://nix-community.github.io/home-manager/options.xhtml
-  # programs.kitty = {
-  #   enable = true;
-  #   extraConfig = builtins.readFile ./configs/kitty.conf;
-  # };
-
   programs.ghostty = {
     enable = !withUI;
     package = if pkgs.stdenv.isLinux then pkgs.ghostty else null;
