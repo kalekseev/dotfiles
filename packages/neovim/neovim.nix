@@ -115,7 +115,7 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     # cmp-vsnip
     # cmp-nvim-lsp-signature-help
     # cmp-calc
-    diffview-nvim
+    # diffview-nvim
     gitsigns-nvim
     Ionide-vim
     lualine-nvim

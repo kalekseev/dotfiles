@@ -230,7 +230,27 @@ require('yank-for-claude').setup()
 -- }
 
 require('which-key').setup()
-require('gitsigns').setup {}
+require('gitsigns').setup {
+  on_attach = function(bufnr)
+    local gitsigns = package.loaded.gitsigns
+
+    keymap('n', ']c', function()
+      if vim.wo.diff then
+        vim.cmd.normal({ ']c', bang = true })
+      else
+        gitsigns.nav_hunk('next')
+      end
+    end, { buffer = bufnr, desc = 'Next git hunk' })
+
+    keymap('n', '[c', function()
+      if vim.wo.diff then
+        vim.cmd.normal({ '[c', bang = true })
+      else
+        gitsigns.nav_hunk('prev')
+      end
+    end, { buffer = bufnr, desc = 'Previous git hunk' })
+  end
+}
 
 require 'lualine'.setup {
   options = {

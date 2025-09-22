@@ -17,9 +17,10 @@
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
-    pkgs.claude-code
-    # pkgs.gemini-cli
-    pkgs.codex
+    pkgs.chatgpt
+    inputs.nix-ai-tools.packages.${pkgs.system}.codex
+    inputs.nix-ai-tools.packages.${pkgs.system}.claude-code
+    inputs.nix-ai-tools.packages.${pkgs.system}.gemini-cli
     # pkgs.devenv
     # pkgs.testdisk
     # pkgs.yubikey-manager
@@ -166,7 +167,7 @@
         lineNumber = true;
       };
       merge = {
-        tool = "vimdiff";
+        tool = "fugitive";
         conflictstyle = "zdiff3";
       };
       mergetool = {
@@ -174,6 +175,8 @@
         keepBackup = false;
         vimdiff.cmd = "nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'";
         p4merge.cmd = "p4merge $BASE $LOCAL $REMOTE $MERGED";
+        fugitive.cmd = ''nvim -f "$MERGED" -c "Gvdiffsplit!"'';
+        fugitive.trustExitCode = true;
       };
       init.defaultBranch = "main";
       diff.algorithm = "histogram";
