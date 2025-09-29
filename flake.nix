@@ -15,6 +15,7 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     nix-ai-tools.url = "github:numtide/nix-ai-tools";
+    nix-ai-tools.inputs.nixpkgs.follows = "nixpkgs";
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
     vim-coverage-py.flake = false;
     yank-for-claude-nvim.url = "github:wasabeef/yank-for-claude.nvim/5879059decfd16c2f983c0d27e0247fede5dff4d";

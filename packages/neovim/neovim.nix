@@ -124,7 +124,6 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     nvim-dap
     nvim-dap-ui
     nvim-dap-python
-    nvim-lspconfig
     {
       plugin = lazydev-nvim.overrideAttrs (finalAttrs: {
         runtimeDeps = [

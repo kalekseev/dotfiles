@@ -364,96 +364,99 @@ vim.lsp.enable({
   'jsonls',
   'yamlls',
   'biome',
+  'csharp_ls',
+  'nil_ls',
+  'bashls',
+  'eslint',
+  'cssls',
+  'rust_analyzer',
+  'tinymist',
+  'ocamllsp',
+  'html',
+  'efm',
+  'harper_ls',
+  'lemminx',
+  'ts_ls',
+  'lua_ls',
+})
+vim.lsp.config('html', {
+  filetypes = { 'html', 'templ', 'htmldjango' },
 })
 
-local lsp_util = require('lspconfig/util')
-local lsp_servers = {
-  csharp_ls     = {},
-  nil_ls        = {},
-  bashls        = {},
-  eslint        = {},
-  cssls         = {},
-  rust_analyzer = {},
-  tinymist      = {},
-  ocamllsp      = {},
-  html          = {
-    filetypes = { 'html', 'templ', 'htmldjango' },
-  },
+vim.lsp.config('efm', {
+  filetypes = { "python" },
+  root_markers = { '.env.mypy' },
+  single_file_support = false,
 
-  efm           = {
-    filetypes = { "python" },
-    root_dir = lsp_util.root_pattern('.env.mypy'),
-    single_file_support = false,
+  settings = {
+    rootMarkers = { '.env.mypy' },
+    languages = {
+      python = { require('efmls-configs.linters.mypy') },
+    }
+  }
+})
 
+vim.lsp.config('harper_ls', {
+  settings = {
+    ["harper-ls"] = {
+      linters = {
+        sentence_capitalization = false,
+      }
+    }
+  }
+})
+
+vim.lsp.config('lemminx', {
+  init_options = {
     settings = {
-      rootMarkers = { '.env.mypy' },
-      languages = {
-        python = { require('efmls-configs.linters.mypy') },
-      }
-    }
-  },
-
-  harper_ls     = {
-    settings = {
-      ["harper-ls"] = {
-        linters = {
-          sentence_capitalization = false,
-        }
-      }
-    }
-  },
-
-  lemminx       = {
-    init_options = {
-      settings = {
-        xml = {
-          format = {
-            enabled = true,
-            splitAttributes = "preserve",
-            maxLineWidth = 280,
-          },
-        },
-        xslt = {
-          format = {
-            enabled = true,
-            splitAttributes = "preserve",
-            maxLineWidth = 280,
-          },
-        },
-      }
-    }
-  },
-
-  ts_ls         = {
-    root_dir = lsp_util.root_pattern('tsconfig.json', '.git'),
-    init_options = {
-      plugins = {
-        {
-          name = '@vue/typescript-plugin',
-          location = '',
-          languages = { 'vue' },
+      xml = {
+        format = {
+          enabled = true,
+          splitAttributes = "preserve",
+          maxLineWidth = 280,
         },
       },
-    },
-    filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
-  },
-
-  lua_ls        = {
-    settings = {
-      Lua = {
-        diagnostics = {
-          globals = { 'vim' }
+      xslt = {
+        format = {
+          enabled = true,
+          splitAttributes = "preserve",
+          maxLineWidth = 280,
         },
-        telemetry = {
-          enable = false,
-        },
-      }
+      },
     }
+  }
+})
+
+vim.lsp.config('ts_ls', {
+  root_markers = { 'tsconfig.json', '.git' },
+  init_options = {
+    plugins = {
+      {
+        name = '@vue/typescript-plugin',
+        location = '',
+        languages = { 'vue' },
+      },
+    },
   },
-}
+  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+})
+
+vim.lsp.config('lua_ls', {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim' }
+      },
+      telemetry = {
+        enable = false,
+      },
+    }
+  }
+})
 
 require("lazydev").setup()
 vim.diagnostic.config { virtual_text = true, virtual_lines = false }
+
 
 vim.api.nvim_create_user_command("LspLinesToggle", function()
   local config = vim.diagnostic.config() or {}
@@ -501,23 +504,22 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 end
-local lspconfig = require('lspconfig')
+
+local lsp_group = vim.api.nvim_create_augroup("UserLspConfig", {})
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = lsp_group,
+  callback = function(ev)
+    on_attach(nil, ev.buf)
+  end,
+})
+
 local capabilities = require('blink.cmp').get_lsp_capabilities()
-for name, config in pairs(lsp_servers) do
-  config = vim.tbl_deep_extend("force", {}, {
-    capabilities = capabilities,
-    on_attach = on_attach,
-  }, config)
-  lspconfig[name].setup(config)
-end
+vim.lsp.config('*', { capabilities = capabilities })
 
 vim.g['fsharp#lsp_auto_setup'] = 0
 vim.g['fsharp#exclude_project_directories'] = { 'paket-files' }
 
-require('ionide').setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
+require('ionide').setup({})
 
 -- require 'git-conflict'.setup {
 --   default_mappings = true,

@@ -121,7 +121,7 @@
       "zed"
       "zoom"
       "microsoft-teams"
-      "android-platform-tools"
+      "windows-app"
     ];
   };
 }
