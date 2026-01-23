@@ -134,15 +134,15 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
           pkgs.efm-langserver
           pkgs.lemminx
           pkgs.pyright
+          pkgs.ty
           pkgs.yaml-language-server
           pkgs.bash-language-server
           pkgs.vscode-langservers-extracted
-          pkgs.biome
           pkgs.eslint_d
           pkgs.nixfmt-rfc-style
           pg-sql-formatter
           pkgs.shellcheck
-          pkgs.sumneko-lua-language-server
+          pkgs.lua-language-server
           pkgs.fsautocomplete
           pkgs.rust-analyzer
           pkgs.tinymist
@@ -177,7 +177,7 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     plugins.fold-imports-nvim
     asyncrun-vim
     camelcasemotion
-    direnv-vim
+    # direnv-vim
     # emmet-vim
     indentLine
     smartpairs-vim

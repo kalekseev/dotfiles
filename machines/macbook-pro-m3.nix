@@ -4,6 +4,7 @@
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
 
+  ids.gids.nixbld = 350;
   nix = {
     package = pkgs.nix;
     settings = {
@@ -96,9 +97,10 @@
       upgrade = true;
     };
     casks = [
-      "superwhisper"
+      "antinote"
       "bitwarden"
-      "cursor"
+      "chatgpt"
+      "epic-games"
       "firefox"
       "google-chrome"
       "iina"

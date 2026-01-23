@@ -62,9 +62,6 @@
   programs.ssh.startAgent = true;
   # Virtualization settings
   virtualisation.docker.enable = true;
-  virtualisation.lxd = {
-    enable = true;
-  };
 
   # Select internationalization properties.
   i18n = {
@@ -116,6 +113,8 @@
   programs.chromium = {
     enable = true;
   };
+  # to allow running dynamicly linked programs, eg. uv-build
+  programs.nix-ld.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.settings.PasswordAuthentication = true;

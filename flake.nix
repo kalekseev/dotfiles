@@ -2,27 +2,29 @@
   description = "kalekseev nix configs";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-25.11";
     nix-darwin = {
       # problems:
       # https://github.com/NixOS/nix/issues/2982
-      url = "github:LnL7/nix-darwin";
+      url = "github:LnL7/nix-darwin?ref=nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/master";
+      url = "github:nix-community/home-manager?ref=release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
     nix-ai-tools.url = "github:numtide/nix-ai-tools";
     nix-ai-tools.inputs.nixpkgs.follows = "nixpkgs";
+    try.url = "github:tobi/try";
+    try.inputs.nixpkgs.follows = "nixpkgs";
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
     vim-coverage-py.flake = false;
     yank-for-claude-nvim.url = "github:wasabeef/yank-for-claude.nvim/5879059decfd16c2f983c0d27e0247fede5dff4d";
     yank-for-claude-nvim.flake = false;
     vim-qfreplace.url = "github:thinca/vim-qfreplace/db1c4b0161931c9a63942f4f562a0d0f4271ac14";
     vim-qfreplace.flake = false;
-    webster-dictionary.url = "https://github.com/websterParser/WebsterParser/releases/download/v2.0.2/websters-1913.dictionary.zip";
+    webster-dictionary.url = "https://github.com/websterParser/WebsterParser/releases/download/v2.0.3/websters-1913.dictionary.zip";
     webster-dictionary.flake = false;
     llama-vim.url = "github:ggml-org/llama.vim/master";
     llama-vim.flake = false;
@@ -107,7 +109,7 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        vmip = "192.168.234.133";
+        vmip = "192.168.234.132";
       in
       {
         packages = {

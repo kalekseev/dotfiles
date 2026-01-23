@@ -367,7 +367,7 @@ vim.lsp.enable({
   'csharp_ls',
   'nil_ls',
   'bashls',
-  'eslint',
+  'oxlint',
   'cssls',
   'rust_analyzer',
   'tinymist',
@@ -590,7 +590,11 @@ vim.diagnostic.config {
 }
 
 
-local jsformatters = { "eslint_d", "biome", "prettier" };
+local jsformatters = {
+  "eslint_d",
+  "biome",
+  "prettier"
+};
 require("conform").setup({
   formatters = {
     biome = {
@@ -620,7 +624,10 @@ require("conform").setup({
     javascript = jsformatters,
     typescriptreact = jsformatters,
     typescript = jsformatters,
-    vue = { "eslint_d", "prettier" },
+    vue = {
+      "eslint_d",
+      "prettier"
+    },
     nix = { "nixfmt" },
     json = { "biome" },
     typst = { "typstyle" },

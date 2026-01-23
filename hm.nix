@@ -10,17 +10,19 @@
     pkgs.aws-vault
     pkgs.llama-cpp
     pkgs.uv
-    pkgs.dotnet-sdk_8
+    pkgs.dotnet-sdk_10
     pkgs.fd
     pkgs.ffmpeg
-    pkgs.ollama
+    # pkgs.ollama
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
-    pkgs.chatgpt
     inputs.nix-ai-tools.packages.${pkgs.system}.codex
     inputs.nix-ai-tools.packages.${pkgs.system}.claude-code
     inputs.nix-ai-tools.packages.${pkgs.system}.gemini-cli
+    pkgs.bun
+    pkgs.nodejs
+    pkgs.pnpm
     # pkgs.devenv
     # pkgs.testdisk
     # pkgs.yubikey-manager
@@ -33,7 +35,7 @@
     DOCKER_BUILDKIT = "true";
     EDITOR = "nvim";
     DIRENV_LOG_FORMAT = "`tput setaf 11`%s`tput sgr0`";
-    DOTNET_ROOT = "${pkgs.dotnet-sdk_8}";
+    DOTNET_ROOT = "${pkgs.dotnet-sdk_10}";
     DO_NOT_TRACK = "1";
   }
   // lib.optionalAttrs (pkgs.stdenv.isLinux) {
@@ -68,6 +70,8 @@
       bindkey -e
       bindkey "^[[1;3C" forward-word
       bindkey "^[[1;3D" backward-word
+
+      # eval "$(${inputs.try.packages.${pkgs.system}.default}/bin/try init ~/code/experiments)"
     '';
   };
 
@@ -104,7 +108,7 @@
       follow_symlinks = !isNFS;
 
       python = {
-        format = ''via [''${symbol}''${pyenv_prefix}(''${version} )]($style)'';
+        format = "via [\${symbol}\${pyenv_prefix}(\${version} )]($style)";
         disabled = true;
       };
 
@@ -128,6 +132,13 @@
   };
   programs.ripgrep.enable = true;
 
+  programs.difftastic = {
+    enable = true;
+    git.enable = true;
+    options = {
+      background = "light";
+    };
+  };
   programs.git = {
     enable = true;
     ignores = [
@@ -137,21 +148,15 @@
       ".direnv"
       ".aider.*"
     ];
-    aliases = {
-      co = "checkout";
-      fomo = "!git fetch && git rebase origin/master";
-      hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
-      up = "!git remote update -p && git merge --ff-only @{u}";
-      # Show branches, verbosely, sorted by last touch, with commit messages.
-      brv = "!f() { git branch --sort=-creatordate --color=always --format='%(color:reset)%(creatordate:short) %(color:bold white)%(align:2,right)%(upstream:trackshort)%(end)%(color:nobold) %(align:40,left)%(color:yellow)%(refname:short)%(end) %(color:reset)%(contents:subject)'; }; f";
-    };
-    difftastic = {
-      enable = true;
-      background = "light";
-    };
-    includes = [ { path = "~/.gitconfig.local"; } ];
-    extraConfig = {
-
+    settings = {
+      alias = {
+        co = "checkout";
+        fomo = "!git fetch && git rebase origin/master";
+        hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
+        up = "!git remote update -p && git merge --ff-only @{u}";
+        # Show branches, verbosely, sorted by last touch, with commit messages.
+        brv = "!f() { git branch --sort=-creatordate --color=always --format='%(color:reset)%(creatordate:short) %(color:bold white)%(align:2,right)%(upstream:trackshort)%(end)%(color:nobold) %(align:40,left)%(color:yellow)%(refname:short)%(end) %(color:reset)%(contents:subject)'; }; f";
+      };
       core.editor = "nvim";
       github.user = "kalekseev";
       color.ui = "auto";
@@ -188,6 +193,7 @@
         autostash = true;
       };
     };
+    includes = [ { path = "~/.gitconfig.local"; } ];
     lfs.enable = true;
     lfs.skipSmudge = true;
   };
@@ -205,6 +211,12 @@
       auto-update-channel = "stable";
       window-save-state = "always";
       shell-integration-features = "sudo";
+      keybind = [
+        "cmd+w=close_surface"
+        "super+right_bracket=goto_split:next"
+        "super+left_bracket=goto_split:previous"
+      ];
+      # command-palette-entry = [ "title:Close surface.,action:close_surface" ];
     };
   };
   programs.tmux = {
