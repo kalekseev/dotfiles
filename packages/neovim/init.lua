@@ -363,7 +363,6 @@ vim.lsp.enable({
   'pyright',
   'jsonls',
   'yamlls',
-  'biome',
   'csharp_ls',
   'nil_ls',
   'bashls',
@@ -591,18 +590,25 @@ vim.diagnostic.config {
 
 
 local jsformatters = {
+  "oxfmt",
   "eslint_d",
-  "biome",
   "prettier"
 };
 require("conform").setup({
   formatters = {
-    biome = {
-      require_cwd = true
-    },
     eslint_d = {
       cwd = require("conform.util").root_file({ ".eslintrc.js" }),
       require_cwd = true
+    },
+    oxfmt = {
+      meta = {
+        url = "https://github.com/oxc-project/oxc",
+        description = "A Prettier-compatible code formatter.",
+      },
+      command = require("conform.util").from_node_modules("oxfmt"),
+      args = { "--stdin-filepath", "$FILENAME" },
+      stdin = true,
+      cwd = require("conform.util").root_file({ ".oxfmtrc.json" }),
     },
     injected = {
       ignore_errors = false,
@@ -629,7 +635,6 @@ require("conform").setup({
       "prettier"
     },
     nix = { "nixfmt" },
-    json = { "biome" },
     typst = { "typstyle" },
   },
   format_on_save = function(bufnr)
