@@ -2,15 +2,15 @@
   description = "kalekseev nix configs";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixpkgs-unstable";
     nix-darwin = {
       # problems:
       # https://github.com/NixOS/nix/issues/2982
-      url = "github:LnL7/nix-darwin?ref=nix-darwin-25.11";
+      url = "github:LnL7/nix-darwin?ref=master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager?ref=release-25.11";
+      url = "github:nix-community/home-manager?ref=master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";

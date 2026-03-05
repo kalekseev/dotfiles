@@ -166,21 +166,12 @@ nmap <silent> <leader>tq :autocmd! BufWritePost *<CR>
 "* * * * * * * * * * * * * * * * * EXTRA * * * * * * * * * * * * * * * * * * *
 " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-" filetype specific settings
-autocmd MyAutoCmd FileType html setlocal ts=2 sw=2 sta et sts=2 ai
-autocmd MyAutoCmd FileType vue setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
-autocmd MyAutoCmd FileType json setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
-autocmd MyAutoCmd FileType typescriptreact setlocal ts=2 sw=2 sta et sts=2 ai colorcolumn=110
-
 " save on focus lost
 autocmd MyAutoCmd FocusLost * :silent! wall
 
 " don't show trailing spaces in insert mode
 autocmd MyAutoCmd InsertEnter * :set listchars-=trail:·
 autocmd MyAutoCmd InsertLeave * :set listchars+=trail:·
-
-" js, jsx
-autocmd MyAutoCmd BufRead,BufNewFile *.js call s:FTjs()
 
 " jump to last cursor position when opening a file
 " don't do it when writing a commit log entry
@@ -209,20 +200,6 @@ func! GenUUID()
   let cmd = 'uuidgen | tr "[:upper:]" "[:lower:]" | tr -d "[:cntrl:]"'
   silent exec ":normal a" . system(cmd)
 endfunc
-
-
-" Distinguish between javascript, jsx
-func! s:FTjs()
-  let n = 1
-  while n < 10 && n < line("$")
-    if getline(n) =~ "\\v'react'|'preact'"
-      set filetype=javascript.jsx
-      return
-    endif
-    let n = n + 1
-  endwhile
-endfunc
-
 
 " windows
 nnoremap <c-w>z <C-W>\| <C-W>_

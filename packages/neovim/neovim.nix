@@ -54,7 +54,6 @@ let
         jq
         jsdoc
         json
-        jsonc
         latex
         lua
         luadoc
@@ -93,7 +92,7 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
   neovimRcContent = ''
     source ${./init.vim}
     source ${./init.lua}
-    set rtp+=${./after}
+    set rtp+=${./runtime}
   '';
   plugins = with pkgs.vimPlugins; [
     blink-cmp
@@ -139,7 +138,7 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
           pkgs.bash-language-server
           pkgs.vscode-langservers-extracted
           pkgs.eslint_d
-          pkgs.nixfmt-rfc-style
+          pkgs.nixfmt
           pg-sql-formatter
           pkgs.shellcheck
           pkgs.lua-language-server
@@ -158,7 +157,6 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     nvim-ts-context-commentstring
     oil-nvim
     onedark-nvim
-    playground
     telescope-nvim
     telescope-dap-nvim
     trouble-nvim

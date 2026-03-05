@@ -32,17 +32,17 @@ vim.o.colorcolumn   = '80'
 vim.o.clipboard     = 'unnamedplus'
 -- Use OSC 52 clipboard for SSH sessions, normal clipboard otherwise
 if vim.env.SSH_TTY then
-  vim.g.clipboard = {
-    name = 'OSC 52',
-    copy = {
-      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-    },
-    paste = {
-      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-    },
-  }
+	vim.g.clipboard = {
+		name = 'OSC 52',
+		copy = {
+			['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+			['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+		},
+		paste = {
+			['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+			['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+		},
+	}
 end
 
 
@@ -71,15 +71,15 @@ keymap('n', '<C-k>', '<C-w>k', { silent = true })
 keymap('n', '<C-l>', '<C-w>l', { silent = true })
 
 require('onedark').setup {
-  style = 'dark',
-  toggle_style_key = "<leader>tn",
-  toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }
+	style = 'dark',
+	toggle_style_key = "<leader>tn",
+	toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }
 }
 require('onedark').load()
 require("oil").setup()
 require("fold_imports").setup({
-  auto_fold = true,
-  fold_level = 3,
+	auto_fold = true,
+	fold_level = 3,
 })
 require('mini.ai').setup()
 require('mini.surround').setup()
@@ -91,92 +91,259 @@ require('mini.pairs').setup()
 -- require("copilot_cmp").setup()
 
 require("toggleterm").setup {
-  open_mapping = [[<c-\>]]
+	open_mapping = [[<c-\>]]
 }
 
 function _G.set_terminal_keymaps()
-  local opts = { buffer = 0 }
-  keymap('t', '<esc>', [[<C-\><C-n>]], opts)
-  keymap('t', 'jk', [[<C-\><C-n>]], opts)
-  keymap('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-  -- keymap('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-  keymap('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-  keymap('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
-  keymap('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+	local opts = { buffer = 0 }
+	keymap('t', '<esc>', [[<C-\><C-n>]], opts)
+	keymap('t', 'jk', [[<C-\><C-n>]], opts)
+	keymap('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+	-- keymap('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+	keymap('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+	keymap('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+	keymap('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
 end
 
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
 require('treesitter-context').setup {
-  enable = true,
-  multiline_threshold = 1,
+	enable = true,
+	multiline_threshold = 1,
 }
 
 require('ts_context_commentstring').setup({
-  enable_autocmd = false,
+	enable_autocmd = false,
 })
 vim.g.skip_ts_context_commentstring_module = true
 local _get_option = vim.filetype.get_option
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.filetype.get_option = function(filetype, option)
-  return option == "commentstring"
-      and require("ts_context_commentstring.internal").calculate_commentstring()
-      or _get_option(filetype, option)
+	return option == "commentstring"
+	    and require("ts_context_commentstring.internal").calculate_commentstring()
+	    or _get_option(filetype, option)
 end
 
-require 'nvim-treesitter.configs'.setup {
-  modules = {},
-  ensure_installed = {},
-  ignore_install = {},
-  sync_install = false,
-  auto_install = false,
-  highlight = { enable = true },
-  incremental_selection = { enable = true },
-  indent = { enable = true, disable = { 'tsx' } },
-  query_linter = {
-    enable = true,
-    use_virtual_text = true,
-    lint_events = { "BufWrite", "CursorHold" },
-  },
-  textobjects = {
-    select = {
-      enable = true,
-      lookahead = true,
-      keymaps = {
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-      },
-      selection_modes = {
-        ['@parameter.outer'] = 'v',
-        ['@function.outer'] = 'V',
-        ['@class.outer'] = 'V',
-      },
-    }
-  }
-}
+require("nvim-treesitter").setup({
+	ensure_installed = {},
+	auto_install = false,
+	highlight = {
+		enable = true,
+		additional_vim_regex_highlighting = false,
+	},
+	incremental_selection = { enable = true },
+	indent = { enable = true, },
+	textobjects = {
+		select = {
+			enable = true,
+			lookahead = true,
+			keymaps = {
+				["af"] = "@function.outer",
+				["if"] = "@function.inner",
+				["ac"] = "@class.outer",
+				["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+			},
+			selection_modes = {
+				['@parameter.outer'] = 'v',
+				['@function.outer'] = 'V',
+				['@class.outer'] = 'V',
+			},
+		}
+	}
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("treesitter_langs", { clear = true, }),
+	pattern = vim.tbl_extend("force", require("nvim-treesitter").get_available(),
+		{ 'javascriptreact', 'javascript.jsx', 'typescriptreact', 'typescript.tsx' }),
+	callback = function()
+		vim.treesitter.start()
+	end,
+})
+
+local ftplugin_group = vim.api.nvim_create_augroup("ftplugin_settings", { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = { "css", "scss" },
+	callback = function()
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.smarttab = true
+		vim.opt_local.expandtab = true
+		vim.opt_local.autoindent = true
+		vim.opt_local.iskeyword:append("-")
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = "html",
+	callback = function()
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.smarttab = true
+		vim.opt_local.expandtab = true
+		vim.opt_local.autoindent = true
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = { "vue", "json" },
+	callback = function()
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.smarttab = true
+		vim.opt_local.expandtab = true
+		vim.opt_local.autoindent = true
+		vim.opt_local.colorcolumn = "110"
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = "go",
+	callback = function()
+		vim.opt_local.tabstop = 4
+		vim.opt_local.list = false
+		vim.opt_local.listchars = ""
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	group = ftplugin_group,
+	pattern = "*.js",
+	callback = function(ev)
+		local max = math.min(10, vim.api.nvim_buf_line_count(ev.buf))
+		local lines = vim.api.nvim_buf_get_lines(ev.buf, 0, max, false)
+		for _, line in ipairs(lines) do
+			if line:find("'react'", 1, true) or line:find("'preact'", 1, true) then
+				vim.bo[ev.buf].filetype = "javascript.jsx"
+				return
+			end
+		end
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+	callback = function(ev)
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.smarttab = true
+		vim.opt_local.expandtab = true
+		vim.opt_local.autoindent = true
+		vim.opt_local.colorcolumn = "110"
+		keymap("n", "<F7>", function()
+			vim.fn.BreakpointToggle(vim.fn.line("."), "debugger;")
+		end, { buffer = ev.buf, silent = true })
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = "python",
+	callback = function(ev)
+		vim.opt_local.textwidth = 72
+		vim.opt_local.tabstop = 4
+		vim.opt_local.shiftwidth = 4
+		vim.opt_local.softtabstop = 4
+		vim.opt_local.smarttab = true
+		vim.opt_local.expandtab = true
+		vim.opt_local.autoindent = true
+		vim.opt_local.formatoptions = "cq"
+		vim.opt_local.foldignore = ""
+		vim.opt_local.colorcolumn = "110"
+		if not vim.tbl_contains(vim.opt.wildignore:get(), "*.py[co]") then
+			vim.opt.wildignore:append("*.py[co]")
+		end
+		vim.g.argwrap_tail_comma = 1
+		keymap("n", "<F7>", function()
+			vim.fn.BreakpointToggle(vim.fn.line("."), "breakpoint()  # XXX BREAKPOINT")
+		end, { buffer = ev.buf, silent = true })
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = "fsharp",
+	callback = function()
+		vim.opt_local.commentstring = "// %s"
+		vim.opt_local.expandtab = true
+		vim.opt_local.tabstop = 4
+		vim.opt_local.shiftwidth = 4
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = { "jsonc", "lua", "nix" },
+	callback = function()
+		vim.opt_local.expandtab = true
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = "nginx",
+	callback = function()
+		vim.opt_local.expandtab = true
+		vim.opt_local.tabstop = 4
+		vim.opt_local.shiftwidth = 4
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = "sql",
+	callback = function(ev)
+		keymap("n", "<localleader>x", "<cmd>:%DB<CR>", { buffer = ev.buf, silent = true })
+		keymap("v", "<localleader>x", ":DB<CR>", { buffer = ev.buf, silent = true })
+		vim.opt_local.commentstring = "-- %s"
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	group = ftplugin_group,
+	pattern = "typst",
+	callback = function()
+		vim.opt_local.expandtab = true
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.commentstring = "// %s"
+	end,
+})
 
 ---@diagnostic disable-next-line: missing-fields
 require("neotest").setup({
-  adapters = {
-    require("neotest-python")({
-      dap = { justMyCode = false },
-    }),
-  },
+	adapters = {
+		require("neotest-python")({
+			dap = { justMyCode = false },
+		}),
+	},
 })
 
 require("dap-python").setup("python")
 local dap = require('dap')
 dap.configurations.python = {
-  {
-    type = 'python',
-    request = 'attach',
-    name = 'attach',
-    connect = { host = '127.0.0.1', port = vim.env.PYTHON_DEBUG_PORT or 5678 },
-    justMyCode = false,
+	{
+		type = 'python',
+		request = 'attach',
+		name = 'attach',
+		connect = { host = '127.0.0.1', port = vim.env.PYTHON_DEBUG_PORT or 5678 },
+		justMyCode = false,
 
-  },
+	},
 }
 vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
 
@@ -187,8 +354,8 @@ keymap('n', '<C-n>', function() require('dap').step_over() end, { desc = 'step o
 keymap('n', '<Leader>di', function() require('dap').step_into() end, { desc = 'step into' })
 keymap('n', '<Leader>do', function() require('dap').step_out() end, { desc = 'step out' })
 keymap('n', '<Leader>ds', function()
-  local widgets = require('dap.ui.widgets')
-  widgets.centered_float(widgets.scopes)
+	local widgets = require('dap.ui.widgets')
+	widgets.centered_float(widgets.scopes)
 end, { desc = 'show scopes' })
 keymap('n', '<Leader>df', function() require('telescope').extensions.dap.frames({}) end, { desc = 'show frames' })
 keymap('n', '<Leader>dp', function() require("dap.ui.widgets").preview() end, { desc = 'show preview' })
@@ -231,226 +398,226 @@ require('yank-for-claude').setup()
 
 require('which-key').setup()
 require('gitsigns').setup {
-  on_attach = function(bufnr)
-    local gitsigns = package.loaded.gitsigns
+	on_attach = function(bufnr)
+		local gitsigns = package.loaded.gitsigns
 
-    keymap('n', ']c', function()
-      if vim.wo.diff then
-        vim.cmd.normal({ ']c', bang = true })
-      else
-        gitsigns.nav_hunk('next')
-      end
-    end, { buffer = bufnr, desc = 'Next git hunk' })
+		keymap('n', ']c', function()
+			if vim.wo.diff then
+				vim.cmd.normal({ ']c', bang = true })
+			else
+				gitsigns.nav_hunk('next')
+			end
+		end, { buffer = bufnr, desc = 'Next git hunk' })
 
-    keymap('n', '[c', function()
-      if vim.wo.diff then
-        vim.cmd.normal({ '[c', bang = true })
-      else
-        gitsigns.nav_hunk('prev')
-      end
-    end, { buffer = bufnr, desc = 'Previous git hunk' })
-  end
+		keymap('n', '[c', function()
+			if vim.wo.diff then
+				vim.cmd.normal({ '[c', bang = true })
+			else
+				gitsigns.nav_hunk('prev')
+			end
+		end, { buffer = bufnr, desc = 'Previous git hunk' })
+	end
 }
 
 require 'lualine'.setup {
-  options = {
-    theme = 'onedark',
-  },
-  sections = {
-    lualine_a = { 'mode' },
-    lualine_b = { 'branch' },
-    lualine_c = { 'filename' },
-    lualine_x = {
-      {
-        'diagnostics',
-        sources = { 'nvim_diagnostic' },
-        sections = { 'error', 'warn', 'info', 'hint' }
-      },
-      'filetype'
-    },
-    lualine_y = { 'progress' },
-    lualine_z = { 'location' }
-  },
+	options = {
+		theme = 'onedark',
+	},
+	sections = {
+		lualine_a = { 'mode' },
+		lualine_b = { 'branch' },
+		lualine_c = { 'filename' },
+		lualine_x = {
+			{
+				'diagnostics',
+				sources = { 'nvim_diagnostic' },
+				sections = { 'error', 'warn', 'info', 'hint' }
+			},
+			'filetype'
+		},
+		lualine_y = { 'progress' },
+		lualine_z = { 'location' }
+	},
 }
 
 local actions = require('telescope.actions')
 local trouble = require("trouble.sources.telescope")
 keymap("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
-  { silent = true, noremap = true }
+	{ silent = true, noremap = true }
 )
 require('telescope').setup {
-  defaults = {
-    mappings = {
-      n = {
-        ["q"] = actions.close,
-        ["<c-t>"] = trouble.open
-      },
-      i = {
-        ["<C-u>"] = function()
-          vim.api.nvim_feedkeys(
-            vim.api.nvim_replace_termcodes("<Esc>cc", true, false, true), "t", true)
-        end,
-        ["<c-t>"] = trouble.open
-      },
-    },
-  }
+	defaults = {
+		mappings = {
+			n = {
+				["q"] = actions.close,
+				["<c-t>"] = trouble.open
+			},
+			i = {
+				["<C-u>"] = function()
+					vim.api.nvim_feedkeys(
+						vim.api.nvim_replace_termcodes("<Esc>cc", true, false, true), "t", true)
+				end,
+				["<c-t>"] = trouble.open
+			},
+		},
+	}
 }
 require('telescope').load_extension('dap')
 
 require('blink.cmp').setup({
-  -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-  -- 'super-tab' for mappings similar to vscode (tab to accept)
-  -- 'enter' for enter to accept
-  -- 'none' for no mappings
-  --
-  -- All presets have the following mappings:
-  -- C-space: Open menu or open docs if already open
-  -- C-n/C-p or Up/Down: Select next/previous item
-  -- C-e: Hide menu
-  -- C-k: Toggle signature help (if signature.enabled = true)
-  --
-  -- See :h blink-cmp-config-keymap for defining your own keymap
-  keymap = { preset = 'super-tab' },
+	-- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+	-- 'super-tab' for mappings similar to vscode (tab to accept)
+	-- 'enter' for enter to accept
+	-- 'none' for no mappings
+	--
+	-- All presets have the following mappings:
+	-- C-space: Open menu or open docs if already open
+	-- C-n/C-p or Up/Down: Select next/previous item
+	-- C-e: Hide menu
+	-- C-k: Toggle signature help (if signature.enabled = true)
+	--
+	-- See :h blink-cmp-config-keymap for defining your own keymap
+	keymap = { preset = 'super-tab' },
 
-  appearance = {
-    -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-    -- Adjusts spacing to ensure icons are aligned
-    nerd_font_variant = 'mono'
-  },
+	appearance = {
+		-- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+		-- Adjusts spacing to ensure icons are aligned
+		nerd_font_variant = 'mono'
+	},
 
-  signature = { enabled = true },
-  -- (Default) Only show the documentation popup when manually triggered
-  -- completion = { documentation = { auto_show = false } },
+	signature = { enabled = true },
+	-- (Default) Only show the documentation popup when manually triggered
+	-- completion = { documentation = { auto_show = false } },
 
-  -- Default list of enabled providers defined so that you can extend it
-  -- elsewhere in your config, without redefining it, due to `opts_extend`
-  sources = {
-    default = { 'lsp', 'path', 'snippets', 'buffer' },
-    per_filetype = {
-      sql = { 'dadbod' },
-    },
-    providers = {
-      dadbod = { module = "vim_dadbod_completion.blink" },
-    }
-  },
+	-- Default list of enabled providers defined so that you can extend it
+	-- elsewhere in your config, without redefining it, due to `opts_extend`
+	sources = {
+		default = { 'lsp', 'path', 'snippets', 'buffer' },
+		per_filetype = {
+			sql = { 'dadbod' },
+		},
+		providers = {
+			dadbod = { module = "vim_dadbod_completion.blink" },
+		}
+	},
 
-  -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
-  -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
-  -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
-  --
-  -- See the fuzzy documentation for more information
-  fuzzy = { implementation = "prefer_rust_with_warning" }
+	-- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+	-- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+	-- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+	--
+	-- See the fuzzy documentation for more information
+	fuzzy = { implementation = "prefer_rust_with_warning" }
 })
 
 require("supermaven-nvim").setup({
-  keymaps = {
-    accept_suggestion = "<C-y>",
-    clear_suggestion = "<C-]>",
-    accept_word = "<C-j>",
-  },
-  ignore_filetypes = { cpp = true },
-  -- color = {
-  --   suggestion_color = "#ffffff",
-  --   cterm = 244,
-  -- },
-  log_level = "info",                -- set to "off" to disable logging completely
-  disable_inline_completion = false, -- disables inline completion for use with cmp
-  disable_keymaps = false            -- disables built in keymaps for more manual control
+	keymaps = {
+		accept_suggestion = "<C-y>",
+		clear_suggestion = "<C-]>",
+		accept_word = "<C-j>",
+	},
+	ignore_filetypes = { cpp = true },
+	-- color = {
+	--   suggestion_color = "#ffffff",
+	--   cterm = 244,
+	-- },
+	log_level = "info",         -- set to "off" to disable logging completely
+	disable_inline_completion = false, -- disables inline completion for use with cmp
+	disable_keymaps = false     -- disables built in keymaps for more manual control
 })
 
 vim.lsp.enable({
-  'ruff',
-  'pyright',
-  'jsonls',
-  'yamlls',
-  'csharp_ls',
-  'nil_ls',
-  'bashls',
-  'oxlint',
-  'cssls',
-  'rust_analyzer',
-  'tinymist',
-  'ocamllsp',
-  'html',
-  'efm',
-  'harper_ls',
-  'lemminx',
-  'ts_ls',
-  'lua_ls',
+	'ruff',
+	'pyright',
+	'jsonls',
+	'yamlls',
+	'csharp_ls',
+	'nil_ls',
+	'bashls',
+	'oxlint',
+	'cssls',
+	'rust_analyzer',
+	'tinymist',
+	'ocamllsp',
+	'html',
+	'efm',
+	'harper_ls',
+	'lemminx',
+	'ts_ls',
+	'lua_ls',
 })
 vim.lsp.config('html', {
-  filetypes = { 'html', 'templ', 'htmldjango' },
+	filetypes = { 'html', 'templ', 'htmldjango' },
 })
 
 vim.lsp.config('efm', {
-  filetypes = { "python" },
-  root_markers = { '.env.mypy' },
-  single_file_support = false,
+	filetypes = { "python" },
+	root_markers = { '.env.mypy' },
+	single_file_support = false,
 
-  settings = {
-    rootMarkers = { '.env.mypy' },
-    languages = {
-      python = { require('efmls-configs.linters.mypy') },
-    }
-  }
+	settings = {
+		rootMarkers = { '.env.mypy' },
+		languages = {
+			python = { require('efmls-configs.linters.mypy') },
+		}
+	}
 })
 
 vim.lsp.config('harper_ls', {
-  settings = {
-    ["harper-ls"] = {
-      linters = {
-        sentence_capitalization = false,
-      }
-    }
-  }
+	settings = {
+		["harper-ls"] = {
+			linters = {
+				sentence_capitalization = false,
+			}
+		}
+	}
 })
 
 vim.lsp.config('lemminx', {
-  init_options = {
-    settings = {
-      xml = {
-        format = {
-          enabled = true,
-          splitAttributes = "preserve",
-          maxLineWidth = 280,
-        },
-      },
-      xslt = {
-        format = {
-          enabled = true,
-          splitAttributes = "preserve",
-          maxLineWidth = 280,
-        },
-      },
-    }
-  }
+	init_options = {
+		settings = {
+			xml = {
+				format = {
+					enabled = true,
+					splitAttributes = "preserve",
+					maxLineWidth = 280,
+				},
+			},
+			xslt = {
+				format = {
+					enabled = true,
+					splitAttributes = "preserve",
+					maxLineWidth = 280,
+				},
+			},
+		}
+	}
 })
 
 vim.lsp.config('ts_ls', {
-  root_markers = { 'tsconfig.json', '.git' },
-  init_options = {
-    plugins = {
-      {
-        name = '@vue/typescript-plugin',
-        location = '',
-        languages = { 'vue' },
-      },
-    },
-  },
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+	root_markers = { 'tsconfig.json', '.git' },
+	init_options = {
+		plugins = {
+			{
+				name = '@vue/typescript-plugin',
+				location = '',
+				languages = { 'vue' },
+			},
+		},
+	},
+	filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
 })
 
 vim.lsp.config('lua_ls', {
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { 'vim' }
-      },
-      telemetry = {
-        enable = false,
-      },
-    }
-  }
+	settings = {
+		Lua = {
+			diagnostics = {
+				globals = { 'vim' }
+			},
+			telemetry = {
+				enable = false,
+			},
+		}
+	}
 })
 
 require("lazydev").setup()
@@ -458,58 +625,58 @@ vim.diagnostic.config { virtual_text = true, virtual_lines = false }
 
 
 vim.api.nvim_create_user_command("LspLinesToggle", function()
-  local config = vim.diagnostic.config() or {}
-  if config.virtual_text then
-    vim.diagnostic.config { virtual_text = false, virtual_lines = true }
-  else
-    vim.diagnostic.config { virtual_text = true, virtual_lines = false }
-  end
+	local config = vim.diagnostic.config() or {}
+	if config.virtual_text then
+		vim.diagnostic.config { virtual_text = false, virtual_lines = true }
+	else
+		vim.diagnostic.config { virtual_text = true, virtual_lines = false }
+	end
 end, { desc = "Toggle lsp_lines" })
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+	local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
-  -- Mappings.
-  local opts = { noremap = true, silent = true }
-  local nmap = function(keys, func, desc)
-    if desc then
-      desc = 'LSP: ' .. desc
-    end
+	-- Mappings.
+	local opts = { noremap = true, silent = true }
+	local nmap = function(keys, func, desc)
+		if desc then
+			desc = 'LSP: ' .. desc
+		end
 
-    keymap('n', keys, func, { buffer = bufnr, desc = desc })
-  end
-  nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+		keymap('n', keys, func, { buffer = bufnr, desc = desc })
+	end
+	nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  -- buf_set_keymap('n', 'gd',
-  --     '<cmd>lua vim.lsp.buf.definition{ on_list = function (options) vim.fn.setqflist({}, " ", options); vim.api.nvim_command("cfirst") end}<CR>',
-  --     opts)
-  -- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
-  -- buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  -- buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
+	-- See `:help vim.lsp.*` for documentation on any of the below functions
+	buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+	-- buf_set_keymap('n', 'gd',
+	--     '<cmd>lua vim.lsp.buf.definition{ on_list = function (options) vim.fn.setqflist({}, " ", options); vim.api.nvim_command("cfirst") end}<CR>',
+	--     opts)
+	-- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+	buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+	-- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+	buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+	buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+	buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+	buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+	-- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+	-- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+	-- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+	buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
+	-- buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+	-- buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+	buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
+	buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 end
 
 local lsp_group = vim.api.nvim_create_augroup("UserLspConfig", {})
 vim.api.nvim_create_autocmd("LspAttach", {
-  group = lsp_group,
-  callback = function(ev)
-    on_attach(nil, ev.buf)
-  end,
+	group = lsp_group,
+	callback = function(ev)
+		on_attach(nil, ev.buf)
+	end,
 })
 
 local capabilities = require('blink.cmp').get_lsp_capabilities()
@@ -533,162 +700,162 @@ require('ionide').setup({})
 -- }
 
 require 'nvim-tree'.setup {
-  disable_netrw       = false,
-  hijack_netrw        = true,
-  hijack_directories  = {
-    enable = true,
-    auto_open = true,
-  },
-  open_on_tab         = false,
-  hijack_cursor       = false,
-  update_cwd          = false,
-  diagnostics         = {
-    enable = false,
-    icons = {
-      hint = "",
-      info = "",
-      warning = "",
-      error = "",
-    }
-  },
-  update_focused_file = {
-    enable      = false,
-    update_cwd  = false,
-    ignore_list = {}
-  },
-  system_open         = {
-    cmd  = nil,
-    args = {}
-  },
-  view                = {
-    width = 30,
-    side = 'left'
-  }
+	disable_netrw       = false,
+	hijack_netrw        = true,
+	hijack_directories  = {
+		enable = true,
+		auto_open = true,
+	},
+	open_on_tab         = false,
+	hijack_cursor       = false,
+	update_cwd          = false,
+	diagnostics         = {
+		enable = false,
+		icons = {
+			hint = "",
+			info = "",
+			warning = "",
+			error = "",
+		}
+	},
+	update_focused_file = {
+		enable      = false,
+		update_cwd  = false,
+		ignore_list = {}
+	},
+	system_open         = {
+		cmd  = nil,
+		args = {}
+	},
+	view                = {
+		width = 30,
+		side = 'left'
+	}
 }
 
 vim.diagnostic.config {
-  signs = {
-    severity = { min = vim.diagnostic.severity.INFO }
-  },
-  virtual_text = {
-    severity = { min = vim.diagnostic.severity.INFO }
-  },
-  float = {
-    format = function(diagnostic)
-      if diagnostic.source == 'eslint' then
-        return string.format(
-          '%s [%s]',
-          diagnostic.message,
-          -- shows the name of the rule
-          diagnostic.user_data.lsp.code
-        )
-      end
-      return string.format('%s [%s]', diagnostic.message, diagnostic.source)
-    end,
-  },
+	signs = {
+		severity = { min = vim.diagnostic.severity.INFO }
+	},
+	virtual_text = {
+		severity = { min = vim.diagnostic.severity.INFO }
+	},
+	float = {
+		format = function(diagnostic)
+			if diagnostic.source == 'eslint' then
+				return string.format(
+					'%s [%s]',
+					diagnostic.message,
+					-- shows the name of the rule
+					diagnostic.user_data.lsp.code
+				)
+			end
+			return string.format('%s [%s]', diagnostic.message, diagnostic.source)
+		end,
+	},
 }
 
 
 local jsformatters = {
-  "oxfmt",
-  "eslint_d",
-  "prettier"
+	"oxfmt",
+	"eslint_d",
+	"prettier"
 };
 require("conform").setup({
-  formatters = {
-    eslint_d = {
-      cwd = require("conform.util").root_file({ ".eslintrc.js" }),
-      require_cwd = true
-    },
-    oxfmt = {
-      meta = {
-        url = "https://github.com/oxc-project/oxc",
-        description = "A Prettier-compatible code formatter.",
-      },
-      command = require("conform.util").from_node_modules("oxfmt"),
-      args = { "--stdin-filepath", "$FILENAME" },
-      stdin = true,
-      cwd = require("conform.util").root_file({ ".oxfmtrc.json" }),
-    },
-    injected = {
-      ignore_errors = false,
-      lang_to_ext = {
-        sql = "sql",
-      },
-      lang_to_formatters = {
-        sql = { "sql_formatter", "add_new_line" },
-      },
-    },
-    add_new_line = {
-      command = "sed",
-      args = { "-e", "$a\\" },
-    }
-  },
-  formatters_by_ft = {
-    sql = { "sql_formatter", "add_new_line" },
-    python = { "ruff_fix", "ruff_format", "injected" },
-    javascript = jsformatters,
-    typescriptreact = jsformatters,
-    typescript = jsformatters,
-    vue = {
-      "eslint_d",
-      "prettier"
-    },
-    nix = { "nixfmt" },
-    typst = { "typstyle" },
-  },
-  format_on_save = function(bufnr)
-    -- Disable with a global or buffer-local variable
-    if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-      ---@diagnostic disable-next-line: missing-return-value
-      return
-    end
-    return { timeout_ms = 500, lsp_fallback = true }
-  end,
+	formatters = {
+		eslint_d = {
+			cwd = require("conform.util").root_file({ ".eslintrc.js" }),
+			require_cwd = true
+		},
+		oxfmt = {
+			meta = {
+				url = "https://github.com/oxc-project/oxc",
+				description = "A Prettier-compatible code formatter.",
+			},
+			command = require("conform.util").from_node_modules("oxfmt"),
+			args = { "--stdin-filepath", "$FILENAME" },
+			stdin = true,
+			cwd = require("conform.util").root_file({ ".oxfmtrc.json" }),
+		},
+		injected = {
+			ignore_errors = false,
+			lang_to_ext = {
+				sql = "sql",
+			},
+			lang_to_formatters = {
+				sql = { "sql_formatter", "add_new_line" },
+			},
+		},
+		add_new_line = {
+			command = "sed",
+			args = { "-e", "$a\\" },
+		}
+	},
+	formatters_by_ft = {
+		sql = { "sql_formatter", "add_new_line" },
+		python = { "ruff_fix", "ruff_format", "injected" },
+		javascript = jsformatters,
+		typescriptreact = jsformatters,
+		typescript = jsformatters,
+		vue = {
+			"eslint_d",
+			"prettier"
+		},
+		nix = { "nixfmt" },
+		typst = { "typstyle" },
+	},
+	format_on_save = function(bufnr)
+		-- Disable with a global or buffer-local variable
+		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+			---@diagnostic disable-next-line: missing-return-value
+			return
+		end
+		return { timeout_ms = 500, lsp_fallback = true }
+	end,
 })
 vim.api.nvim_create_user_command("FormatDisable", function(args)
-  if args.bang then
-    -- FormatDisable! will disable formatting just for this buffer
-    vim.b.disable_autoformat = true
-  else
-    vim.g.disable_autoformat = true
-  end
+	if args.bang then
+		-- FormatDisable! will disable formatting just for this buffer
+		vim.b.disable_autoformat = true
+	else
+		vim.g.disable_autoformat = true
+	end
 end, {
-  desc = "Disable autoformat-on-save",
-  bang = true,
+	desc = "Disable autoformat-on-save",
+	bang = true,
 })
 vim.api.nvim_create_user_command("FormatEnable", function()
-  vim.b.disable_autoformat = false
-  vim.g.disable_autoformat = false
+	vim.b.disable_autoformat = false
+	vim.g.disable_autoformat = false
 end, {
-  desc = "Re-enable autoformat-on-save",
+	desc = "Re-enable autoformat-on-save",
 })
 
 keymap("n", "[d", function()
-  vim.diagnostic.jump({ count = -1, severity = { min = vim.diagnostic.severity.INFO }, float = true })
+	vim.diagnostic.jump({ count = -1, severity = { min = vim.diagnostic.severity.INFO }, float = true })
 end, { silent = true })
 keymap("n", "]d", function()
-  vim.diagnostic.jump({ count = 1, severity = { min = vim.diagnostic.severity.INFO }, float = true })
+	vim.diagnostic.jump({ count = 1, severity = { min = vim.diagnostic.severity.INFO }, float = true })
 end, { silent = true })
 keymap("n", "[h", function()
-  vim.diagnostic.jump({ count = -1, severity = { min = vim.diagnostic.severity.HINT }, float = true })
+	vim.diagnostic.jump({ count = -1, severity = { min = vim.diagnostic.severity.HINT }, float = true })
 end, { silent = true })
 keymap("n", "]h", function()
-  vim.diagnostic.jump({ count = 1, severity = { min = vim.diagnostic.severity.HINT }, float = true })
+	vim.diagnostic.jump({ count = 1, severity = { min = vim.diagnostic.severity.HINT }, float = true })
 end, { silent = true })
 
 keymap("n", "<leader>o", "<cmd>Oil<CR>", { silent = true, noremap = true })
 
 -- fugitive :GBrowse require netrw but oil.nvim disables it
 vim.api.nvim_create_user_command(
-  'Browse',
-  function(opts)
-    vim.fn.system { 'open', opts.fargs[1] }
-  end,
-  { nargs = 1 }
+	'Browse',
+	function(opts)
+		vim.fn.system { 'open', opts.fargs[1] }
+	end,
+	{ nargs = 1 }
 )
 
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "*/backend/*/templates/*.html" },
-  command = "set filetype=htmldjango",
+	pattern = { "*/backend/*/templates/*.html" },
+	command = "set filetype=htmldjango",
 })
