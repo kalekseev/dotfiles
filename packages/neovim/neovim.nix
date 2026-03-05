@@ -90,7 +90,6 @@ let
 in
 pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
   neovimRcContent = ''
-    source ${./init.vim}
     source ${./init.lua}
     set rtp+=${./runtime}
   '';

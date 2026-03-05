@@ -1,4 +1,5 @@
 vim.o.completeopt   = 'menuone,noselect' -- nvim-cmp
+vim.o.encoding      = 'utf-8'
 vim.o.syntax        = 'ON'
 vim.o.exrc          = true
 vim.o.secure        = true
@@ -64,6 +65,157 @@ vim.o.undofile = true
 
 vim.g.loaded_perl_provider = 0
 local keymap = vim.keymap.set
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+vim.opt.formatoptions:remove("o")
+vim.opt.diffopt:append({ "internal", "algorithm:patience" })
+
+vim.g.indentLine_setConceal = 0
+vim.g.indentLine_char = "┊"
+vim.g.indentLine_color_term = 8
+vim.g.indentLine_noConcealCursor = ""
+vim.g.indentLine_faster = 1
+vim.g.rooter_cd_cmd = "lcs"
+vim.g.rooter_manual_only = 1
+vim.g.direnv_silent_load = 1
+vim.g["test#python#runner"] = "pytest"
+vim.g["test#strategy"] = "neovim_sticky"
+vim.g["test#neovim#term_position"] = "horizontal botright 20"
+vim.g["test#neovim_sticky#kill_previous"] = 2
+vim.g["test#neovim_sticky#reopen_window"] = 1
+vim.g.db_ui_env_variable_url = "DATABASE_URL"
+
+vim.cmd([[
+cnoremap w!! %!sudo tee > /dev/null %
+command! -bang Q q<bang>
+command! -bang QA q<bang>
+command! -bang Qa q<bang>
+command! CountSearch execute '%s///gn'
+command! CopyFilename execute 'let @+=expand("%:t")'
+command! CopyFilepath execute 'let @+=expand("%:p")'
+command! -range ApplyQMacros execute '<line1>,<line2>normal! @q'
+command! -bang -nargs=+ Sgrep execute 'silent Ggrep<bang> <args>' | copen
+]])
+
+local legacy_group = vim.api.nvim_create_augroup("legacy_migrated", { clear = true })
+
+local function breakpoint_toggle(lnum, cmd)
+	local plnum = vim.fn.prevnonblank(lnum)
+	local indent = vim.fn.indent(plnum)
+	vim.fn.append(vim.fn.line(".") - 1, string.rep(" ", indent) .. cmd)
+	vim.cmd.normal({ "k", bang = true })
+	if vim.bo.modifiable and vim.bo.modified then
+		vim.cmd.write()
+	end
+end
+
+local function gen_uuid()
+	local uuid = vim.fn.system([[uuidgen | tr "[:upper:]" "[:lower:]" | tr -d "[:cntrl:]"]]):gsub("%s+$", "")
+	if uuid ~= "" then
+		vim.api.nvim_put({ uuid }, "c", true, true)
+	end
+end
+
+local function set_trailing_listchars(enabled)
+	if enabled then
+		vim.opt.listchars:append("trail:·")
+	else
+		vim.opt.listchars:remove("trail:·")
+	end
+end
+
+keymap("n", "<Space>", "<Nop>", { silent = true })
+keymap("n", "<Leader><Leader>", "<C-^>", { silent = true })
+keymap({ "n", "x", "o" }, "<Up>", "<C-W>+", { silent = true })
+keymap({ "n", "x", "o" }, "<Down>", "<C-W>-", { silent = true })
+keymap({ "n", "x", "o" }, "<Left>", "<C-W><", { silent = true })
+keymap({ "n", "x", "o" }, "<Right>", "<C-W>>", { silent = true })
+keymap("n", "<leader>m", "<cmd>nohlsearch<CR>", { silent = true })
+keymap({ "n", "x", "o" }, "Q", "gq", { silent = true })
+keymap("n", "Y", "y$")
+keymap("n", "<leader>tr", [[:%s/\s\+$<CR>]], { silent = true })
+keymap("x", "<", "<gv")
+keymap("x", ">", ">gv")
+keymap("n", "<Leader>v", "V`]")
+keymap("x", "<C-j>", ":m'>+<CR>gv=gv", { silent = true })
+keymap("x", "<C-k>", ":m-2<CR>gv=gv", { silent = true })
+keymap("x", "<C-h>", "<gv")
+keymap("x", "<C-l>", ">gv")
+keymap("x", ".", ":normal .<CR>", { silent = true })
+keymap("n", "<C-f>", "<cmd>NvimTreeFindFile<CR>", { silent = true })
+keymap("n", "gW", "<cmd>ArgWrap<CR>", { silent = true })
+keymap("n", "W", "<Plug>CamelCaseMotion_w", { remap = true, silent = true })
+keymap("x", "W", "<Plug>CamelCaseMotion_w", { remap = true, silent = true })
+keymap("o", "W", "<Plug>CamelCaseMotion_w", { remap = true, silent = true })
+keymap("n", "B", "<Plug>CamelCaseMotion_b", { remap = true, silent = true })
+keymap("x", "B", "<Plug>CamelCaseMotion_b", { remap = true, silent = true })
+keymap("o", "B", "<Plug>CamelCaseMotion_b", { remap = true, silent = true })
+keymap("n", "<Space>/", "gcc", { remap = true, silent = true })
+keymap("x", "<Space>/", "gc", { remap = true, silent = true })
+keymap("x", "I", "<Plug>(niceblock-I)", { remap = true, silent = true })
+keymap("x", "A", "<Plug>(niceblock-A)", { remap = true, silent = true })
+keymap("n", "<Leader>1", "<cmd>diffget LOCAL<CR>", { silent = true })
+keymap("n", "<Leader>2", "<cmd>diffget BASE<CR>", { silent = true })
+keymap("n", "<Leader>3", "<cmd>diffget REMOTE<CR>", { silent = true })
+keymap("n", "<leader>f", "<cmd>Telescope live_grep theme=get_dropdown<CR>", { silent = true })
+keymap("n", "<leader>a", "<cmd>Telescope grep_string theme=get_dropdown<CR>", { silent = true })
+keymap("n", "<leader>l", "<cmd>Telescope oldfiles theme=get_dropdown<CR>", { silent = true })
+keymap("n", "<C-p>", "<cmd>Telescope find_files theme=get_dropdown<CR>", { silent = true })
+keymap("n", "<leader>tt", "<cmd>TestNearest -s -vv<CR>", { silent = true })
+keymap("n", "<leader>tf", "<cmd>TestFile -s -vv<CR>", { silent = true })
+keymap("n", "<leader>ts", "<cmd>TestSuite -s --lf -vv<CR>", { silent = true })
+keymap("n", "<leader>tl", "<cmd>TestLast -s -vv<CR>", { silent = true })
+keymap("n", "<leader>tg", "<cmd>TestVisit<CR>", { silent = true })
+keymap("n", "<leader>tT", "<cmd>autocmd BufWritePost * TestNearest<CR>", { silent = true })
+keymap("n", "<leader>tF", "<cmd>autocmd BufWritePost * TestFile<CR>", { silent = true })
+keymap("n", "<leader>tq", "<cmd>autocmd! BufWritePost *<CR>", { silent = true })
+keymap("n", "<leader>gu", gen_uuid, { silent = true })
+keymap("n", "<C-w>z", "<C-W>|<C-W>_")
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+	group = legacy_group,
+	pattern = "fugitive://*",
+	callback = function()
+		vim.opt_local.bufhidden = "delete"
+	end,
+})
+
+vim.api.nvim_create_autocmd("FocusLost", {
+	group = legacy_group,
+	callback = function()
+		vim.cmd("silent! wall")
+	end,
+})
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+	group = legacy_group,
+	callback = function()
+		set_trailing_listchars(false)
+	end,
+})
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+	group = legacy_group,
+	callback = function()
+		set_trailing_listchars(true)
+	end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+	group = legacy_group,
+	callback = function()
+		if vim.bo.filetype:match("commit") then
+			return
+		end
+		local last_pos = vim.fn.line([['"]])
+		if last_pos > 0 and last_pos <= vim.fn.line("$") then
+			vim.cmd([[normal! g`"]])
+			vim.cmd("normal! zz")
+		end
+	end,
+})
+
 -- move between panes
 keymap('n', '<C-h>', '<C-w>h', { silent = true })
 keymap('n', '<C-j>', '<C-w>j', { silent = true })
@@ -241,7 +393,7 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.autoindent = true
 		vim.opt_local.colorcolumn = "110"
 		keymap("n", "<F7>", function()
-			vim.fn.BreakpointToggle(vim.fn.line("."), "debugger;")
+			breakpoint_toggle(vim.fn.line("."), "debugger;")
 		end, { buffer = ev.buf, silent = true })
 	end,
 })
@@ -265,7 +417,7 @@ vim.api.nvim_create_autocmd("FileType", {
 		end
 		vim.g.argwrap_tail_comma = 1
 		keymap("n", "<F7>", function()
-			vim.fn.BreakpointToggle(vim.fn.line("."), "breakpoint()  # XXX BREAKPOINT")
+			breakpoint_toggle(vim.fn.line("."), "breakpoint()  # XXX BREAKPOINT")
 		end, { buffer = ev.buf, silent = true })
 	end,
 })
