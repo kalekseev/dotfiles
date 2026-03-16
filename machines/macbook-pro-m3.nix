@@ -40,6 +40,11 @@
   programs.zsh.enable = true; # default shell on catalina
   # programs.fish.enable = true;
 
+  launchd.user.agents.set-maxfiles = {
+    command = "/bin/launchctl limit maxfiles 65536 200000";
+    serviceConfig.RunAtLoad = true;
+  };
+
   # Set Git commit hash for darwin-version.
   system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
 

@@ -32,7 +32,9 @@
   # Set your timezone.
   time.timeZone = "Asia/Nicosia";
 
-  # DHCP is controlled by NetworkManager
+  networking.networkmanager.enable = true;
+  networking.networkmanager.dns = "none";
+  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
 
   # Lots of stuff that uses aarch64 that claims doesn't work, but actually works.
   nixpkgs.config.allowUnfree = true;

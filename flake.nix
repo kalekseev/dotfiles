@@ -109,7 +109,7 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        vmip = "192.168.234.132";
+        vmip = "192.168.234.135";
       in
       {
         packages = {
@@ -139,7 +139,7 @@
               pkgs.rsync
             ];
             text = ''
-              ssh -o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no konstantin@${vmip} " \
+              ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no konstantin@${vmip} " \
                 sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake \"/tmp/dotfiles#vm-aarch64\" \
                "
             '';
