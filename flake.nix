@@ -1,6 +1,11 @@
 {
   description = "kalekseev nix configs";
 
+  nixConfig = {
+    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixpkgs-unstable";
     nix-darwin = {
@@ -14,8 +19,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
-    nix-ai-tools.url = "github:numtide/nix-ai-tools";
-    nix-ai-tools.inputs.nixpkgs.follows = "nixpkgs";
+    llm-agents.url = "github:numtide/llm-agents.nix";
+    llm-agents.inputs.nixpkgs.follows = "nixpkgs";
     try.url = "github:tobi/try";
     try.inputs.nixpkgs.follows = "nixpkgs";
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
@@ -26,8 +31,6 @@
     vim-qfreplace.flake = false;
     webster-dictionary.url = "https://github.com/websterParser/WebsterParser/releases/download/v2.0.3/websters-1913.dictionary.zip";
     webster-dictionary.flake = false;
-    llama-vim.url = "github:ggml-org/llama.vim/master";
-    llama-vim.flake = false;
     fold-imports-nvim.url = "github:kalekseev/fold-imports.nvim";
     fold-imports-nvim.flake = false;
   };

@@ -17,9 +17,10 @@
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
-    inputs.nix-ai-tools.packages.${pkgs.system}.codex
-    inputs.nix-ai-tools.packages.${pkgs.system}.claude-code
-    inputs.nix-ai-tools.packages.${pkgs.system}.gemini-cli
+    inputs.llm-agents.packages.${pkgs.system}.codex
+    inputs.llm-agents.packages.${pkgs.system}.claude-code
+    inputs.llm-agents.packages.${pkgs.system}.pi
+    inputs.llm-agents.packages.${pkgs.system}.opencode
     pkgs.bun
     pkgs.nodejs
     pkgs.pnpm
@@ -141,6 +142,7 @@
   };
   programs.git = {
     enable = true;
+    signing.format = null;
     ignores = [
       "*.local"
       "*.pyc"
