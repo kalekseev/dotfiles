@@ -61,6 +61,7 @@ let
         markdown
         markdown_inline
         mermaid
+        nginx
         nix
         ocaml
         po
@@ -89,6 +90,8 @@ let
   };
 in
 pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
+  withPython3 = true;
+  extraPython3Packages = ps: [ ps.pynvim ];
   neovimRcContent = ''
     source ${./init.lua}
     set rtp+=${./runtime}
@@ -107,18 +110,10 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     # -- neovim
     flash-nvim
     conform-nvim
-    # cmp-buffer
-    # cmp-nvim-lsp
-    # cmp-path
-    # cmp-vsnip
-    # cmp-nvim-lsp-signature-help
-    # cmp-calc
-    # diffview-nvim
     gitsigns-nvim
     Ionide-vim
     lualine-nvim
     mini-nvim
-    # nvim-cmp
     nvim-dap
     nvim-dap-ui
     nvim-dap-python
@@ -179,7 +174,6 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     indentLine
     smartpairs-vim
     splitjoin-vim
-    undotree
     vim-abolish
     vim-argwrap
     vim-dadbod

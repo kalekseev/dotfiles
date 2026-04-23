@@ -1,5 +1,5 @@
 return {
   cmd = { 'oxlint', '--lsp' },
-  filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
+  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
   root_markers = { '.git', '.oxlintrc.json' },
 }
