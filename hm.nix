@@ -7,6 +7,7 @@
 
   home.packages = [
     ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
+    (pkgs.callPackage ./packages/codex-auth { })
     pkgs.aws-vault
     pkgs.llama-cpp
     pkgs.uv
@@ -17,10 +18,10 @@
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
-    inputs.llm-agents.packages.${pkgs.system}.codex
-    inputs.llm-agents.packages.${pkgs.system}.claude-code
-    inputs.llm-agents.packages.${pkgs.system}.pi
-    inputs.llm-agents.packages.${pkgs.system}.opencode
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode
     pkgs.bun
     pkgs.nodejs
     pkgs.pnpm
@@ -72,7 +73,7 @@
       bindkey "^[[1;3C" forward-word
       bindkey "^[[1;3D" backward-word
 
-      # eval "$(${inputs.try.packages.${pkgs.system}.default}/bin/try init ~/code/experiments)"
+      # eval "$(${inputs.try.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/try init ~/code/experiments)"
     '';
   };
 

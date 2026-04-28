@@ -21,6 +21,8 @@
     flake-utils.url = "github:numtide/flake-utils";
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
+    llama-cpp.url = "github:ggerganov/llama.cpp";
+    llama-cpp.inputs.nixpkgs.follows = "nixpkgs";
     try.url = "github:tobi/try";
     try.inputs.nixpkgs.follows = "nixpkgs";
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
@@ -44,10 +46,29 @@
       flake-utils,
       ...
     }:
+    let
+      llamaCppBuildNumber = builtins.toString inputs.llama-cpp.lastModified;
+      llamaCppCommit = inputs.llama-cpp.shortRev;
+      llamaCppOverlay = final: prev: {
+        llama-cpp = prev.llama-cpp.overrideAttrs (_: {
+          version = llamaCppBuildNumber;
+          src = inputs.llama-cpp.outPath;
+          npmDepsHash = "sha256-RAFtsbBGBjteCt5yXhrmHL39rIDJMCFBETgzId2eRRk=";
+          postPatch = ''
+            rm -f tools/server/public/index.html.gz
+            printf '%s\n' ${llamaCppCommit} > COMMIT
+          '';
+        });
+      };
+      sharedNixpkgsModule = {
+        nixpkgs.overlays = [ llamaCppOverlay ];
+      };
+    in
     {
       # nixos-rebuild switch --flake .#vm-aarch64
       nixosConfigurations.vm-aarch64 = nixpkgs.lib.nixosSystem {
         modules = [
+          sharedNixpkgsModule
           ./machines/vm-aarch64.nix
           (
             { pkgs, ... }:
@@ -87,6 +108,7 @@
       # $ darwin-rebuild build --flake .#macbook-pro-m3
       darwinConfigurations."macbook-pro-m3" = nix-darwin.lib.darwinSystem {
         modules = [
+          sharedNixpkgsModule
           (import ./machines/macbook-pro-m3.nix { inherit inputs; })
           {
             users.users.konstantin = {
@@ -111,7 +133,10 @@
     // flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ llamaCppOverlay ];
+        };
         vmip = "192.168.234.135";
       in
       {

@@ -10,23 +10,28 @@ let
       '';
   plugins = {
     vim-coverage-py = pkgs.vimUtils.buildVimPlugin {
-      name = "vim-coverage.py";
+      pname = "vim-coverage.py";
+      version = inputs.vim-coverage-py.shortRev or "unstable";
       src = inputs.vim-coverage-py;
     };
     fold-imports-nvim = pkgs.vimUtils.buildVimPlugin {
-      name = "fold-imports.nvim";
+      pname = "fold-imports.nvim";
+      version = inputs.fold-imports-nvim.shortRev or "unstable";
       src = inputs.fold-imports-nvim;
     };
     yank-for-claude-nvim = pkgs.vimUtils.buildVimPlugin {
-      name = "yank-for-claude.nvim";
+      pname = "yank-for-claude.nvim";
+      version = inputs.yank-for-claude-nvim.shortRev or "unstable";
       src = inputs.yank-for-claude-nvim;
     };
     # llama-vim = pkgs.vimUtils.buildVimPlugin {
-    #   name = "llama-vim";
+    #   pname = "llama-vim";
+    #   version = "unstable";
     #   src = inputs.llama-vim;
     # };
     vim-qfreplace = pkgs.vimUtils.buildVimPlugin {
-      name = "vim-qfreplace";
+      pname = "vim-qfreplace";
+      version = inputs.vim-qfreplace.shortRev or "unstable";
       src = inputs.vim-qfreplace;
     };
     # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/vim/plugins/nvim-treesitter/generated.nix
