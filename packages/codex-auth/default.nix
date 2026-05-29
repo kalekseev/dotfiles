@@ -5,23 +5,23 @@
   autoPatchelfHook,
 }:
 let
-  version = "0.2.7";
+  version = "0.2.9";
   sources = {
     "aarch64-darwin" = {
       url = "https://github.com/Loongphy/codex-auth/releases/download/v${version}/codex-auth-macOS-ARM64.tar.gz";
-      sha256 = "1flciys9qjd7235ykby6s3ryz00idakj8fi773md5ljdl6wd01g1";
+      sha256 = "0b5l0zif9qp6vs8pdsv55pryf0mg04bhbn3zngsjwn65kp2lg86b";
     };
     "x86_64-darwin" = {
       url = "https://github.com/Loongphy/codex-auth/releases/download/v${version}/codex-auth-macOS-X64.tar.gz";
-      sha256 = "0x1lhh25dpf932z4whd5vz5fbnicinxhqkwswy45fqghxzh7g73q";
+      sha256 = "07763gxdhcb218cn74a65c2h2ap6g0w2a1fiq4n43v9dzpjg5bkc";
     };
     "aarch64-linux" = {
       url = "https://github.com/Loongphy/codex-auth/releases/download/v${version}/codex-auth-Linux-ARM64.tar.gz";
-      sha256 = "1kssxd09phs09f3k1i6iir6l3i12k6v5qqcvm7mxfj2phlsnv90d";
+      sha256 = "0jnzwka5bjnip49g34jlhjq6c6y240kvj2shi4zc6i6gsi0fyiww";
     };
     "x86_64-linux" = {
       url = "https://github.com/Loongphy/codex-auth/releases/download/v${version}/codex-auth-Linux-X64.tar.gz";
-      sha256 = "06sba8w68y2fmvmyiaxzh6ff04ivb92fq0rqycisj7zi3rdvg7wv";
+      sha256 = "07swhfslxh3d6qz42i6z82mwlh31r5i08c8clcxcksr260y90k89";
     };
   };
   src = fetchurl sources.${stdenv.hostPlatform.system} or (throw "unsupported system: ${stdenv.hostPlatform.system}");

@@ -8,13 +8,13 @@
   home.packages = [
     ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
     (pkgs.callPackage ./packages/codex-auth { })
+    (pkgs.callPackage ./packages/sentry-cli { })
     pkgs.aws-vault
     pkgs.llama-cpp
     pkgs.uv
     pkgs.dotnet-sdk_10
     pkgs.fd
     pkgs.ffmpeg
-    # pkgs.ollama
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
@@ -25,7 +25,6 @@
     pkgs.bun
     pkgs.nodejs
     pkgs.pnpm
-    # pkgs.devenv
     # pkgs.testdisk
     # pkgs.yubikey-manager
   ];
@@ -73,7 +72,9 @@
       bindkey "^[[1;3C" forward-word
       bindkey "^[[1;3D" backward-word
 
-      # eval "$(${inputs.try.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/try init ~/code/experiments)"
+      # eval "$(${
+        inputs.try.packages.${pkgs.stdenv.hostPlatform.system}.default
+      }/bin/try init ~/code/experiments)"
     '';
   };
 

@@ -138,8 +138,6 @@ keymap("n", "<leader>m", "<cmd>nohlsearch<CR>", { silent = true })
 keymap({ "n", "x", "o" }, "Q", "gq", { silent = true })
 keymap("n", "Y", "y$")
 keymap("n", "<leader>tr", [[:%s/\s\+$<CR>]], { silent = true })
-keymap("x", "<", "<gv")
-keymap("x", ">", ">gv")
 keymap("n", "<Leader>v", "V`]")
 keymap("x", "<C-j>", ":m'>+<CR>gv=gv", { silent = true })
 keymap("x", "<C-k>", ":m-2<CR>gv=gv", { silent = true })
@@ -232,10 +230,6 @@ require('onedark').setup {
 }
 require('onedark').load()
 require("oil").setup()
-require("fold_imports").setup({
-  auto_fold = true,
-  fold_level = 3,
-})
 require('mini.ai').setup()
 require('mini.surround').setup()
 require('mini.pairs').setup()
@@ -686,10 +680,11 @@ require("supermaven-nvim").setup({
 })
 
 local typescript_lsp = vim.fn.executable('tsgo') == 1 and 'tsgo' or 'ts_ls'
+local python_lsp = vim.fn.executable('ty') == 1 and 'ty' or 'pyright'
 
 vim.lsp.enable({
   'ruff',
-  'pyright',
+  python_lsp,
   'jsonls',
   'yamlls',
   'csharp_ls',
@@ -706,6 +701,7 @@ vim.lsp.enable({
   'lemminx',
   typescript_lsp,
   'lua_ls',
+  'ionide',
 })
 vim.lsp.config('html', {
   filetypes = { 'html', 'templ', 'htmldjango' },
@@ -860,8 +856,6 @@ vim.lsp.config('*', { capabilities = capabilities })
 
 vim.g['fsharp#lsp_auto_setup'] = 0
 vim.g['fsharp#exclude_project_directories'] = { 'paket-files' }
-
-require('ionide').setup({})
 
 -- require 'git-conflict'.setup {
 --   default_mappings = true,

@@ -14,11 +14,6 @@ let
       version = inputs.vim-coverage-py.shortRev or "unstable";
       src = inputs.vim-coverage-py;
     };
-    fold-imports-nvim = pkgs.vimUtils.buildVimPlugin {
-      pname = "fold-imports.nvim";
-      version = inputs.fold-imports-nvim.shortRev or "unstable";
-      src = inputs.fold-imports-nvim;
-    };
     yank-for-claude-nvim = pkgs.vimUtils.buildVimPlugin {
       pname = "yank-for-claude.nvim";
       version = inputs.yank-for-claude-nvim.shortRev or "unstable";
@@ -132,7 +127,7 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
           pkgs.efm-langserver
           pkgs.lemminx
           pkgs.pyright
-          pkgs.ty
+          # pkgs.ty
           pkgs.yaml-language-server
           pkgs.bash-language-server
           pkgs.vscode-langservers-extracted
@@ -171,7 +166,6 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     jdaddy-vim
     plugins.vim-coverage-py
     plugins.yank-for-claude-nvim
-    plugins.fold-imports-nvim
     asyncrun-vim
     camelcasemotion
     # direnv-vim
