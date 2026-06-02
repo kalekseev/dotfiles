@@ -7,11 +7,11 @@
 
   home.packages = [
     ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; })
-    (pkgs.callPackage ./packages/codex-auth { })
     (pkgs.callPackage ./packages/sentry-cli { })
     pkgs.aws-vault
     pkgs.llama-cpp
     pkgs.uv
+    pkgs.qemu
     pkgs.dotnet-sdk_10
     pkgs.fd
     pkgs.ffmpeg
@@ -22,6 +22,8 @@
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex-auth
     pkgs.bun
     pkgs.nodejs
     pkgs.pnpm
