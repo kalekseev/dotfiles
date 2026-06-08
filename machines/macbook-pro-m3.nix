@@ -12,6 +12,19 @@
         "nix-command"
         "flakes"
       ];
+      # Hard-link identical files in the store to save space.
+      auto-optimise-store = true;
+    };
+
+    # Garbage collect old generations on a schedule.
+    gc = {
+      automatic = true;
+      interval = {
+        Weekday = 7;
+        Hour = 8;
+        Minute = 15;
+      };
+      options = "--delete-older-than 14d";
     };
   };
 
@@ -99,6 +112,9 @@
       autoUpdate = true;
       cleanup = "zap";
       upgrade = true;
+      extraFlags = [
+        "--force-cleanup"
+      ];
     };
     casks = [
       "antinote"

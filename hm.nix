@@ -62,6 +62,42 @@
     ".psqlrc".source = ./configs/psqlrc;
   };
 
+  # Periodically garbage collect old per-user (home-manager) generations.
+  # The system-level nix.gc runs as root and does not trim these.
+  systemd.user.services.nix-user-gc = lib.mkIf pkgs.stdenv.isLinux {
+    Unit.Description = "Garbage collect old home-manager generations";
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.nix}/bin/nix-collect-garbage --delete-older-than 14d";
+    };
+  };
+  systemd.user.timers.nix-user-gc = lib.mkIf pkgs.stdenv.isLinux {
+    Unit.Description = "Weekly home-manager garbage collection";
+    Timer = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
+
+  launchd.agents.nix-user-gc = lib.mkIf pkgs.stdenv.isDarwin {
+    enable = true;
+    config = {
+      ProgramArguments = [
+        "${pkgs.nix}/bin/nix-collect-garbage"
+        "--delete-older-than"
+        "14d"
+      ];
+      StartCalendarInterval = [
+        {
+          Weekday = 0;
+          Hour = 8;
+          Minute = 30;
+        }
+      ];
+    };
+  };
+
   programs.zsh = {
     enable = true;
     initContent = ''

@@ -12,6 +12,16 @@
       keep-outputs = true
       keep-derivations = true
     '';
+
+    # Hard-link identical files in the store to save space.
+    settings.auto-optimise-store = true;
+
+    # Garbage collect old generations on a schedule.
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 14d";
+    };
   };
 
   # Setup qemu so we can run x86_64 binaries

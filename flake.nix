@@ -11,7 +11,7 @@
     nix-darwin = {
       # problems:
       # https://github.com/NixOS/nix/issues/2982
-      url = "github:LnL7/nix-darwin?ref=master";
+      url = "github:LnL7/nix-darwin?ref=nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
