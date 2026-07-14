@@ -24,7 +24,8 @@
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex-auth
-    pkgs.bun
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hunk
+    inputs.msgvault.packages.${pkgs.stdenv.hostPlatform.system}.msgvault
     pkgs.nodejs
     pkgs.pnpm
     # pkgs.testdisk
@@ -199,7 +200,10 @@
         # Show branches, verbosely, sorted by last touch, with commit messages.
         brv = "!f() { git branch --sort=-creatordate --color=always --format='%(color:reset)%(creatordate:short) %(color:bold white)%(align:2,right)%(upstream:trackshort)%(end)%(color:nobold) %(align:40,left)%(color:yellow)%(refname:short)%(end) %(color:reset)%(contents:subject)'; }; f";
       };
-      core.editor = "nvim";
+      core = {
+        editor = "nvim";
+        untrackedCache = true;
+      };
       github.user = "kalekseev";
       color.ui = "auto";
       color.status = {

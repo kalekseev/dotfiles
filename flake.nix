@@ -23,6 +23,9 @@
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
     try.url = "github:tobi/try";
     try.inputs.nixpkgs.follows = "nixpkgs";
+    msgvault.url = "github:kenn-io/msgvault";
+    msgvault.inputs.flake-utils.follows = "flake-utils";
+    msgvault.inputs.nixpkgs.follows = "nixpkgs";
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
     vim-coverage-py.flake = false;
     yank-for-claude-nvim.url = "github:wasabeef/yank-for-claude.nvim/5879059decfd16c2f983c0d27e0247fede5dff4d";

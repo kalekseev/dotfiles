@@ -112,15 +112,15 @@
       autoUpdate = true;
       cleanup = "zap";
       upgrade = true;
-      extraFlags = [
-        "--force-cleanup"
-      ];
     };
+    taps = [
+      "nkzw-tech/tap"
+    ];
     casks = [
+      "nkzw-tech/tap/codiff"
       "antinote"
       "bitwarden"
       "chatgpt"
-      "codex-app"
       "epic-games"
       "firefox"
       "google-chrome"
