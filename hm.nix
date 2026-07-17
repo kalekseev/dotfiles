@@ -30,6 +30,9 @@
     pkgs.pnpm
     # pkgs.testdisk
     # pkgs.yubikey-manager
+  ]
+  ++ lib.optionals pkgs.stdenv.isDarwin [
+    (pkgs.callPackage ./packages/fastmail-cli { })
   ];
   home.stateVersion = "24.05";
 
@@ -54,7 +57,7 @@
     gs = "git status";
     gp = "git push";
     gl = "git pull";
-    gd = "git diff";
+    gd = "git -c diff.external=difft diff";
     vim = "nvim";
     da = "django-admin";
   };
@@ -176,7 +179,7 @@
 
   programs.difftastic = {
     enable = true;
-    git.enable = true;
+    git.enable = false;
     options = {
       background = "light";
     };

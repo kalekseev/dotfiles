@@ -119,6 +119,7 @@
       in
       {
         packages = {
+          fastmail-cli = pkgs.callPackage ./packages/fastmail-cli { };
           neovim = ((import ./packages/neovim/neovim.nix) { inherit pkgs inputs; });
           vm-copy = pkgs.writeShellApplication {
             name = "vm-copy";

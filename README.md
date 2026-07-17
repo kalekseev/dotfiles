@@ -23,3 +23,5 @@ Updating deps (flake.lock):
 ## Packages
 
 - neovim - `nix run github:kalekseev/dotfiles#neovim`
+- fastmail-cli - read-only Fastmail CLI for agents; see
+  [`packages/fastmail-cli/README.md`](packages/fastmail-cli/README.md)
