@@ -64,10 +64,6 @@
 
   home.file = {
     ".psqlrc".source = ./configs/psqlrc;
-  }
-  // lib.optionalAttrs pkgs.stdenv.isLinux {
-    # System ncurses only searches ~/.terminfo and the system db, not the nix profile.
-    ".terminfo/x/xterm-ghostty".source = "${pkgs.ghostty.terminfo}/share/terminfo/x/xterm-ghostty";
   };
 
   # Periodically garbage collect old per-user (home-manager) generations.
