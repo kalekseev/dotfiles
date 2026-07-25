@@ -45,6 +45,22 @@
   networking.networkmanager.enable = true;
   networking.networkmanager.dns = "none";
   networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
+  # Static IP outside Fusion NAT DHCP pool (192.168.234.128-254).
+  networking.networkmanager.ensureProfiles.profiles."enp2s0" = {
+    connection = {
+      id = "enp2s0";
+      type = "ethernet";
+      interface-name = "enp2s0";
+      autoconnect = true;
+    };
+    ipv4 = {
+      method = "manual";
+      address1 = "192.168.234.10/24,192.168.234.2";
+      dns = "8.8.8.8;8.8.4.4";
+      may-fail = false;
+    };
+    ipv6.method = "disabled";
+  };
 
   # Lots of stuff that uses aarch64 that claims doesn't work, but actually works.
   nixpkgs.config.allowUnfree = true;

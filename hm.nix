@@ -64,6 +64,10 @@
 
   home.file = {
     ".psqlrc".source = ./configs/psqlrc;
+  }
+  // lib.optionalAttrs pkgs.stdenv.isLinux {
+    # System ncurses only searches ~/.terminfo and the system db, not the nix profile.
+    ".terminfo/x/xterm-ghostty".source = "${pkgs.ghostty.terminfo}/share/terminfo/x/xterm-ghostty";
   };
 
   # Periodically garbage collect old per-user (home-manager) generations.
@@ -245,6 +249,31 @@
     includes = [ { path = "~/.gitconfig.local"; } ];
     lfs.enable = true;
     lfs.skipSmudge = true;
+  };
+  programs.ssh = lib.mkIf pkgs.stdenv.isDarwin {
+    enable = true;
+    enableDefaultConfig = false;
+    includes = [ "~/.orbstack/ssh/config" ];
+    settings = {
+      "*" = {
+        IdentityAgent = "~/.bitwarden-ssh-agent.sock";
+        IdentityFile = "none";
+      };
+      "192.168.234.11 vm-ubuntu" = {
+        HostName = "192.168.234.11";
+        User = "konstantin";
+        ForwardAgent = true;
+      };
+      "192.168.234.10 vm-aarch64" = {
+        HostName = "192.168.234.10";
+        User = "konstantin";
+        ForwardAgent = true;
+      };
+      "i-*" = {
+        User = "ec2-user";
+        ProxyCommand = "sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"";
+      };
+    };
   };
   programs.ghostty = {
     enable = true;

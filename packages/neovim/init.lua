@@ -663,21 +663,21 @@ require('blink.cmp').setup({
   fuzzy = { implementation = "prefer_rust_with_warning" }
 })
 
-require("supermaven-nvim").setup({
-  keymaps = {
-    accept_suggestion = "<C-y>",
-    clear_suggestion = "<C-]>",
-    accept_word = "<C-j>",
-  },
-  ignore_filetypes = { cpp = true },
-  -- color = {
-  --   suggestion_color = "#ffffff",
-  --   cterm = 244,
-  -- },
-  log_level = "info",                -- set to "off" to disable logging completely
-  disable_inline_completion = false, -- disables inline completion for use with cmp
-  disable_keymaps = false            -- disables built in keymaps for more manual control
-})
+-- require("supermaven-nvim").setup({
+--   keymaps = {
+--     accept_suggestion = "<C-y>",
+--     clear_suggestion = "<C-]>",
+--     accept_word = "<C-j>",
+--   },
+--   ignore_filetypes = { cpp = true },
+--   -- color = {
+--   --   suggestion_color = "#ffffff",
+--   --   cterm = 244,
+--   -- },
+--   log_level = "info",                -- set to "off" to disable logging completely
+--   disable_inline_completion = false, -- disables inline completion for use with cmp
+--   disable_keymaps = false            -- disables built in keymaps for more manual control
+-- })
 
 local typescript_lsp = vim.fn.executable('tsgo') == 1 and 'tsgo' or 'ts_ls'
 local python_lsp = vim.fn.executable('ty') == 1 and 'ty' or 'pyright'

@@ -103,7 +103,7 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
     fileline-nvim
     SchemaStore-nvim
     efmls-configs-nvim
-    supermaven-nvim
+    # supermaven-nvim
     markview-nvim
     FixCursorHold-nvim
     neotest-python
