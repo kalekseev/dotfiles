@@ -25,7 +25,6 @@
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex-auth
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hunk
-    inputs.msgvault.packages.${pkgs.stdenv.hostPlatform.system}.msgvault
     pkgs.nodejs
     pkgs.pnpm
     # pkgs.testdisk
@@ -33,6 +32,7 @@
   ]
   ++ lib.optionals pkgs.stdenv.isDarwin [
     (pkgs.callPackage ./packages/fastmail-cli { })
+    inputs.msgvault.packages.${pkgs.stdenv.hostPlatform.system}.msgvault
   ];
   home.stateVersion = "24.05";
 
