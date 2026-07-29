@@ -52,6 +52,9 @@
     SSH_AUTH_SOCK = "/Users/konstantin/.bitwarden-ssh-agent.sock";
   };
 
+  # Hide the current input source bubble next to the text cursor.
+  targets.darwin.defaults.NSGlobalDomain.TSMLanguageIndicatorEnabled = false;
+
   home.shellAliases = {
     g = "git";
     gs = "git status";
