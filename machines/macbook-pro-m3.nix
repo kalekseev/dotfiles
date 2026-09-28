@@ -54,7 +54,7 @@
   # programs.fish.enable = true;
 
   environment.interactiveShellInit = ''
-    ulimit -Sn 10240
+    ulimit -Sn 65536
   '';
 
   # Set Git commit hash for darwin-version.
@@ -117,19 +117,22 @@
       "nkzw-tech/tap"
     ];
     casks = [
-      "nkzw-tech/tap/codiff"
+      "amneziavpn"
       "antinote"
+      "anydesk"
       "bitwarden"
       "chatgpt"
       "epic-games"
       "firefox"
       "google-chrome"
+      "handy"
       "iina"
       "imazing"
+      "microsoft-teams"
+      "nkzw-tech/tap/codiff"
       "nordvpn"
       "obsidian"
       "onedrive"
-      "anydesk"
       "orbstack"
       "outline-manager"
       "quicklook-video"
@@ -137,14 +140,12 @@
       "samsung-magician"
       "spotify"
       "tailscale-app"
-      "amneziavpn"
       "telegram"
       "transmission"
       "vmware-fusion"
+      "windows-app"
       "zed"
       "zoom"
-      "microsoft-teams"
-      "windows-app"
     ];
   };
 }

@@ -144,6 +144,7 @@ func TestJMAPClientDoesNotFollowRedirectsWithBearerToken(t *testing.T) {
 func TestSearchSendsNormalizedUTCDateFilter(t *testing.T) {
 	receivedAfter := make(chan string, 1)
 	receivedNotKeyword := make(chan string, 1)
+	receivedInMailbox := make(chan string, 1)
 	var server *httptest.Server
 	server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -175,6 +176,7 @@ func TestSearchSendsNormalizedUTCDateFilter(t *testing.T) {
 			}
 			receivedAfter <- arguments.Filter.After
 			receivedNotKeyword <- arguments.Filter.NotKeyword
+			receivedInMailbox <- arguments.Filter.InMailbox
 			writeTestJSON(t, w, map[string]any{"methodResponses": []any{
 				[]any{"Email/query", map[string]any{"ids": []string{}, "position": 0, "total": 0}, "query"},
 			}})
@@ -192,6 +194,7 @@ func TestSearchSendsNormalizedUTCDateFilter(t *testing.T) {
 		Filter: searchFilter{
 			After:      "2026-07-17T12:00:00+03:00",
 			NotKeyword: "$seen",
+			InMailbox:  "mailbox-1",
 		},
 		Limit: 1,
 	}); err != nil {
@@ -202,6 +205,115 @@ func TestSearchSendsNormalizedUTCDateFilter(t *testing.T) {
 	}
 	if got := <-receivedNotKeyword; got != "$seen" {
 		t.Fatalf("JMAP filter used notKeyword %q, want $seen", got)
+	}
+	if got := <-receivedInMailbox; got != "mailbox-1" {
+		t.Fatalf("JMAP filter used inMailbox %q, want mailbox-1", got)
+	}
+}
+
+func TestResolveMailboxByRoleNameAndPath(t *testing.T) {
+	mailboxes := []mailbox{
+		{ID: "mb-inbox", Name: "Inbox", Role: "inbox", TotalEmails: 10, UnreadEmails: 2},
+		{ID: "mb-business", Name: "Business", ParentID: "mb-inbox", TotalEmails: 3, UnreadEmails: 1},
+		{ID: "mb-archive", Name: "Archive", Role: "archive", TotalEmails: 100, UnreadEmails: 0},
+		{ID: "mb-other-business", Name: "Business", ParentID: "mb-archive", TotalEmails: 1, UnreadEmails: 0},
+	}
+	infos := mailboxInfos(mailboxes)
+	if len(infos) != 4 {
+		t.Fatalf("expected 4 mailboxes, got %d", len(infos))
+	}
+	if infos[0].Path != "Archive" || infos[1].Path != "Archive/Business" || infos[2].Path != "Inbox" || infos[3].Path != "Inbox/Business" {
+		t.Fatalf("unexpected mailbox order/paths: %+v", infos)
+	}
+
+	var server *httptest.Server
+	server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/session":
+			writeTestJSON(t, w, map[string]any{
+				"apiUrl":          server.URL + "/api",
+				"downloadUrl":     server.URL + "/download/{accountId}/{blobId}/{name}?type={type}",
+				"primaryAccounts": map[string]string{mailCapability: "account-1"},
+			})
+		case "/api":
+			var request struct {
+				MethodCalls []json.RawMessage `json:"methodCalls"`
+			}
+			if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+				t.Error(err)
+				return
+			}
+			var tuple []json.RawMessage
+			if err := json.Unmarshal(request.MethodCalls[0], &tuple); err != nil {
+				t.Error(err)
+				return
+			}
+			var name string
+			_ = json.Unmarshal(tuple[0], &name)
+			if name != "Mailbox/get" {
+				t.Errorf("unexpected method %q", name)
+				return
+			}
+			list := make([]any, 0, len(mailboxes))
+			for _, box := range mailboxes {
+				list = append(list, map[string]any{
+					"id":           box.ID,
+					"name":         box.Name,
+					"role":         box.Role,
+					"parentId":     box.ParentID,
+					"totalEmails":  box.TotalEmails,
+					"unreadEmails": box.UnreadEmails,
+				})
+			}
+			writeTestJSON(t, w, map[string]any{"methodResponses": []any{
+				[]any{"Mailbox/get", map[string]any{"list": list}, "mailboxes"},
+			}})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer server.Close()
+
+	client := newJMAPClient("test-token", t.TempDir())
+	client.sessionURL = server.URL + "/session"
+	client.allowTestServer = true
+	client.httpClient = server.Client()
+
+	inbox, err := client.resolveMailbox(context.Background(), "inbox")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if inbox.ID != "mb-inbox" || inbox.Path != "Inbox" || inbox.Unread != 2 {
+		t.Fatalf("unexpected inbox resolution: %+v", inbox)
+	}
+
+	business, err := client.resolveMailbox(context.Background(), "Inbox/Business")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if business.ID != "mb-business" {
+		t.Fatalf("unexpected path resolution: %+v", business)
+	}
+
+	if _, err := client.resolveMailbox(context.Background(), "Business"); err == nil {
+		t.Fatal("ambiguous leaf name should fail")
+	}
+
+	byID, err := client.resolveMailbox(context.Background(), "mb-archive")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if byID.Role != "archive" {
+		t.Fatalf("unexpected id resolution: %+v", byID)
+	}
+}
+
+func TestIsUnread(t *testing.T) {
+	if !isUnread(nil) || !isUnread(map[string]bool{}) {
+		t.Fatal("missing $seen should count as unread")
+	}
+	if isUnread(map[string]bool{"$seen": true}) {
+		t.Fatal("$seen should count as read")
 	}
 }
 
@@ -263,7 +375,7 @@ func TestSearchReadAndDownload(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if total != 1 || len(messages) != 1 || messages[0].Attachments[0].ID != "blob-1" {
+	if total != 1 || len(messages) != 1 || messages[0].Attachments[0].ID != "blob-1" || !messages[0].Unread {
 		t.Fatalf("unexpected search result: total=%d messages=%+v", total, messages)
 	}
 
@@ -320,6 +432,7 @@ func sampleEmail() map[string]any {
 		"from":          []any{map[string]any{"name": "Sender", "email": "sender@example.com"}},
 		"to":            []any{map[string]any{"email": "me@example.com"}},
 		"preview":       "Hello from Fastmail",
+		"keywords":      map[string]any{},
 		"hasAttachment": true,
 		"textBody":      []any{map[string]any{"partId": "body-1", "type": "text/plain"}},
 		"htmlBody":      []any{map[string]any{"partId": "body-2", "type": "text/html"}},

@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	draftCreationID      = "draft"
-	submissionCreationID = "send"
+	draftCreationID       = "draft"
+	replacementCreationID = "replacement"
+	submissionCreationID  = "send"
 )
 
 type identity struct {
@@ -25,17 +26,8 @@ type messageBody struct {
 	HTML  string
 }
 
-type mailbox struct {
-	ID   string `json:"id"`
-	Role string `json:"role"`
-}
-
 type identityGetResponse struct {
 	List []identity `json:"list"`
-}
-
-type mailboxGetResponse struct {
-	List []mailbox `json:"list"`
 }
 
 type setError struct {
@@ -48,15 +40,37 @@ type createdObject struct {
 }
 
 type setResponse struct {
-	Created    map[string]createdObject   `json:"created"`
-	NotCreated map[string]setError        `json:"notCreated"`
-	Updated    map[string]json.RawMessage `json:"updated"`
-	NotUpdated map[string]setError        `json:"notUpdated"`
+	NewState     string                     `json:"newState"`
+	Created      map[string]createdObject   `json:"created"`
+	NotCreated   map[string]setError        `json:"notCreated"`
+	Updated      map[string]json.RawMessage `json:"updated"`
+	NotUpdated   map[string]setError        `json:"notUpdated"`
+	Destroyed    []string                   `json:"destroyed"`
+	NotDestroyed map[string]setError        `json:"notDestroyed"`
 }
 
 type draftResult struct {
 	ID string
 	To []address
+}
+
+type draftChanges struct {
+	Subject    *string
+	Body       *messageBody
+	Recipients []address
+}
+
+type draftTarget struct {
+	State         string
+	HasAttachment bool
+	Email         map[string]any
+}
+
+type draftEditResult struct {
+	ID         string
+	ReplacedID string
+	Updated    []string
+	Warning    string
 }
 
 type sendResult struct {
@@ -152,6 +166,168 @@ func (c *jmapClient) createReplyDraft(
 		return draftResult{}, err
 	}
 	return draftResult{ID: emailID, To: recipients}, nil
+}
+
+func (c *jmapClient) editDraft(ctx context.Context, draftID string, changes draftChanges) (draftEditResult, error) {
+	target, err := c.draftTarget(ctx, draftID, true)
+	if err != nil {
+		return draftEditResult{}, err
+	}
+	if changes.Body != nil && target.HasAttachment {
+		return draftEditResult{}, fmt.Errorf("draft %s has attachments. Body replacement removes them", draftID)
+	}
+
+	replacement := target.Email
+	sanitizeDraftBody(replacement)
+	updated := make([]string, 0, 3)
+	if len(changes.Recipients) > 0 {
+		replacement["to"] = changes.Recipients
+		updated = append(updated, "to")
+	}
+	if changes.Subject != nil {
+		replacement["subject"] = *changes.Subject
+		updated = append(updated, "subject")
+	}
+	if changes.Body != nil {
+		setMessageBody(replacement, *changes.Body)
+		updated = append(updated, "body")
+	}
+
+	session, err := c.getSession(ctx)
+	if err != nil {
+		return draftEditResult{}, err
+	}
+	responses, err := c.call(ctx, methodCall{
+		Name: "Email/set",
+		ID:   "edit-draft",
+		Args: map[string]any{
+			"accountId": session.PrimaryAccounts[mailCapability],
+			"ifInState": target.State,
+			"create":    map[string]any{replacementCreationID: replacement},
+		},
+	})
+	if err != nil {
+		return draftEditResult{}, fmt.Errorf("edit draft: %w", err)
+	}
+	replacementID, err := createdID(responses["edit-draft"].Args, replacementCreationID)
+	if err != nil {
+		return draftEditResult{}, fmt.Errorf("edit draft: %w", err)
+	}
+	result := draftEditResult{ID: replacementID, ReplacedID: draftID, Updated: updated}
+	newState, err := newSetState(responses["edit-draft"].Args)
+	if err != nil {
+		result.Warning = fmt.Sprintf("replacement draft %s was created, but original draft %s was retained: %v", replacementID, draftID, err)
+		return result, nil
+	}
+	if err := c.destroyDraftAtState(ctx, draftID, newState); err != nil {
+		result.Warning = fmt.Sprintf("replacement draft %s was created, but original draft %s was retained: %v", replacementID, draftID, err)
+	}
+	return result, nil
+}
+
+func (c *jmapClient) deleteDraft(ctx context.Context, draftID string) error {
+	target, err := c.draftTarget(ctx, draftID, false)
+	if err != nil {
+		return err
+	}
+	return c.destroyDraftAtState(ctx, draftID, target.State)
+}
+
+func (c *jmapClient) destroyDraftAtState(ctx context.Context, draftID, state string) error {
+	session, err := c.getSession(ctx)
+	if err != nil {
+		return err
+	}
+	responses, err := c.call(ctx, methodCall{
+		Name: "Email/set",
+		ID:   "delete-draft",
+		Args: map[string]any{
+			"accountId": session.PrimaryAccounts[mailCapability],
+			"ifInState": state,
+			"destroy":   []string{draftID},
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("delete draft: %w", err)
+	}
+	if err := destroyedObject(responses["delete-draft"].Args, draftID); err != nil {
+		return fmt.Errorf("delete draft: %w", err)
+	}
+	return nil
+}
+
+func (c *jmapClient) draftTarget(ctx context.Context, draftID string, includeContent bool) (draftTarget, error) {
+	mailboxes, err := c.getMailboxes(ctx)
+	if err != nil {
+		return draftTarget{}, err
+	}
+	draftsID := ""
+	for _, mailbox := range mailboxes {
+		if mailbox.Role == "drafts" {
+			draftsID = mailbox.ID
+			break
+		}
+	}
+	if draftsID == "" {
+		return draftTarget{}, fmt.Errorf("Fastmail account has no drafts mailbox")
+	}
+	session, err := c.getSession(ctx)
+	if err != nil {
+		return draftTarget{}, err
+	}
+	properties := []string{"id", "mailboxIds", "keywords", "hasAttachment"}
+	if includeContent {
+		properties = append(properties,
+			"from", "to", "cc", "bcc", "replyTo", "subject", "sentAt", "receivedAt",
+			"inReplyTo", "references", "bodyStructure", "bodyValues",
+		)
+	}
+	arguments := map[string]any{
+		"accountId":  session.PrimaryAccounts[mailCapability],
+		"ids":        []string{draftID},
+		"properties": properties,
+	}
+	if includeContent {
+		arguments["fetchAllBodyValues"] = true
+		arguments["maxBodyValueBytes"] = 0
+	}
+	responses, err := c.call(ctx, methodCall{
+		Name: "Email/get",
+		ID:   "draft-target",
+		Args: arguments,
+	})
+	if err != nil {
+		return draftTarget{}, fmt.Errorf("read draft: %w", err)
+	}
+	var got struct {
+		State string            `json:"state"`
+		List  []json.RawMessage `json:"list"`
+	}
+	if err := json.Unmarshal(responses["draft-target"].Args, &got); err != nil {
+		return draftTarget{}, fmt.Errorf("decode draft: %w", err)
+	}
+	if len(got.List) != 1 {
+		return draftTarget{}, fmt.Errorf("draft %s not found", draftID)
+	}
+	var draft jmapEmail
+	if err := json.Unmarshal(got.List[0], &draft); err != nil {
+		return draftTarget{}, fmt.Errorf("decode draft properties: %w", err)
+	}
+	if !draft.Keywords["$draft"] || !draft.MailboxIDs[draftsID] {
+		return draftTarget{}, fmt.Errorf("email %s is not a draft", draftID)
+	}
+	if got.State == "" {
+		return draftTarget{}, fmt.Errorf("Fastmail did not return the draft state")
+	}
+	target := draftTarget{State: got.State, HasAttachment: draft.HasAttachment}
+	if includeContent {
+		if err := json.Unmarshal(got.List[0], &target.Email); err != nil {
+			return draftTarget{}, fmt.Errorf("decode draft content: %w", err)
+		}
+		delete(target.Email, "id")
+		delete(target.Email, "hasAttachment")
+	}
+	return target, nil
 }
 
 func (c *jmapClient) sendSelf(ctx context.Context, subject string, body messageBody) (sendResult, error) {
@@ -290,26 +466,12 @@ func (c *jmapClient) selfDelivery(ctx context.Context, requireSentMailbox bool) 
 		return selfDelivery{}, fmt.Errorf("no sending identity exactly matches the Fastmail account username")
 	}
 
-	responses, err = c.call(
-		ctx,
-		methodCall{
-			Name: "Mailbox/get",
-			ID:   "mailboxes",
-			Args: map[string]any{
-				"accountId":  session.PrimaryAccounts[mailCapability],
-				"properties": []string{"id", "role"},
-			},
-		},
-	)
+	mailboxes, err := c.getMailboxes(ctx)
 	if err != nil {
 		return selfDelivery{}, err
 	}
-	var mailboxes mailboxGetResponse
-	if err := json.Unmarshal(responses["mailboxes"].Args, &mailboxes); err != nil {
-		return selfDelivery{}, fmt.Errorf("decode Mailbox/get: %w", err)
-	}
 	delivery := selfDelivery{Identity: selected}
-	for _, candidate := range mailboxes.List {
+	for _, candidate := range mailboxes {
 		switch candidate.Role {
 		case "drafts":
 			delivery.DraftsID = candidate.ID
@@ -347,27 +509,7 @@ func (c *jmapClient) createDraftEmail(
 		"to":         recipients,
 		"subject":    subject,
 	}
-	if body.HTML == "" {
-		email["bodyStructure"] = map[string]any{
-			"partId": "text",
-			"type":   "text/plain",
-		}
-		email["bodyValues"] = map[string]any{
-			"text": map[string]string{"value": body.Plain},
-		}
-	} else {
-		email["bodyStructure"] = map[string]any{
-			"type": "multipart/alternative",
-			"subParts": []map[string]any{
-				{"partId": "text", "type": "text/plain"},
-				{"partId": "html", "type": "text/html"},
-			},
-		}
-		email["bodyValues"] = map[string]any{
-			"text": map[string]string{"value": body.Plain},
-			"html": map[string]string{"value": body.HTML},
-		}
-	}
+	setMessageBody(email, body)
 	if len(inReplyTo) > 0 {
 		email["inReplyTo"] = inReplyTo
 	}
@@ -395,6 +537,57 @@ func (c *jmapClient) createDraftEmail(
 		return "", fmt.Errorf("create draft: %w", err)
 	}
 	return emailID, nil
+}
+
+func setMessageBody(email map[string]any, body messageBody) {
+	if body.HTML == "" {
+		email["bodyStructure"] = map[string]any{
+			"partId": "text",
+			"type":   "text/plain",
+		}
+		email["bodyValues"] = map[string]any{
+			"text": map[string]string{"value": body.Plain},
+		}
+	} else {
+		email["bodyStructure"] = map[string]any{
+			"type": "multipart/alternative",
+			"subParts": []map[string]any{
+				{"partId": "text", "type": "text/plain"},
+				{"partId": "html", "type": "text/html"},
+			},
+		}
+		email["bodyValues"] = map[string]any{
+			"text": map[string]string{"value": body.Plain},
+			"html": map[string]string{"value": body.HTML},
+		}
+	}
+}
+
+func sanitizeDraftBody(email map[string]any) {
+	bodyValues, _ := email["bodyValues"].(map[string]any)
+	structure, _ := email["bodyStructure"].(map[string]any)
+	sanitizeDraftBodyPart(structure, bodyValues)
+}
+
+func sanitizeDraftBodyPart(part map[string]any, bodyValues map[string]any) {
+	if part == nil {
+		return
+	}
+	partID, _ := part["partId"].(string)
+	_, hasBodyValue := bodyValues[partID]
+	if partID != "" && hasBodyValue {
+		delete(part, "blobId")
+		delete(part, "size")
+		delete(part, "charset")
+	} else if _, hasBlob := part["blobId"]; hasBlob {
+		delete(part, "partId")
+		delete(part, "size")
+	}
+	subParts, _ := part["subParts"].([]any)
+	for _, raw := range subParts {
+		child, _ := raw.(map[string]any)
+		sanitizeDraftBodyPart(child, bodyValues)
+	}
 }
 
 func newHTMLMessageBody(value string) messageBody {
@@ -592,4 +785,41 @@ func createdID(raw json.RawMessage, creationID string) (string, error) {
 		return "", fmt.Errorf("Fastmail rejected creation: %s", description)
 	}
 	return "", fmt.Errorf("Fastmail response did not contain a created object")
+}
+
+func newSetState(raw json.RawMessage) (string, error) {
+	var response setResponse
+	if err := json.Unmarshal(raw, &response); err != nil {
+		return "", fmt.Errorf("decode set response: %w", err)
+	}
+	if response.NewState == "" {
+		return "", fmt.Errorf("Fastmail response did not contain the new email state")
+	}
+	return response.NewState, nil
+}
+
+func destroyedObject(raw json.RawMessage, objectID string) error {
+	var response setResponse
+	if err := json.Unmarshal(raw, &response); err != nil {
+		return fmt.Errorf("decode set response: %w", err)
+	}
+	for _, destroyed := range response.Destroyed {
+		if destroyed == objectID {
+			return nil
+		}
+	}
+	if rejected, ok := response.NotDestroyed[objectID]; ok {
+		return fmt.Errorf("Fastmail rejected deletion: %s", setErrorDescription(rejected))
+	}
+	return fmt.Errorf("Fastmail response did not confirm the deletion")
+}
+
+func setErrorDescription(rejected setError) string {
+	if rejected.Description != "" {
+		return rejected.Description
+	}
+	if rejected.Type != "" {
+		return rejected.Type
+	}
+	return "unknown error"
 }

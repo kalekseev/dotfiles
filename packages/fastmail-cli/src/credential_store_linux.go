@@ -1,4 +1,4 @@
-//go:build darwin
+//go:build linux
 
 package main
 
@@ -12,10 +12,11 @@ import (
 )
 
 const (
-	credentialStoreName    = "macOS Keychain"
-	credentialStoreProgram = "/usr/bin/security"
+	credentialStoreName    = "Secret Service"
 	credentialStoreService = "fastmail-cli"
 )
+
+var credentialStoreProgram = "secret-tool"
 
 func credentialStoreAccount() (string, error) {
 	current, err := user.Current()
@@ -36,24 +37,27 @@ func readTokenFromCredentialStore() (string, error) {
 
 	cmd := exec.Command(
 		credentialStoreProgram,
-		"find-generic-password",
-		"-a", account,
-		"-s", credentialStoreService,
-		"-w",
+		"lookup",
+		"service", credentialStoreService,
+		"account", account,
 	)
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	output, err := cmd.Output()
 	if err != nil {
+		detail := strings.TrimSpace(stderr.String())
+		if detail == "" {
+			detail = err.Error()
+		}
 		return "", fmt.Errorf(
-			"read Fastmail token from Keychain: %s (run `fastmail auth set`)",
-			strings.TrimSpace(stderr.String()),
+			"read Fastmail token from Secret Service: %s (run `fastmail auth set`)",
+			detail,
 		)
 	}
 
 	token := strings.TrimSpace(string(output))
 	if token == "" {
-		return "", fmt.Errorf("read Fastmail token from Keychain: stored value is empty")
+		return "", fmt.Errorf("read Fastmail token from Secret Service: stored value is empty")
 	}
 	return token, nil
 }
@@ -66,19 +70,16 @@ func setTokenInCredentialStore(stdin io.Reader, stdout, stderr io.Writer) error 
 
 	cmd := exec.Command(
 		credentialStoreProgram,
-		"add-generic-password",
-		"-U",
-		"-a", account,
-		"-s", credentialStoreService,
-		"-D", "Fastmail API token",
-		"-j", "Read-only token used by the fastmail CLI",
-		"-w", // Last means security(1) prompts without echoing the password.
+		"store",
+		"--label=Fastmail API token",
+		"service", credentialStoreService,
+		"account", account,
 	)
 	cmd.Stdin = stdin
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("store Fastmail token in Keychain: %w", err)
+		return fmt.Errorf("store Fastmail token in Secret Service: %w", err)
 	}
 	return nil
 }
@@ -90,9 +91,9 @@ func tokenExistsInCredentialStore() bool {
 	}
 	cmd := exec.Command(
 		credentialStoreProgram,
-		"find-generic-password",
-		"-a", account,
-		"-s", credentialStoreService,
+		"lookup",
+		"service", credentialStoreService,
+		"account", account,
 	)
 	cmd.Stdout = nil
 	cmd.Stderr = nil

@@ -20,11 +20,10 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    # codex 0.156.1: pinned until https://github.com/numtide/llm-agents.nix/issues/9887 is fixed
+    llm-agents-codex.url = "github:numtide/llm-agents.nix/e122cf669d6b529272fe1294bd9d2c458c2cb9ea";
     try.url = "github:tobi/try";
     try.inputs.nixpkgs.follows = "nixpkgs";
-    msgvault.url = "github:kenn-io/msgvault";
-    msgvault.inputs.flake-utils.follows = "flake-utils";
-    msgvault.inputs.nixpkgs.follows = "nixpkgs";
     vim-coverage-py.url = "github:kalekseev/vim-coverage.py/0cabe076776640988c245a9eb640da2e6f4b2bc4";
     vim-coverage-py.flake = false;
     yank-for-claude-nvim.url = "github:wasabeef/yank-for-claude.nvim/5879059decfd16c2f983c0d27e0247fede5dff4d";
@@ -190,6 +189,9 @@
               "
             '';
           };
+        }
+        // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+          spotlight-exclusions = pkgs.callPackage ./packages/spotlight-exclusions { };
         };
       }
     );

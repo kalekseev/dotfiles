@@ -36,26 +36,26 @@ let
       or (throw "unsupported system: ${stdenv.hostPlatform.system}");
 
   sentryApiSchema = fetchurl {
-    url = "https://raw.githubusercontent.com/getsentry/sentry-api-schema/0.141.0/openapi-derefed.json";
-    hash = "sha256-GjGMWxTRVora4p2EwizEpvdcKbIbXHpn1/+fyKeCO+4=";
+    url = "https://raw.githubusercontent.com/getsentry/sentry-api-schema/0.256.0/openapi-derefed.json";
+    hash = "sha256-O+nVUIfXVEvqTDNSSdAVONHpqlrA1VaTDf0Q/kLBQI8=";
   };
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "sentry";
-  version = "0.35.0";
+  version = "0.42.2";
 
   src = fetchFromGitHub {
     owner = "getsentry";
     repo = "cli";
     tag = finalAttrs.version;
-    hash = "sha256-CpQyzvD7aMJWS8a0piwHLEdjl8rUF2XbiGo5yP/enK4=";
+    hash = "sha256-Q7o2I+7N9QTE/n28i0b7FYegXjSO8Eg9BGX7Bt+VCw4=";
   };
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
     inherit pnpm;
     fetcherVersion = 3;
-    hash = "sha256-ZOg6Sgepzk/9xEf+EZLKN8GpYCAoQ9e8RMuMYrg+X6M=";
+    hash = "sha256-WC2tNN/CUabojhfwii1flDpSKyGgNExdGGHbj5Oc5PY=";
   };
 
   nativeBuildInputs = [
@@ -68,10 +68,10 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   postPatch = ''
-    substituteInPlace script/build.ts \
+    substituteInPlace packages/cli/script/build.ts \
       --replace-fail 'const NODE_VERSION = "lts";' 'const NODE_VERSION = "${nodejs.version}";'
 
-    substituteInPlace script/generate-api-schema.ts \
+    substituteInPlace packages/cli/script/generate-api-schema.ts \
       --replace-fail \
         'const openApiUrl = await getOpenApiUrl();
 console.log(`Fetching OpenAPI spec from ''${openApiUrl}...`);
@@ -111,7 +111,7 @@ const spec = JSON.parse(await readFile(openApiUrl, "utf-8")) as OpenApiSpec;'
   installPhase = ''
     runHook preInstall
 
-    install -Dm755 dist-bin/${platform.binary} $out/bin/sentry
+    install -Dm755 packages/cli/dist-bin/${platform.binary} $out/bin/sentry
 
     runHook postInstall
   '';

@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -47,6 +48,7 @@ type emailSummary struct {
 	From          []address    `json:"from"`
 	To            []address    `json:"to"`
 	Preview       string       `json:"preview"`
+	Unread        bool         `json:"unread"`
 	HasAttachment bool         `json:"has_attachment"`
 	Attachments   []attachment `json:"attachments,omitempty"`
 }
@@ -74,6 +76,7 @@ type searchFilter struct {
 	Subject       string `json:"subject,omitempty"`
 	After         string `json:"after,omitempty"`
 	Before        string `json:"before,omitempty"`
+	InMailbox     string `json:"inMailbox,omitempty"`
 	HasAttachment *bool  `json:"hasAttachment,omitempty"`
 	NotKeyword    string `json:"notKeyword,omitempty"`
 }
@@ -131,8 +134,32 @@ type emailQueryResponse struct {
 }
 
 type emailGetResponse struct {
+	State    string      `json:"state"`
 	List     []jmapEmail `json:"list"`
 	NotFound []string    `json:"notFound"`
+}
+
+type mailbox struct {
+	ID           string `json:"id"`
+	Name         string `json:"name"`
+	Role         string `json:"role"`
+	ParentID     string `json:"parentId"`
+	TotalEmails  int    `json:"totalEmails"`
+	UnreadEmails int    `json:"unreadEmails"`
+}
+
+type mailboxGetResponse struct {
+	List []mailbox `json:"list"`
+}
+
+type mailboxInfo struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Role   string `json:"role,omitempty"`
+	Parent string `json:"parent_id,omitempty"`
+	Path   string `json:"path"`
+	Total  int    `json:"total"`
+	Unread int    `json:"unread"`
 }
 
 type jmapEmail struct {
@@ -148,6 +175,8 @@ type jmapEmail struct {
 	MessageID     []string             `json:"messageId"`
 	References    []string             `json:"references"`
 	Preview       string               `json:"preview"`
+	MailboxIDs    map[string]bool      `json:"mailboxIds"`
+	Keywords      map[string]bool      `json:"keywords"`
 	HasAttachment bool                 `json:"hasAttachment"`
 	TextBody      []jmapPart           `json:"textBody"`
 	HTMLBody      []jmapPart           `json:"htmlBody"`
@@ -425,6 +454,7 @@ func (c *jmapClient) search(ctx context.Context, options searchOptions) ([]email
 			From:          email.From,
 			To:            email.To,
 			Preview:       email.Preview,
+			Unread:        isUnread(email.Keywords),
 			HasAttachment: email.HasAttachment,
 			Attachments:   attachmentsFromParts(email.Attachments),
 		})
@@ -498,7 +528,7 @@ func (c *jmapClient) getEmails(ctx context.Context, ids []string, includeBody bo
 	}
 	properties := []string{
 		"id", "threadId", "receivedAt", "subject", "from", "to", "cc", "bcc",
-		"replyTo", "preview", "hasAttachment", "attachments",
+		"replyTo", "preview", "keywords", "hasAttachment", "attachments",
 	}
 	args := map[string]any{
 		"accountId":      session.PrimaryAccounts[mailCapability],
@@ -568,6 +598,176 @@ func truncateUTF8(value string, maxBytes int) string {
 		value = value[:len(value)-size]
 	}
 	return value
+}
+
+func isUnread(keywords map[string]bool) bool {
+	return !keywords["$seen"]
+}
+
+func (c *jmapClient) listMailboxes(ctx context.Context) ([]mailboxInfo, error) {
+	mailboxes, err := c.getMailboxes(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return mailboxInfos(mailboxes), nil
+}
+
+func (c *jmapClient) getMailboxes(ctx context.Context) ([]mailbox, error) {
+	session, err := c.getSession(ctx)
+	if err != nil {
+		return nil, err
+	}
+	responses, err := c.call(ctx, methodCall{
+		Name: "Mailbox/get",
+		ID:   "mailboxes",
+		Args: map[string]any{
+			"accountId": session.PrimaryAccounts[mailCapability],
+			"properties": []string{
+				"id", "name", "role", "parentId", "totalEmails", "unreadEmails",
+			},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	var got mailboxGetResponse
+	if err := json.Unmarshal(responses["mailboxes"].Args, &got); err != nil {
+		return nil, fmt.Errorf("decode Mailbox/get: %w", err)
+	}
+	return got.List, nil
+}
+
+func (c *jmapClient) resolveMailbox(ctx context.Context, selector string) (mailboxInfo, error) {
+	selector = strings.TrimSpace(selector)
+	if selector == "" {
+		return mailboxInfo{}, fmt.Errorf("mailbox selector is required")
+	}
+	mailboxes, err := c.getMailboxes(ctx)
+	if err != nil {
+		return mailboxInfo{}, err
+	}
+	infos := mailboxInfos(mailboxes)
+	normalized := normalizeMailboxSelector(selector)
+
+	// Prefer standard role matches (inbox, archive, sent, ...).
+	var roleMatches []mailboxInfo
+	for _, info := range infos {
+		if info.Role != "" && strings.EqualFold(info.Role, normalized) {
+			roleMatches = append(roleMatches, info)
+		}
+	}
+	if len(roleMatches) == 1 {
+		return roleMatches[0], nil
+	}
+	if len(roleMatches) > 1 {
+		return mailboxInfo{}, ambiguousMailboxError(selector, roleMatches)
+	}
+
+	// Exact path match: Inbox/Business
+	var pathMatches []mailboxInfo
+	for _, info := range infos {
+		if strings.EqualFold(info.Path, normalized) {
+			pathMatches = append(pathMatches, info)
+		}
+	}
+	if len(pathMatches) == 1 {
+		return pathMatches[0], nil
+	}
+	if len(pathMatches) > 1 {
+		return mailboxInfo{}, ambiguousMailboxError(selector, pathMatches)
+	}
+
+	// Exact leaf name match: Business
+	var nameMatches []mailboxInfo
+	for _, info := range infos {
+		if strings.EqualFold(info.Name, normalized) {
+			nameMatches = append(nameMatches, info)
+		}
+	}
+	if len(nameMatches) == 1 {
+		return nameMatches[0], nil
+	}
+	if len(nameMatches) > 1 {
+		return mailboxInfo{}, ambiguousMailboxError(selector, nameMatches)
+	}
+
+	// Exact id match as a last resort for scripting.
+	for _, info := range infos {
+		if info.ID == selector {
+			return info, nil
+		}
+	}
+	return mailboxInfo{}, fmt.Errorf("mailbox %q not found (run `fastmail mailboxes`)", selector)
+}
+
+func mailboxInfos(mailboxes []mailbox) []mailboxInfo {
+	byID := make(map[string]mailbox, len(mailboxes))
+	for _, box := range mailboxes {
+		byID[box.ID] = box
+	}
+	infos := make([]mailboxInfo, 0, len(mailboxes))
+	for _, box := range mailboxes {
+		infos = append(infos, mailboxInfo{
+			ID:     box.ID,
+			Name:   box.Name,
+			Role:   box.Role,
+			Parent: box.ParentID,
+			Path:   mailboxPath(box, byID),
+			Total:  box.TotalEmails,
+			Unread: box.UnreadEmails,
+		})
+	}
+	// Stable, human-friendly order: path ascending.
+	sortMailboxInfos(infos)
+	return infos
+}
+
+func mailboxPath(box mailbox, byID map[string]mailbox) string {
+	parts := []string{box.Name}
+	seen := map[string]bool{box.ID: true}
+	parentID := box.ParentID
+	for parentID != "" {
+		if seen[parentID] {
+			break
+		}
+		parent, ok := byID[parentID]
+		if !ok {
+			break
+		}
+		seen[parentID] = true
+		parts = append([]string{parent.Name}, parts...)
+		parentID = parent.ParentID
+	}
+	return strings.Join(parts, "/")
+}
+
+func normalizeMailboxSelector(selector string) string {
+	selector = strings.TrimSpace(selector)
+	selector = strings.ReplaceAll(selector, "\\", "/")
+	parts := strings.Split(selector, "/")
+	cleaned := make([]string, 0, len(parts))
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			continue
+		}
+		cleaned = append(cleaned, part)
+	}
+	return strings.Join(cleaned, "/")
+}
+
+func ambiguousMailboxError(selector string, matches []mailboxInfo) error {
+	paths := make([]string, 0, len(matches))
+	for _, match := range matches {
+		paths = append(paths, match.Path)
+	}
+	return fmt.Errorf("mailbox %q is ambiguous; use one of: %s", selector, strings.Join(paths, ", "))
+}
+
+func sortMailboxInfos(infos []mailboxInfo) {
+	sort.Slice(infos, func(i, j int) bool {
+		return strings.ToLower(infos[i].Path) < strings.ToLower(infos[j].Path)
+	})
 }
 
 func attachmentsFromParts(parts []jmapPart) []attachment {

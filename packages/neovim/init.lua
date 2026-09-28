@@ -679,12 +679,10 @@ require('blink.cmp').setup({
 --   disable_keymaps = false            -- disables built in keymaps for more manual control
 -- })
 
-local typescript_lsp = vim.fn.executable('tsgo') == 1 and 'tsgo' or 'ts_ls'
-local python_lsp = vim.fn.executable('ty') == 1 and 'ty' or 'pyright'
-
 vim.lsp.enable({
   'ruff',
-  python_lsp,
+  'ty',
+  'pyright',
   'jsonls',
   'yamlls',
   'csharp_ls',
@@ -699,7 +697,7 @@ vim.lsp.enable({
   'efm',
   'harper_ls',
   'lemminx',
-  typescript_lsp,
+  'ts_ls',
   'lua_ls',
   'ionide',
 })
@@ -765,20 +763,6 @@ vim.lsp.config('ts_ls', {
   filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
 })
 
-vim.lsp.config('tsgo', {
-  cmd = { 'tsgo', '--lsp', '--stdio' },
-  filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
-  root_markers = { 'tsconfig.json', 'package.json', '.git' },
-  settings = {
-    -- TypeScript 7 specific native settings
-    typescript = {
-      experimental = {
-        nativeTypeChecking = true
-      }
-    }
-  }
-})
-
 vim.lsp.config('lua_ls', {
   settings = {
     Lua = {
@@ -823,22 +807,12 @@ local on_attach = function(client, bufnr)
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  -- buf_set_keymap('n', 'gd',
-  --     '<cmd>lua vim.lsp.buf.definition{ on_list = function (options) vim.fn.setqflist({}, " ", options); vim.api.nvim_command("cfirst") end}<CR>',
-  --     opts)
-  -- buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>', opts)
-  -- buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  -- buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', '<space>gf', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
 end

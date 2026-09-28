@@ -126,8 +126,6 @@ pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
           pkgs.nil
           pkgs.efm-langserver
           pkgs.lemminx
-          pkgs.pyright
-          # pkgs.ty
           pkgs.yaml-language-server
           pkgs.bash-language-server
           pkgs.vscode-langservers-extracted

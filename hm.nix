@@ -18,11 +18,26 @@
     pkgs.rustup
     pkgs.sd
     pkgs.timewarrior
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
+    inputs.llm-agents-codex.packages.${pkgs.stdenv.hostPlatform.system}.codex
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr
+    ((inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code.override {
+      # sets DISABLE_TELEMETRY=1 and CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+      disableTelemetry = true;
+    }).overrideAttrs
+      (old: {
+        # no "Co-Authored-By: Claude" in commits; injected into the existing
+        # wrapProgram call to avoid double-wrapping
+        postFixup =
+          builtins.replaceStrings
+            [ "--argv0 claude" ]
+            [ "--argv0 claude --add-flags \"--settings '{\\\"includeCoAuthoredBy\\\":false}'\"" ]
+            old.postFixup;
+      })
+    )
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi
-    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage
+    # inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode
+    # inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex-auth
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.hunk
     pkgs.nodejs
@@ -32,7 +47,6 @@
   ]
   ++ lib.optionals pkgs.stdenv.isDarwin [
     (pkgs.callPackage ./packages/fastmail-cli { })
-    inputs.msgvault.packages.${pkgs.stdenv.hostPlatform.system}.msgvault
   ];
   home.stateVersion = "24.05";
 
@@ -60,6 +74,7 @@
     gs = "git status";
     gp = "git push";
     gl = "git pull";
+    grom = "git grom";
     gd = "git -c diff.external=difft diff";
     vim = "nvim";
     da = "django-admin";
@@ -68,6 +83,24 @@
   home.file = {
     ".psqlrc".source = ./configs/psqlrc;
   };
+
+  # Maintain Spotlight Search Privacy exclusions on activation.
+  home.activation.spotlightExclusions = lib.mkIf pkgs.stdenv.isDarwin (
+    let
+      spotlightExclusions = pkgs.callPackage ./packages/spotlight-exclusions { };
+    in
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run /bin/mkdir -p "$HOME/code"
+      spotlight_paths=("$HOME/code")
+
+      t7_dir="/Volumes/T7 Shield"
+      if [ -d "$t7_dir" ]; then
+        spotlight_paths+=("$t7_dir")
+      fi
+
+      run ${lib.getExe spotlightExclusions} "''${spotlight_paths[@]}"
+    ''
+  );
 
   # Periodically garbage collect old per-user (home-manager) generations.
   # The system-level nix.gc runs as root and does not trim these.
@@ -200,7 +233,16 @@
     settings = {
       alias = {
         co = "checkout";
-        fomo = "!git fetch && git rebase origin/master";
+        fomo = ''
+          !f() {
+            git fetch origin || return
+            if git show-ref --verify --quiet refs/remotes/origin/main; then
+              git rebase origin/main "$@"
+            else
+              git rebase origin/master "$@"
+            fi
+          }; f
+        '';
         hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
         up = "!git remote update -p && git merge --ff-only @{u}";
         # Show branches, verbosely, sorted by last touch, with commit messages.
